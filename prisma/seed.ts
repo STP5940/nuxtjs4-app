@@ -1,8 +1,6 @@
 import { hashPassword } from '../lib/auth';
 import prisma from "../lib/prisma";
 
-import bcrypt from "bcrypt";
-
 async function seed() {
     await prisma.users.createMany({
         data: [

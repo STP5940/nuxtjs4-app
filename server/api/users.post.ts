@@ -1,4 +1,5 @@
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
+import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { hashPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
 
@@ -12,16 +13,25 @@ const userSchema = z.object({
 
 export default defineEventHandler(async (event) => {
     const { handleAndThrow } = useErrorHandler();
+    const { created } = useResponseHandler(event);
 
     try {
         const body = await readBody(event)
         const validatedData = userSchema.parse(body)
 
-        if (!body.name || !body.email || !body.password) {
+        // เช็ค email ซ้ำ
+        const existingUser = await prisma.users.findFirst({
+            where: {
+                email: validatedData.email
+            }
+        });
+
+        if (existingUser) {
             throw createError({
-                statusCode: 400,
-                statusMessage: 'name, email and password are required'
-            })
+                statusCode: 409,
+                statusMessage: "Conflict",
+                message: 'Email already exists'
+            });
         }
 
         const user = await prisma.users.create({
@@ -36,7 +46,7 @@ export default defineEventHandler(async (event) => {
             }
         });
 
-        return { user: user }
+        return created({ user }, 'User created successfully')
     } catch (error: unknown) {
         handleAndThrow(error);
     }

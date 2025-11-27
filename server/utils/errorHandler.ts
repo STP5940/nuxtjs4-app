@@ -1,6 +1,13 @@
+import type { AppError } from '~~/server/types/errors'
+
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
-import type { AppError } from '~~/server/types/errors'
+
+// เพิ่ม interface สำหรับ custom errors
+interface CustomError extends Error {
+    statusCode?: number;
+    statusMessage?: string;
+}
 
 export function handleError(error: unknown): AppError {
     // Zod errors
@@ -55,6 +62,8 @@ export function handleError(error: unknown): AppError {
 
     // Generic errors
     if (error instanceof Error) {
+        const customError = error as CustomError;
+
         if (error.message.includes('bcrypt')) {
             return {
                 statusCode: 500,
@@ -65,8 +74,8 @@ export function handleError(error: unknown): AppError {
         }
 
         return {
-            statusCode: 500,
-            statusMessage: 'Internal Server Error',
+            statusCode: customError.statusCode || 500,
+            statusMessage: customError.statusMessage || 'Internal Server Error',
             message: error.message || 'An unexpected error occurred',
             errorCode: 'INTERNAL_ERROR'
         };
