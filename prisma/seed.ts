@@ -1,21 +1,21 @@
+import { hashPassword } from '../lib/auth';
 import prisma from "../lib/prisma";
+
 import bcrypt from "bcrypt";
 
 async function seed() {
-    const saltRounds = 10;
-    
     await prisma.users.createMany({
         data: [
             {
                 name: "Abdallah",
                 email: "abdallah@gmail.com",
-                password: await bcrypt.hash("password123", saltRounds),
+                password: await hashPassword("password123"),
                 createdAt: new Date(),
             },
             {
                 name: "Zaghloul",
                 email: "zaghloul@gmail.com",
-                password: await bcrypt.hash("password123", saltRounds),
+                password: await hashPassword("password123"),
                 createdAt: new Date(),
             },
         ],
