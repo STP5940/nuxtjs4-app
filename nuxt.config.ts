@@ -16,6 +16,12 @@ export default defineNuxtConfig({
     'nuxt-security'
   ],
 
+  // เพิ่มการตั้งค่าสำหรับโมดูล @prisma/nuxt ตรงนี้
+  prisma: {
+    // คุณสามารถใช้ skipPrompts: true แทนได้เช่นกัน
+    skipPrompts: true, 
+  },
+
   vite: {
     build: {
       sourcemap: false      // ปิด sourcemap ถ้าไม่ต้องการใช้งาน
