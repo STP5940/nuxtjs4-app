@@ -13,7 +13,7 @@ const userSchema = z.object({
 
 export default defineEventHandler(async (event) => {
     const { handleAndThrow } = useErrorHandler();
-    const { created } = useResponseHandler(event);
+    const { responseCreated } = useResponseHandler(event);
 
     try {
         const body = await readBody(event)
@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
             }
         });
 
-        return created({ user }, 'User created successfully')
+        return responseCreated({ user }, 'User created successfully')
     } catch (error: unknown) {
         handleAndThrow(error);
     }

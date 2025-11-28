@@ -2,7 +2,7 @@ import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import prisma from '~~/lib/prisma'
 
 export default defineEventHandler(async (event) => {
-    const { success } = useResponseHandler(event);
+    const { responseSuccess } = useResponseHandler(event);
 
     const users = await prisma.users.findMany({
         omit: {
@@ -10,5 +10,5 @@ export default defineEventHandler(async (event) => {
         }
     })
 
-    return success({ users: users }, 'Users retrieved successfully')
+    return responseSuccess({ users: users }, 'Users retrieved successfully')
 })

@@ -25,11 +25,11 @@ export function useResponseHandler(event: any) {
     };
 
     // หรือจะใช้ชื่ออื่นๆ ที่สื่อความหมาย
-    // const ok = success; // alias
-    // const createdResponse = created; // alias
+    const responseSuccess = success; // alias
+    const responseCreated = created; // alias
 
     return {
-        success,
-        created,
+        responseSuccess,
+        responseCreated,
     };
 }
