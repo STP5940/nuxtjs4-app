@@ -3,7 +3,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "npm install && npx prisma generate --skip-generate && nuxt build",
+    "build": "cross-env CI=true PRISMA_SKIP_PROMPTS=1 npm install && npx prisma generate && nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@vitest/ui": "^3.2.4",
+    "cross-env": "^10.1.0",
     "prisma": "^6.7.0",
     "tsx": "^4.20.6"
   }

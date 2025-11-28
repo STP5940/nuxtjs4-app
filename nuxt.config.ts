@@ -21,11 +21,6 @@ export default defineNuxtConfig({
     }
   },
 
-  prisma: {
-    autoSetupPrisma: false, // ปิดการ setup อัตโนมัติ
-    formatSchema: false,    // ปิดการ format schema
-  },
-
   security: {
     // การตั้งค่าพื้นฐาน
     // ปิด security headers ในโหมด development
