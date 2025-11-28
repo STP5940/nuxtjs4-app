@@ -17,15 +17,15 @@ export default defineNuxtConfig({
 
   vite: {
     build: {
-      sourcemap: false // ปิด sourcemap ถ้าไม่ต้องการใช้งาน
+      sourcemap: false      // ปิด sourcemap ถ้าไม่ต้องการใช้งาน
     }
   },
 
   prisma: {
-    autoSetupPrisma: false,
+    autoSetupPrisma: false, // ปิดการ setup อัตโนมัติ
+    formatSchema: false,    // ปิดการ format schema
   },
 
-  // @ts-ignore
   security: {
     // การตั้งค่าพื้นฐาน
     // ปิด security headers ในโหมด development
