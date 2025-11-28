@@ -21,6 +21,10 @@ export default defineNuxtConfig({
     }
   },
 
+  prisma: {
+    autoSetupPrisma: false,
+  },
+
   // @ts-ignore
   security: {
     // การตั้งค่าพื้นฐาน
