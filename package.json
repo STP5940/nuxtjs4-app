@@ -3,10 +3,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "npm install && cross-env CI=true PRISMA_SKIP_PROMPTS=1 npx prisma generate && nuxt build",
+    "build": "npm install && cross-env CI=true PRISMA_SKIP_PROMPTS=1 PRISMA_DISABLE_WARNINGS=true npx prisma generate && nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "cross-env CI=true PRISMA_SKIP_PROMPTS=1 PRISMA_DISABLE_WARNINGS=true nuxt preview",
     "postinstall": "nuxt prepare",
     "seed": "tsx ./prisma/seed.ts"
   },
