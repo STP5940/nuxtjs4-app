@@ -1,4 +1,5 @@
 // server/api/[...].ts
+
 export default defineEventHandler(async (event) => {
     setResponseStatus(event, 401);
     return {
