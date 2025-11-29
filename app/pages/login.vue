@@ -1,39 +1,72 @@
-<script setup>
-definePageMeta({
-  // middleware: ["auth"],
-  // layout: "blank",
+<script setup lang="ts">
+import * as z from "zod";
+import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
+
+const toast = useToast();
+
+const fields: AuthFormField[] = [
+  {
+    name: "email",
+    type: "email",
+    label: "Email",
+    placeholder: "Enter your email",
+    required: true,
+  },
+  {
+    name: "password",
+    label: "Password",
+    type: "password",
+    placeholder: "Enter your password",
+    required: true,
+  },
+  {
+    name: "remember",
+    label: "Remember me",
+    type: "checkbox",
+  },
+];
+
+const providers = [
+  {
+    label: "Google",
+    icon: "i-simple-icons-google",
+    onClick: () => {
+      toast.add({ title: "Google", description: "Login with Google" });
+    },
+  },
+  {
+    label: "GitHub",
+    icon: "i-simple-icons-github",
+    onClick: () => {
+      toast.add({ title: "GitHub", description: "Login with GitHub" });
+    },
+  },
+];
+
+const schema = z.object({
+  email: z.email("Invalid email"),
+  password: z.string("Password is required").min(8, "Must be at least 8 characters"),
 });
+
+type Schema = z.output<typeof schema>;
+
+function onSubmit(payload: FormSubmitEvent<Schema>) {
+  console.log("Submitted", payload);
+}
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <h1 class="title">👮 Login Page</h1>
-    </div>
+  <div class="flex flex-col items-center justify-center gap-4 p-4">
+    <UPageCard class="w-full max-w-md">
+      <UAuthForm
+        :schema="schema"
+        title="Login"
+        description="Enter your credentials to access your account."
+        icon="i-lucide-user"
+        :fields="fields"
+        :providers="providers"
+        @submit="onSubmit"
+      />
+    </UPageCard>
   </div>
 </template>
-
-<style scoped>
-.login-container {
-  height: 100vh; /* เต็มหน้าจอ */
-  display: flex; /* ใช้ Flexbox */
-  justify-content: center; /* จัดตรงกลางแนวนอน */
-  align-items: center; /* จัดตรงกลางแนวตั้ง */
-  background: #f5f7fa; /* สีพื้นหลังนุ่ม ๆ */
-}
-
-.login-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  min-width: 320px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-}
-</style>

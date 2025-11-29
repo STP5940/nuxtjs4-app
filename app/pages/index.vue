@@ -2,100 +2,65 @@
 import { useFetch } from "nuxt/app";
 import type { UsersResponse } from "../types";
 
+// ใช้ useFetch เหมือนเดิม
 const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
   "/api/v1/users",
   { key: "users-api" } // สำหรับ caching
 );
+
+// การใช้ Nuxt UI Components:
+// เราจะใช้ Card และ List group เพื่อจัดโครงสร้าง
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <h1 class="title">🚀 Index Page</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gray-600 p-4">
+    
+    <UCard class="w-full max-w-md mx-auto text-center" :ui="{ body: 'sm:p-8 p-6' }">
+      
+      <h1 class="text-3xl font-extrabold mb-6 flex items-center justify-center">
+        <UIcon name="i-heroicons-rocket-launch" class="mr-2 text-primary-500" />
+        Index Page
+      </h1>
 
-      <p v-if="!usersResponse">⏳ Loading...</p>
+      <UAlert
+        v-if="pending"
+        icon="i-heroicons-arrow-path"
+        color="neutral"
+        variant="subtle"
+        title="Loading..."
+        class="mt-4"
+      />
 
-      <div v-else>
-        <h2 class="subtitle">Users ({{ usersResponse.data.usersCount }})</h2>
+      <UAlert
+        v-else-if="error"
+        icon="i-heroicons-exclamation-triangle"
+        color="error"
+        variant="soft"
+        title="Error loading users"
+        :description="error.message"
+        class="mt-4"
+      />
 
-        <ul class="user-list">
-          <li v-for="user in usersResponse.data.users" :key="user.id">
-            <strong>{{ user.name }}</strong>
-            <br />
-            {{ user.email }}
-            <br />
-            <small>Created: {{ user.createdAt.toLocaleString() }}</small>
-          </li>
-        </ul>
+      <div v-else-if="usersResponse">
+        <h2 class="text-xl font-semibold text-gray-400 mb-4 mt-6">
+          Users ({{ usersResponse.data.usersCount }})
+        </h2>
+
+        <div class="space-y-3">
+          <UCard 
+            v-for="user in usersResponse.data.users" 
+            :key="user.id" 
+            class="text-left bg-white shadow-sm"
+            :ui="{ body: 'p-3 sm:p-4' }"
+          >
+            <div class="text-gray-900 font-bold">{{ user.name }}</div>
+            <div class="text-sm text-gray-600 truncate">{{ user.email }}</div>
+            <div class="text-xs text-gray-500 mt-1">
+              Created: {{ user.createdAt.toLocaleString() }}
+            </div>
+          </UCard>
+        </div>
       </div>
-    </div>
+    </UCard>
   </div>
 </template>
-
-<style scoped>
-.login-container {
-  /* ทำให้แน่ใจว่ากินพื้นที่ 100% ของ viewport height */
-  min-height: 100vh;
-  /* จัดองค์ประกอบให้อยู่กึ่งกลาง */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* ใช้ padding รอบนอกเล็กน้อยเพื่อไม่ให้เนื้อหาติดขอบจอ */
-  padding: 20px;
-  background: #f5f7fa;
-}
-
-.login-box {
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  text-align: center;
-
-  /* *** การปรับปรุงหลักสำหรับการรองรับมือถือ *** */
-  max-width: 450px;
-  width: 100%;
-  /* ลบ min-width: 360px; ออก */
-}
-
-@media (max-width: 600px) {
-  .login-box {
-    /* บนหน้าจอขนาดเล็กมากๆ ให้ลด padding ลงเล็กน้อย */
-    padding: 20px;
-  }
-
-  .title {
-    font-size: 20px; /* ลดขนาดตัวอักษรบนมือถือ */
-  }
-
-  .user-list li {
-    padding: 10px;
-  }
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
-}
-
-.subtitle {
-  font-size: 18px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-  color: #555;
-}
-
-.user-list {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-}
-
-.user-list li {
-  background: #f8f8f8;
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-}
-</style>

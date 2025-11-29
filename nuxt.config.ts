@@ -16,6 +16,8 @@ export default defineNuxtConfig({
     'nuxt-security'
   ],
 
+  css: ['~/assets/css/main.css'],
+
   // เพิ่มการตั้งค่าสำหรับโมดูล @prisma/nuxt ตรงนี้
   prisma: {
     // คุณสามารถใช้ skipPrompts: true แทนได้เช่นกัน
