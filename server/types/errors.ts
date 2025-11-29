@@ -1,3 +1,5 @@
+// server/types/errors.ts
+
 export type ErrorCode =
     | 'NOT_FOUND'
     | 'AUTH_ERROR'

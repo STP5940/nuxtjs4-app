@@ -1,4 +1,5 @@
-// ~~/server/composables/useResponseHandler.ts
+// server/composables/useResponseHandler.ts
+
 export function useResponseHandler(event: any) {
     const getCurrentUrl = () => getRequestURL(event).href;
 

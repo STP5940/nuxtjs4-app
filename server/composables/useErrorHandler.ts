@@ -1,3 +1,5 @@
+// server/composables/useErrorHandler.ts
+
 import { handleError, throwAppError } from '~~/server/utils/errorHandler';
 
 export const useErrorHandler = () => {

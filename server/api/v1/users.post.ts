@@ -1,3 +1,5 @@
+// server/api/v1/users.post.ts
+
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { hashPassword } from '~~/lib/auth';

@@ -1,3 +1,5 @@
+// server/api/v1/users.get.ts
+
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import prisma from '~~/lib/prisma'
 
@@ -10,5 +12,8 @@ export default defineEventHandler(async (event) => {
         }
     })
 
-    return responseSuccess({ users: users }, 'Users retrieved successfully')
+    return responseSuccess({
+        usersCount: users?.length || 0,
+        users: users
+    }, 'Users retrieved successfully')
 })

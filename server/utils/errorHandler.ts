@@ -1,4 +1,5 @@
 // server/utils/errorHandler.ts
+
 import type { AppError } from '~~/server/types/errors'
 
 import { z } from 'zod';
