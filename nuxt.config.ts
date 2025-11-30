@@ -64,7 +64,7 @@ export default defineNuxtConfig({
         'form-action': ["'self'"],
         'frame-ancestors': ["'self'"],
         'frame-src': ["'self'"], // สำคัญสำหรับ DevTools
-        'img-src': ["'self'", 'data:', 'https:'],
+        'img-src': ["'self'", 'data:', 'blob:', 'https:'],
         'object-src': ["'none'"],
         'script-src': [
           "'self'",
