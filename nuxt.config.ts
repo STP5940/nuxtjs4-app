@@ -20,6 +20,10 @@ export default defineNuxtConfig({
   ].filter(Boolean),
 
   css: ['~/assets/css/main.css'],
+  
+  colorMode: {
+    preference: 'light' // 👈 กำหนดให้ค่าที่ชอบคือ 'light' or 'dark'
+  },
 
   eslint: {
     config: {
