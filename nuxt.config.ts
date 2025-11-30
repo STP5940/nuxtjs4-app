@@ -13,9 +13,11 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    // '@prisma/nuxt',
-    'nuxt-security'
-  ],
+    'nuxt-security',
+
+    // 🔴 โหลด @prisma/nuxt เฉพาะเมื่อไม่ใช่โหมด Production
+    process.env.NODE_ENV !== 'production' && '@prisma/nuxt',
+  ].filter(Boolean),
 
   css: ['~/assets/css/main.css'],
 
