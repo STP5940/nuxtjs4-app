@@ -35,6 +35,7 @@ export default defineNuxtConfig({
   },
 
   // เพิ่มการตั้งค่าสำหรับโมดูล @prisma/nuxt ตรงนี้
+  // @ts-ignore
   prisma: {
     // คุณสามารถใช้ skipPrompts: true แทนได้เช่นกัน
     skipPrompts: true,
