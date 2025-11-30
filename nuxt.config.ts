@@ -15,12 +15,12 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-security',
 
-    // 🔴 โหลด @prisma/nuxt เฉพาะเมื่อไม่ใช่โหมด Production
-    process.env.NODE_ENV !== 'production' && '@prisma/nuxt',
-  ].filter(Boolean),
+    // Development only modules
+    ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
+  ],
 
   css: ['~/assets/css/main.css'],
-  
+
   colorMode: {
     preference: 'light' // 👈 กำหนดให้ค่าที่ชอบคือ 'light' or 'dark'
   },
