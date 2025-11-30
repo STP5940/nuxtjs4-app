@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxt/ui',
     '@vueuse/nuxt',
-    '@prisma/nuxt',
+    // '@prisma/nuxt',
     'nuxt-security'
   ],
 
@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     // ปิด security headers ในโหมด development
     headers: {
       crossOriginEmbedderPolicy: process.env.NODE_ENV === 'production'
-        ? 'require-corp'
+        ? 'unsafe-none' // require-corp or unsafe-none
         : false,
 
       crossOriginOpenerPolicy: process.env.NODE_ENV === 'production'
