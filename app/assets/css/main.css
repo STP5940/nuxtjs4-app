@@ -1,7 +1,7 @@
-@import "tailwindcss" theme(static);
+@import "tailwindcss";
 @import "@nuxt/ui";
 
-@theme static {
+:root {
   --font-sans: 'Public Sans', sans-serif;
 
   --color-green-50: #EFFDF5;
