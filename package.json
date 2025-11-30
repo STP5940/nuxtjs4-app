@@ -32,7 +32,13 @@
     "typescript": "^5.9.3",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "@iconify-json/lucide": "^1.2.75",
+    "@iconify-json/simple-icons": "^1.2.60",
+    "@unovis/ts": "^1.6.2",
+    "@unovis/vue": "^1.6.2",
+    "@vueuse/nuxt": "^13.9.0",
+    "date-fns": "^4.1.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",

@@ -1,66 +1,69 @@
 <script setup lang="ts">
-import { useFetch } from "nuxt/app";
-import type { UsersResponse } from "../types";
+import { sub } from 'date-fns'
+import type { DropdownMenuItem } from '@nuxt/ui'
+import type { Period, Range } from '~/types'
 
-// ใช้ useFetch เหมือนเดิม
-const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
-  "/api/v1/users",
-  { key: "users-api" } // สำหรับ caching
-);
+const { isNotificationsSlideoverOpen } = useDashboard()
 
-// การใช้ Nuxt UI Components:
-// เราจะใช้ Card และ List group เพื่อจัดโครงสร้าง
+const items = [[{
+  label: 'New mail',
+  icon: 'i-lucide-send',
+  to: '/inbox'
+}, {
+  label: 'New customer',
+  icon: 'i-lucide-user-plus',
+  to: '/customers'
+}]] satisfies DropdownMenuItem[][]
+
+const range = shallowRef<Range>({
+  start: sub(new Date(), { days: 14 }),
+  end: new Date()
+})
+const period = ref<Period>('daily')
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-600 p-4">
-    
-    <UCard class="w-full max-w-md mx-auto text-center" :ui="{ body: 'sm:p-8 p-6' }">
-      
-      <h1 class="text-3xl font-extrabold mb-6 flex items-center justify-center">
-        <UIcon name="i-heroicons-rocket-launch" class="mr-2 text-primary-500" />
-        Index Page
-      </h1>
+  <UDashboardPanel id="home">
+    <template #header>
+      <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
+        <template #leading>
+          <UDashboardSidebarCollapse />
+        </template>
 
-      <UAlert
-        v-if="pending"
-        icon="i-heroicons-arrow-path"
-        color="neutral"
-        variant="subtle"
-        title="Loading..."
-        class="mt-4"
-      />
+        <template #right>
+          <UTooltip text="Notifications" :shortcuts="['N']">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              square
+              @click="isNotificationsSlideoverOpen = true"
+            >
+              <UChip color="error" inset>
+                <UIcon name="i-lucide-bell" class="size-5 shrink-0" />
+              </UChip>
+            </UButton>
+          </UTooltip>
 
-      <UAlert
-        v-else-if="error"
-        icon="i-heroicons-exclamation-triangle"
-        color="error"
-        variant="soft"
-        title="Error loading users"
-        :description="error.message"
-        class="mt-4"
-      />
+          <UDropdownMenu :items="items">
+            <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
+          </UDropdownMenu>
+        </template>
+      </UDashboardNavbar>
 
-      <div v-else-if="usersResponse">
-        <h2 class="text-xl font-semibold text-gray-400 mb-4 mt-6">
-          Users ({{ usersResponse.data.usersCount }})
-        </h2>
+      <UDashboardToolbar>
+        <template #left>
+          <!-- NOTE: The `-ms-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
+          <HomeDateRangePicker v-model="range" class="-ms-1" />
 
-        <div class="space-y-3">
-          <UCard 
-            v-for="user in usersResponse.data.users" 
-            :key="user.id" 
-            class="text-left bg-white shadow-sm"
-            :ui="{ body: 'p-3 sm:p-4' }"
-          >
-            <div class="text-gray-900 font-bold">{{ user.name }}</div>
-            <div class="text-sm text-gray-600 truncate">{{ user.email }}</div>
-            <div class="text-xs text-gray-500 mt-1">
-              Created: {{ user.createdAt.toLocaleString() }}
-            </div>
-          </UCard>
-        </div>
-      </div>
-    </UCard>
-  </div>
+          <HomePeriodSelect v-model="period" :range="range" />
+        </template>
+      </UDashboardToolbar>
+    </template>
+
+    <template #body>
+      <HomeStats :period="period" :range="range" />
+      <HomeChart :period="period" :range="range" />
+      <HomeSales :period="period" :range="range" />
+    </template>
+  </UDashboardPanel>
 </template>

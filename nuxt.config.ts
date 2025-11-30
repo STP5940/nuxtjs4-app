@@ -12,16 +12,26 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/test-utils',
     '@nuxt/ui',
+    '@vueuse/nuxt',
     '@prisma/nuxt',
     'nuxt-security'
   ],
 
   css: ['~/assets/css/main.css'],
 
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs'
+      }
+    }
+  },
+
   // เพิ่มการตั้งค่าสำหรับโมดูล @prisma/nuxt ตรงนี้
   prisma: {
     // คุณสามารถใช้ skipPrompts: true แทนได้เช่นกัน
-    skipPrompts: true, 
+    skipPrompts: true,
   },
 
   vite: {
