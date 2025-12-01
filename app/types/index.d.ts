@@ -1,4 +1,5 @@
 import type { AvatarProps } from '@nuxt/ui'
+import { randomRoles } from '~/constants/roles'; // สมมติว่า path ถูกต้อง
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 export type SaleStatus = 'paid' | 'failed' | 'refunded'
@@ -19,13 +20,6 @@ export interface Mail {
   subject: string
   body: string
   date: string
-}
-
-export interface Member {
-  name: string
-  username: string
-  role: 'member' | 'owner'
-  avatar: AvatarProps
 }
 
 export interface Stat {
@@ -62,17 +56,20 @@ export interface Range {
 
 // app/types/index.d.ts
 
+type UserRole = typeof randomRoles[number];
+
 export interface Users {
   id: number
   name: string
   username: string
   email: string
-  role: string
+  role: UserRole
   avatar: AvatarProps | null
   createdAt: Date
   updatedAt: Date | null
   deletedAt: Date | null
 }
+
 export interface UsersResponse {
   error: boolean
   url: string
