@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // app/components/settings/UsersList.vue
-import type { DropdownMenuItem } from '@nuxt/ui'
-
 import { randomRoles } from '~~/constants/roles'
 import type { Users } from '~/types'
+
+import type { DropdownMenuItem } from '@nuxt/ui'
 
 defineProps<{
   users: Users[]

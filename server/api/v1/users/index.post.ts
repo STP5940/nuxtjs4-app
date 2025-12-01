@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 const userSchema = z.object({
     name: z.string().min(1, "Name is required"),
+    username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.email("Invalid email format"),
     password: z.string().min(6, "Password must be at least 6 characters")
 });
@@ -24,7 +25,10 @@ export default defineEventHandler(async (event) => {
         // เช็ค email ซ้ำ
         const existingUser = await prisma.users.findFirst({
             where: {
-                email: validatedData.email
+                OR: [
+                    { email: validatedData.email },
+                    { username: validatedData.username }
+                ]
             }
         });
 
@@ -32,13 +36,18 @@ export default defineEventHandler(async (event) => {
             throw createError({
                 statusCode: 409,
                 statusMessage: "Conflict",
-                message: 'Email already exists'
+                message: (
+                    existingUser.email === validatedData.email
+                        ? 'Email already exists'
+                        : 'Username already exists'
+                )
             });
         }
 
         const user = await prisma.users.create({
             data: {
                 name: validatedData.name,
+                username: validatedData.username,
                 email: validatedData.email,
                 password: await hashPassword(validatedData.password),
                 createdAt: new Date(),
