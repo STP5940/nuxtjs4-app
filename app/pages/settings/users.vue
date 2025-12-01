@@ -38,8 +38,8 @@ const filteredUsers = computed<Users[]>(() => {
     <UPageCard
       variant="subtle"
       :ui="{
-        container: 'p-0 sm:p-0 gap-y-0',
-        wrapper: 'items-stretch',
+        container: 'p-0 sm:p-0 gap-y-0 overflow-hidden',
+        wrapper: 'items-stretch overflow-hidden',
         header: 'p-4 mb-0 border-b border-default',
       }"
     >
