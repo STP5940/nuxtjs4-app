@@ -27,7 +27,9 @@ generator client {
 model Users {
   id        Int       @id @default(autoincrement())
   name      String
+  username  String    @unique
   email     String
+  avatar    String?
   password  String
   createdAt DateTime
   updatedAt DateTime?

@@ -2,22 +2,103 @@ import { hashPassword } from '../lib/auth';
 import prisma from "../lib/prisma";
 
 async function seed() {
+    await prisma.users.deleteMany({});
+    console.log("Delete Users Success...");
+
     await prisma.users.createMany({
         data: [
             {
-                name: "Abdallah",
-                email: "abdallah@gmail.com",
-                password: await hashPassword("password123"),
+                name: "Anthony Fu",
+                username: 'antfu',
+                email: "antfu@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu",
+                password: await hashPassword("123456789"),
                 createdAt: new Date(),
             },
             {
-                name: "Zaghloul",
-                email: "zaghloul@gmail.com",
-                password: await hashPassword("password123"),
+                name: "Baptiste Leproux",
+                username: 'larbish',
+                email: "larbish@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/larbish",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Benjamin Canac",
+                username: 'benjamincanac',
+                email: "benjamincanac@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/benjamincanac",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Céline Dumerc",
+                username: 'celinedumerc',
+                email: "celinedumerc@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/celinedumerc",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Daniel Roe",
+                username: 'danielroe',
+                email: "danielroe@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Farnabaz",
+                username: 'farnabaz',
+                email: "farnabaz@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/farnabaz",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Ferdinand Coumau",
+                username: 'ferdinandcoumau',
+                email: "FerdinandCoumau@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/FerdinandCoumau",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Hugo Richard",
+                username: 'hugorcd',
+                email: "hugorcd@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/hugorcd",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Pooya Parsa",
+                username: 'pi0',
+                email: "pi0@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Sarah Moriceau",
+                username: 'sarahm19',
+                email: "SarahM19@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/SarahM19",
+                password: await hashPassword("123456789"),
+                createdAt: new Date(),
+            },
+            {
+                name: "Sébastien Chopin",
+                username: 'atinux',
+                email: "Atinux@example.com",
+                avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux",
+                password: await hashPassword("123456789"),
                 createdAt: new Date(),
             },
         ],
     });
+
+    console.log("Insert Users Success...");
 }
 
 seed()
@@ -27,5 +108,3 @@ seed()
         prisma.$disconnect();
         process.exit(1);
     });
-
-console.log("Insert Users Success...");

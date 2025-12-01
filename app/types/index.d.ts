@@ -58,3 +58,29 @@ export interface Range {
   start: Date
   end: Date
 }
+
+
+// app/types/index.d.ts
+
+export interface Users {
+  id: number
+  name: string
+  username: string
+  email: string
+  role: string
+  avatar: AvatarProps | null
+  createdAt: Date
+  updatedAt: Date | null
+  deletedAt: Date | null
+}
+export interface UsersResponse {
+  error: boolean
+  url: string
+  statusCode: number
+  statusMessage: string
+  message: string
+  data: {
+    usersCount: number
+    users: Users[]
+  }
+}

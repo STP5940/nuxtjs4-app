@@ -22,7 +22,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   colorMode: {
-    preference: 'light' // 👈 กำหนดให้ค่าที่ชอบคือ 'light' or 'dark'
+    preference: 'light' // 👈 กำหนดให้ค่าที่ชอบคือ 'system' or 'light' or 'dark'
   },
 
   eslint: {

@@ -1,6 +1,9 @@
 // server/api/v1/users.get.ts
 
+import type { AvatarProps } from '@nuxt/ui'
+
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
+import { randomRoles } from '~~/constants/roles'
 import prisma from '~~/lib/prisma'
 
 export default defineEventHandler(async (event) => {
@@ -12,8 +15,21 @@ export default defineEventHandler(async (event) => {
         }
     })
 
+    const transformedUsers = users.map(user => {
+        const avatarProps: AvatarProps | undefined = user.avatar ? {
+            src: user.avatar,
+            alt: `${user.name || user.email}'s avatar`
+        } : undefined;
+
+        return {
+            ...user,
+            role: randomRoles[Math.floor(Math.random() * randomRoles.length)],
+            avatar: avatarProps,
+        }
+    })
+
     return responseSuccess({
         usersCount: users?.length || 0,
-        users: users
+        users: transformedUsers
     }, 'Users retrieved successfully')
 })
