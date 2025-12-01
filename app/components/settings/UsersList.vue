@@ -35,10 +35,10 @@ const items = [{
 
         <div class="text-sm min-w-0">
           <p class="text-highlighted font-medium truncate">
-            {{ user.name }} ({{ user.username }})
+            {{ user.name }}
           </p>
           <p class="text-muted truncate">
-            {{ user.email }}
+            {{ user.username }}
           </p>
         </div>
       </div>
