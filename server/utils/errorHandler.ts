@@ -3,7 +3,7 @@
 import type { AppError } from '~~/server/types/errors'
 
 import { z } from 'zod';
-import prisma from '~~/lib/prisma'
+import { Prisma } from '@prisma/client';
 
 // เพิ่ม interface สำหรับ custom errors
 interface CustomError extends Error {
@@ -22,9 +22,8 @@ export function handleError(error: unknown): AppError {
             details: error.issues
         };
     }
-
     // Prisma known errors
-    if (error instanceof prisma.PrismaClientKnownRequestError) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
         switch (error.code) {
             case 'P2002':
                 return {
@@ -51,9 +50,8 @@ export function handleError(error: unknown): AppError {
                 };
         }
     }
-
     // Prisma unknown errors
-    if (error instanceof prisma.PrismaClientUnknownRequestError) {
+    if (error instanceof Prisma.PrismaClientUnknownRequestError) {
         return {
             statusCode: 500,
             statusMessage: 'Internal Server Error',
