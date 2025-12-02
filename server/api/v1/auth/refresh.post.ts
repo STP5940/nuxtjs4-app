@@ -1,16 +1,11 @@
-// server/api/v1/users.post.ts
+// server/api/v1/auth/refresh.post.ts
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { generateTokens, decodeRefreshToken } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 
-import { jwtDecode, type JwtPayload } from 'jwt-decode';
-
-// import { verifyPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
-
-// import { defineEventHandler, setCookie } from 'h3';
 import { z } from 'zod';
 
 const userSchema = z.object({
@@ -34,9 +29,6 @@ export default defineEventHandler(async (event) => {
                 message: 'Invalid refresh token'
             });
         }
-
-        // ตรวจจสอบว่า tokenId นี้มีอยู่ในฐานข้อมูลหรือไม่ (เพื่อป้องกันการใช้ token ที่ถูกเพิกถอน)
-        // console.log(payload);
 
         // ค้นหาผู้ใช้จาก userId ใน token
         const findingUser = await prisma.users.findUnique({

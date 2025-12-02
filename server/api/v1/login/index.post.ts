@@ -1,4 +1,4 @@
-// server/api/v1/users.post.ts
+// server/api/v1/login/index.post.ts
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
@@ -65,23 +65,6 @@ export default defineEventHandler(async (event) => {
             transformedUser.id,
             transformedUser.role
         );
-
-        // // กำหนด refresh token ใน cookie
-        // setCookie(event, 'refresh_token', refreshToken, {
-        //     httpOnly: false, // ⚠️ ให้ JavaScript อ่านได้
-        //     secure: process.env.NODE_ENV === 'production',
-        //     sameSite: 'lax',
-        //     maxAge: 7 * 24 * 60 * 60, // 7 days
-        // })
-
-        // // กำหนด access token ใน cookie
-        // setCookie(event, 'access_token', accessToken, {
-        //     httpOnly: false, // ⚠️ ให้ JavaScript อ่านได้
-        //     secure: process.env.NODE_ENV === 'production',
-        //     sameSite: 'lax', // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
-        //     maxAge: 1 * 60,  // 15 minutes
-        // })
-
 
         // อ่านค่าจาก .env หรือใช้ค่าเริ่มต้น 7 วัน
         const DEFAULT_REFRESH_TOKEN_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000;
