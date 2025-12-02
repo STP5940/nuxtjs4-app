@@ -75,7 +75,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     });
 
     toast.add({ title: "Login successful!" });
-    await navigateTo("/settings/users");
+    await navigateTo("/");
   } catch (error: any) {
     toast.add({
       title: "Login Failed",
