@@ -1,17 +1,18 @@
 // app/middleware/auth.ts
 
-// import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 
-// ฟังก์ชันสำหรับขอ Access Token ใหม่
-async function refreshAccessToken() {
+/**
+ * ฟังก์ชันสำหรับขอ Access Token ใหม่โดยใช้ Refresh Token
+ * @returns {Promise<boolean>} - true ถ้าการ Refresh สำเร็จ, false ถ้าไม่สำเร็จ
+ */
+async function refreshAccessToken(): Promise<boolean> {
     const refreshToken = useCookie('refresh_token');
     const accessToken = useCookie('access_token');
 
     if (!refreshToken.value) {
-        console.log("No refresh token available.");
-        accessToken.value = null;
-        return navigateTo('/login');
+        console.error("No refresh token found for refreshing.");
+        return false;
     }
 
     try {
@@ -31,60 +32,73 @@ async function refreshAccessToken() {
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
 
-        if (newAccessToken) {
+        if (newAccessToken && newRefreshToken) {
+            console.log("✅ Access Token refreshed successfully.");
+
+            // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
             refreshToken.value = newRefreshToken;
-            console.log("Access Token has been refreshed.");
             return true; // สำเร็จ
         }
-        return false;
+        return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
     } catch (refreshError) {
-        console.error("Could not refresh token:", refreshError);
+        console.error("❌ Could not refresh token. Redirecting to login:", refreshError);
 
         // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมดและไปหน้า login
         accessToken.value = null;
         refreshToken.value = null;
-        return navigateTo('/login');
+        
+        return false;
     }
 }
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    console.log("This is my global middleware!");
-    const accessToken = useCookie('access_token');
     const refreshToken = useCookie('refresh_token');
+    const accessToken = useCookie('access_token');
 
-    try {
-        // ถ้ามี refresh token ให้ตรวจสอบต่อ
-        if (typeof refreshToken.value === 'string') {
-
-            // ถ้ามี access token ให้ตรวจสอบต่อ
-            if (typeof accessToken.value === 'string') {
-
-                // อ่านค่า Token และถอดรหัส
-                const accessTokenDecode: JwtPayload = jwtDecode(accessToken.value);
-                const currentTime = Date.now() / 1000;
-
-                // ถ้า access token หมดอายุ ให้ลองขอ Access Token ใหม่
-                if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
-                    console.log("Access Token expired");
-                    await refreshAccessToken();
-                }
-
-                // ถ้า access token ยังไม่หมดอายุ ให้ผ่านไป
-                return;
-            } else {
-                // ถ้ามี Refresh token ให้ลองขอ Access Token ใหม่
-                await refreshAccessToken();
-            }
-        } else {
-            // ถ้าไม่มี refresh token ให้ลบ token ทั้งหมดและไปหน้า login
-            accessToken.value = null;
-            refreshToken.value = null;
-            return navigateTo('/login');
-        }
-    } catch (accessError) {
+    // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
+    const redirectToLogin = () => {
         accessToken.value = null;
         refreshToken.value = null;
         return navigateTo('/login');
+    };
+
+    try {
+        // ถ้าไม่มี refresh token ให้ไปหน้า login
+        if (!refreshToken.value) {
+            return redirectToLogin();
+        }
+
+        // ถ้ามี access token ให้ตรวจสอบต่อ
+        if (accessToken.value) {
+            const accessTokenDecode: JwtPayload = jwtDecode(accessToken.value);
+            const currentTime = Date.now() / 1000;
+
+            // ถ้า access token หมดอายุ ให้ลองขอ Access Token ใหม่
+            if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
+
+                // ถ้า Access Token หมดอายุ ให้ลองขอ Access Token ใหม่
+                const refreshSuccess = await refreshAccessToken();
+
+                if (refreshSuccess) {
+                    return redirectToLogin();
+                }
+            }
+
+            // ถ้า Access Token ยังไม่หมดอายุ หรือ Refresh สำเร็จแล้ว
+            return;
+        } else {
+            // ให้ลองขอ Access Token ใหม่
+            const refreshSuccess = await refreshAccessToken();
+
+            if (!refreshSuccess) {
+                // ถ้า refresh ไม่สำเร็จ
+                return redirectToLogin();
+            }
+        }
+    } catch (accessError) {
+        // ดักจับข้อผิดพลาดทั่วไป (เช่น jwtDecode ล้มเหลว)
+        console.error("❌ Authentication process failed:", accessError);
+        return redirectToLogin();
     }
 })

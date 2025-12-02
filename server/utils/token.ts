@@ -1,4 +1,8 @@
+// server/utils/token.ts
+
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import parseDuration from 'parse-duration';
+import { setCookie, H3Event } from 'h3';
 import { v4 as uuidv4 } from 'uuid';
 
 import { randomRoles } from '~~/constants/roles'
@@ -97,4 +101,46 @@ export function decodeRefreshToken(token: string): RefreshTokenPayload | null {
         // console.error("Invalid or expired refresh token:", error);
         return null;
     }
+}
+
+// ----------------------------------------------------------------------
+// 5. ฟังก์ชันกำหนด Cookie
+// ----------------------------------------------------------------------
+
+/**
+ * กำหนด Access Token และ Refresh Token ลงใน Cookie ของ Response
+ * @param event H3 Event object
+ * @param accessToken Access Token
+ * @param refreshToken Refresh Token
+ */
+export function setTokenCookies(
+    event: H3Event, 
+    accessToken: string, 
+    refreshToken: string
+) {
+    // 1. จัดการ Refresh Token Cookie
+    const DEFAULT_REFRESH_TOKEN_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000;
+    const refreshDurationString: string = process.env.REFRESH_TOKEN_MAX_AGE || '7d';
+    const REFRESH_TOKEN_MAX_AGE_MS: number = parseDuration(refreshDurationString) || DEFAULT_REFRESH_TOKEN_MAX_AGE_MS;
+
+    // กำหนด refresh token ใน cookie
+    setCookie(event, 'refresh_token', refreshToken, {
+        httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        maxAge: REFRESH_TOKEN_MAX_AGE_MS / 1000, // เปลี่ยนเป็นวินาที
+    })
+
+    // 2. จัดการ Access Token Cookie
+    const DEFAULT_ACCESS_TOKEN_MAX_AGE_MS: number = 15 * 60 * 1000;
+    const accessDurationString: string = process.env.ACCESS_TOKEN_MAX_AGE || '15m';
+    const ACCESS_TOKEN_MAX_AGE_MS: number = parseDuration(accessDurationString) || DEFAULT_ACCESS_TOKEN_MAX_AGE_MS;
+
+    // กำหนด access token ใน cookie
+    setCookie(event, 'access_token', accessToken, {
+        httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        maxAge: ACCESS_TOKEN_MAX_AGE_MS / 1000,  // เปลี่ยนเป็นวินาที
+    })
 }

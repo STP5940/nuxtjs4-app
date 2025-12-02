@@ -2,7 +2,7 @@
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
-import { generateTokens, decodeRefreshToken } from '~~/server/utils/token';
+import { generateTokens, decodeRefreshToken, setTokenCookies } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 
 import prisma from '~~/lib/prisma'
@@ -58,21 +58,8 @@ export default defineEventHandler(async (event) => {
             transformedUser.role
         );
 
-        // กำหนด refresh token ใน cookie
-        setCookie(event, 'refresh_token', refreshToken, {
-            httpOnly: false, // ⚠️ ให้ JavaScript อ่านได้
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60, // 7 days
-        })
-
-        // กำหนด access token ใน cookie
-        setCookie(event, 'access_token', accessToken, {
-            httpOnly: false, // ⚠️ ให้ JavaScript อ่านได้
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax', // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
-            maxAge: 1 * 60,  // 15 minutes
-        })
+        // กำหนด Token Cookies ให้ accessToken และ refreshToken     
+        setTokenCookies(event, accessToken, refreshToken)
 
         return responseSuccess({
             refreshToken: refreshToken,

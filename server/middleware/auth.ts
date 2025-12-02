@@ -4,26 +4,23 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { defineEventHandler, getCookie, deleteCookie } from 'h3';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
-const PUBLIC_API_PREFIXES = ['/api/v1/login', '/api/v1/register', '/api/v1/auth/refresh'];
+const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/refresh'];
 
 export default defineEventHandler(async (event) => {
     const getCurrentUrl = () => getRequestURL(event).href;
 
-    // 💡 ขั้นตอนที่ 1: ตรวจสอบ Path
-    const path = event.path;
-
-    // ตรวจสอบว่า Path ไม่ได้ขึ้นต้นด้วย '/api/'
-    // ถ้าไม่ใช่งาน API, ให้หยุดการทำงานของ Middleware นี้ทันที
-    if (!path.startsWith('/api/')) {
+    // ตรวจสอบว่าเป็นการเรียกใช้งานจากฝั่ง Client หรือไม่
+    // ถ้าเป็น Client ให้ข้ามการตรวจสอบสิทธิ์นี้ไป
+    if (!import.meta.client) {
         return;
     }
 
     // Optional: ถ้าเป็น API ที่อนุญาตให้เข้าถึงโดยไม่ต้องมี Token ให้ผ่านไป
-    if (PUBLIC_API_PREFIXES.some(prefix => path.startsWith(prefix))) {
+    if (PUBLIC_API_PREFIXES.some(prefix => event.path.startsWith(prefix))) {
         return;
     }
 
-    // 💡 ขั้นตอนที่ 2: รันตรรกะการตรวจสอบสิทธิ์ (เฉพาะเมื่อเป็น API)
+    // ดึง Access Token จาก Cookie
     const accessToken = getCookie(event, 'access_token');
 
     try {
@@ -47,7 +44,6 @@ export default defineEventHandler(async (event) => {
             }
         } else {
             // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
-            // By pass this part to allow public API access
             setResponseStatus(event, 401);
             return {
                 error: true,
