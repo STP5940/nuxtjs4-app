@@ -2,6 +2,10 @@
 // app/pages/settings/users.vue
 import type { UsersResponse, Users } from "~/types";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
   "/api/v1/users"
 );

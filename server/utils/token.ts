@@ -77,3 +77,24 @@ export function generateTokens(userId: number, role: UserRole) {
         refreshTokenId, // ต้องนำค่านี้ไปบันทึกใน Database
     };
 }
+
+// ----------------------------------------------------------------------
+// 4. ฟังก์ชันตรวจสอบและถอดรหัส Tokens
+// ----------------------------------------------------------------------
+
+/**
+ * ถอดรหัสและตรวจสอบความถูกต้องของ Refresh Token
+ * @param token Refresh Token ที่เป็น string
+ * @returns Payload ของ Token หากถูกต้อง, หรือ null หากไม่ถูกต้อง (เช่น หมดอายุ, signature ไม่ตรง)
+ */
+export function decodeRefreshToken(token: string): RefreshTokenPayload | null {
+    try {
+        // ใช้ REFRESH_SECRET ในการตรวจสอบและถอดรหัส token
+        const payload = jwt.verify(token, REFRESH_SECRET) as RefreshTokenPayload;
+        return payload;
+    } catch (error) {
+        // หากเกิด error แสดงว่า token ไม่ถูกต้อง
+        // console.error("Invalid or expired refresh token:", error);
+        return null;
+    }
+}

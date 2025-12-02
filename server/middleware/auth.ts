@@ -4,7 +4,7 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { defineEventHandler, getCookie, deleteCookie } from 'h3';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
-const PUBLIC_API_PREFIXES = ['/api/auth/login', '/api/auth/register'];
+const PUBLIC_API_PREFIXES = ['/api/v1/login', '/api/v1/register', '/api/v1/auth/refresh'];
 
 export default defineEventHandler(async (event) => {
     const getCurrentUrl = () => getRequestURL(event).href;
@@ -24,21 +24,18 @@ export default defineEventHandler(async (event) => {
     }
 
     // 💡 ขั้นตอนที่ 2: รันตรรกะการตรวจสอบสิทธิ์ (เฉพาะเมื่อเป็น API)
-    const token = getCookie(event, 'authToken');
-
-    // console.log("Auhten", token);
-    // console.log(event.path);
+    const accessToken = getCookie(event, 'access_token');
 
     try {
-        if (token) {
+        if (accessToken) {
             // อ่านค่า Token และถอดรหัส
-            const decodedToken: JwtPayload = jwtDecode(token);
+            const accessTokenDecode: JwtPayload = jwtDecode(accessToken);
             const currentTime = Date.now() / 1000;
 
-            if (decodedToken.exp && decodedToken.exp < currentTime) {
+            if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
                 // ตรวจสอบว่า Token หมดอายุหรือไม่
                 // และถ้าหมดอายุ, ให้ลบ Cookie และให้คืนสถานะ Unauthorized
-                deleteCookie(event, 'authToken');
+                deleteCookie(event, 'access_token');
                 setResponseStatus(event, 401);
                 return {
                     error: true,
@@ -51,19 +48,19 @@ export default defineEventHandler(async (event) => {
         } else {
             // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
             // By pass this part to allow public API access
-            // setResponseStatus(event, 401);
-            // return {
-            //     error: true,
-            //     url: getCurrentUrl(),
-            //     statusCode: 401,
-            //     statusMessage: 'Unauthorized',
-            //     message: 'Unauthorized: No token provided',
-            // };
+            setResponseStatus(event, 401);
+            return {
+                error: true,
+                url: getCurrentUrl(),
+                statusCode: 401,
+                statusMessage: 'Unauthorized',
+                message: 'Unauthorized: No token provided',
+            };
         }
     } catch (error: unknown) {
         // ถ้าเกิดข้อผิดพลาดในการถอดรหัส Token
         // ให้ลบ Cookie และให้คืนสถานะ Unauthorized
-        deleteCookie(event, 'authToken');
+        deleteCookie(event, 'access_token');
         setResponseStatus(event, 401);
         return {
             error: true,
