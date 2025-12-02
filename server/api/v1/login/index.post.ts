@@ -2,6 +2,7 @@
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
+import { generateTokens } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 import { verifyPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
@@ -30,9 +31,9 @@ export default defineEventHandler(async (event) => {
 
         if (!findingUser) {
             throw createError({
-                statusCode: 404,
-                statusMessage: "Not Found",
-                message: 'User not found'
+                statusCode: 401,
+                statusMessage: "Unauthorized",
+                message: 'username or password is incorrect'
             });
         }
 
@@ -46,21 +47,26 @@ export default defineEventHandler(async (event) => {
             throw createError({
                 statusCode: 401,
                 statusMessage: "Unauthorized",
-                message: 'Invalid password'
+                message: 'username or password is incorrect'
             });
         }
 
         // เอา password ออกก่อนส่ง response
         const { password, ...userWithoutPassword } = findingUser;
-        
+
         const transformedUser = {
             ...userWithoutPassword,
             role: randomRoles[Math.floor(Math.random() * randomRoles.length)]
         };
 
+        const { accessToken, refreshToken, refreshTokenId } = generateTokens(
+            transformedUser.id,
+            transformedUser.role
+        );
+
         return responseSuccess({
-            refreshToken: 'dummy-refresh-token',
-            accacessToken: 'dummy-access-token',
+            refreshToken: refreshToken,
+            accacessToken: accessToken,
             user: transformedUser
         }, 'User logged in successfully')
     } catch (error: unknown) {
