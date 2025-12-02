@@ -1,69 +1,64 @@
 // server/middleware/auth.ts
 
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { getCookie, deleteCookie } from 'h3';
+import { getCookie, deleteCookie, setResponseStatus } from 'h3';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
 const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/refresh'];
 
-export default defineEventHandler(async (event) => {
-    const getCurrentUrl = () => getRequestURL(event).href;
+// Helper function to create the standard unauthorized response object
+const createUnauthorizedResponse = (event: any, message: string) => {
+    // Ensure the token is removed if there was an issue (invalid/expired)
+    deleteCookie(event, 'access_token');
 
-    // ตรวจสอบว่าเป็นการเรียกใช้งานจากฝั่ง Client หรือไม่
-    // ถ้าเป็น Client ให้ข้ามการตรวจสอบสิทธิ์นี้ไป
-    if (!import.meta.client) {
+    // Set the HTTP status code
+    setResponseStatus(event, 401);
+
+    // Get the current URL for the response payload
+    const currentUrl = getRequestURL(event).href;
+
+    return {
+        error: true,
+        url: currentUrl,
+        statusCode: 401,
+        statusMessage: 'Unauthorized',
+        message: `Unauthorized: ${message}`,
+    };
+};
+
+export default defineEventHandler(async (event) => {
+    const path = event.path;
+
+    // ถ้าไม่ใช่ API ให้ข้ามการตรวจสอบสิทธิ์
+    if (!path.startsWith('/api/')) {
         return;
     }
 
-    // Optional: ถ้าเป็น API ที่อนุญาตให้เข้าถึงโดยไม่ต้องมี Token ให้ผ่านไป
-    if (PUBLIC_API_PREFIXES.some(prefix => event.path.startsWith(prefix))) {
+    // ถ้าเป็น API ที่อนุญาตให้เข้าถึงโดยไม่ต้องมี Token ให้ผ่านไป
+    if (PUBLIC_API_PREFIXES.some(prefix => path.startsWith(prefix))) {
         return;
     }
 
     // ดึง Access Token จาก Cookie
     const accessToken = getCookie(event, 'access_token');
 
-    try {
-        if (accessToken) {
-            // อ่านค่า Token และถอดรหัส
-            const accessTokenDecode: JwtPayload = jwtDecode(accessToken);
-            const currentTime = Date.now() / 1000;
+    if (!accessToken) {
+        // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
+        return createUnauthorizedResponse(event, 'No token provided');
+    }
 
-            if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
-                // ตรวจสอบว่า Token หมดอายุหรือไม่
-                // และถ้าหมดอายุ, ให้ลบ Cookie และให้คืนสถานะ Unauthorized
-                deleteCookie(event, 'access_token');
-                setResponseStatus(event, 401);
-                return {
-                    error: true,
-                    url: getCurrentUrl(),
-                    statusCode: 401,
-                    statusMessage: 'Unauthorized',
-                    message: 'Unauthorized: Token expired',
-                };
-            }
-        } else {
-            // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
-            setResponseStatus(event, 401);
-            return {
-                error: true,
-                url: getCurrentUrl(),
-                statusCode: 401,
-                statusMessage: 'Unauthorized',
-                message: 'Unauthorized: No token provided',
-            };
+    try {
+        // อ่านค่า Token และถอดรหัส
+        const accessTokenDecode: JwtPayload = jwtDecode(accessToken);
+        const currentTime = Date.now() / 1000;
+
+        if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
+            // ตรวจสอบว่า Token หมดอายุหรือไม่
+            // และถ้าหมดอายุ, ให้ลบ Cookie และให้คืนสถานะ Unauthorized
+            return createUnauthorizedResponse(event, 'Token expired');
         }
     } catch (error: unknown) {
-        // ถ้าเกิดข้อผิดพลาดในการถอดรหัส Token
-        // ให้ลบ Cookie และให้คืนสถานะ Unauthorized
-        deleteCookie(event, 'access_token');
-        setResponseStatus(event, 401);
-        return {
-            error: true,
-            url: getCurrentUrl(),
-            statusCode: 401,
-            statusMessage: 'Unauthorized',
-            message: 'Unauthorized: Invalid token',
-        };
+        // เกิดข้อผิดพลาด ให้ลบ Cookie และให้คืนสถานะ Unauthorized
+        return createUnauthorizedResponse(event, 'Invalid token format');
     }
 });
