@@ -7,8 +7,6 @@ import { randomRoles } from '~~/constants/roles'
 import { verifyPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
 
-import { defineEventHandler, setCookie } from 'h3';
-import parseDuration from 'parse-duration';
 import { z } from 'zod';
 
 const userSchema = z.object({

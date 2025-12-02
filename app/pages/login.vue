@@ -7,13 +7,14 @@ definePageMeta({
 });
 
 const toast = useToast();
+const loading = ref(false);
 
 const fields: AuthFormField[] = [
   {
-    name: "email",
-    type: "email",
-    label: "Email",
-    placeholder: "Enter your email",
+    name: "username",
+    label: "Username",
+    type: "text",
+    placeholder: "Enter your username",
     required: true,
   },
   {
@@ -48,15 +49,38 @@ const providers = [
 ];
 
 const schema = z.object({
-  email: z.email("Invalid email"),
-  password: z.string("Password is required").min(8, "Must be at least 8 characters"),
+  username: z
+    .string("Username is required")
+    .min(3, "Username must be at least 3 characters"),
+  password: z
+    .string("Password is required")
+    .min(6, "Password must be at least 6 characters"),
 });
 
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
-  // console.log("Submitted", payload);
-  await navigateTo('/settings/users'); // ไม่ต้อง reload
+  loading.value = true;
+  try {
+    await $fetch("/api/v1/auth/login", {
+      method: "POST",
+      body: {
+        username: payload.data.username,
+        password: payload.data.password,
+      },
+    });
+
+    toast.add({ title: "Login successful!" });
+    await navigateTo("/settings/users");
+  } catch (error: any) {
+    toast.add({
+      title: "Login Failed",
+      description: error.data?.message || "An unexpected error occurred.",
+      color: "error",
+    });
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -70,6 +94,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         icon="i-lucide-user"
         :fields="fields"
         :providers="providers"
+        :loading="loading"
         @submit="onSubmit"
       />
     </UPageCard>

@@ -1,7 +1,7 @@
 // server/middleware/auth.ts
 
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { defineEventHandler, getCookie, deleteCookie } from 'h3';
+import { getCookie, deleteCookie } from 'h3';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
 const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/refresh'];
