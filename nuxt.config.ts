@@ -89,6 +89,16 @@ export default defineNuxtConfig({
 
   // ตั้งค่า Rate Limiting เฉพาะ API routes
   routeRules: {
+    '/api/v1/auth/login': {
+      security: {
+        rateLimiter: {
+          tokensPerInterval: 10,   // Limit to 10 requests
+          interval: 60000,         // per 60 seconds (1 minute)
+          throwError: true         // Throw a 429 error when exceeded
+        }
+      }
+    },
+
     '/api/**': {
       security: {
         rateLimiter: {
