@@ -16,6 +16,7 @@ const fields: AuthFormField[] = [
     type: "text",
     placeholder: "Enter your username",
     required: true,
+    defaultValue: "antfu"
   },
   {
     name: "password",
@@ -23,11 +24,13 @@ const fields: AuthFormField[] = [
     type: "password",
     placeholder: "Enter your password",
     required: true,
+    defaultValue: "123456789"
   },
   {
     name: "remember",
     label: "Remember me",
     type: "checkbox",
+    defaultValue: true
   },
 ];
 
@@ -55,6 +58,7 @@ const schema = z.object({
   password: z
     .string("Password is required")
     .min(6, "Password must be at least 6 characters"),
+  remember: z.boolean().optional(),
 });
 
 type Schema = z.output<typeof schema>;
@@ -90,13 +94,20 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       <UAuthForm
         :schema="schema"
         title="Login"
-        description="Enter your credentials to access your account."
+        description="Enter your credentials"
         icon="i-lucide-user"
         :fields="fields"
         :providers="providers"
+        separator="Providers"
         :loading="loading"
         @submit="onSubmit"
-      />
+      >
+        <template #password-hint>
+          <ULink to="#" class="text-primary font-medium" tabindex="-1"
+            >Forgot password?</ULink
+          >
+        </template>
+      </UAuthForm>
     </UPageCard>
   </div>
 </template>
