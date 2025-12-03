@@ -9,7 +9,7 @@ const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/refresh'];
 // Helper function to create the standard unauthorized response object
 const createUnauthorizedResponse = (event: any, message: string) => {
     // Ensure the token is removed if there was an issue (invalid/expired)
-    deleteCookie(event, 'access_token');
+    // deleteCookie(event, 'access_token');
 
     // Set the HTTP status code
     setResponseStatus(event, 401);

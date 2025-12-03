@@ -47,7 +47,7 @@ async function refreshAccessToken(): Promise<boolean> {
         // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมดและไปหน้า login
         accessToken.value = null;
         refreshToken.value = null;
-        
+
         return false;
     }
 }
@@ -60,7 +60,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const redirectToLogin = () => {
         accessToken.value = null;
         refreshToken.value = null;
-        return navigateTo('/login');
+        return navigateTo("/login");
     };
 
     try {
