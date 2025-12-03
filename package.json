@@ -3,13 +3,13 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "npm install && npx prisma generate && nuxt build",
-    "dev": "nuxt dev",
+    "build": "bun install && bunx prisma generate && nuxi build",
+    "dev": "bun --bun nuxi dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "seed": "tsx ./prisma/seed.ts",
-    "start:prod": "cross-env NODE_ENV=production node .output/server/index.mjs"
+    "start:prod": "cross-env node -r dotenv/config .output/server/index.mjs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.75",
