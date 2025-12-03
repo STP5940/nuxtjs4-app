@@ -134,6 +134,8 @@ const groups = computed(() => [{
 
     <UDashboardSearch :groups="groups" />
 
+    <!-- <CookieConsentToast /> -->
+
     <slot />
 
     <NotificationsSlideover />
