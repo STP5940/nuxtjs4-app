@@ -52,17 +52,14 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Profile",
       icon: "i-lucide-user",
-      class: "cursor-pointer",
     },
     {
       label: "Billing",
       icon: "i-lucide-credit-card",
-      class: "cursor-pointer",
     },
     {
       label: "Settings",
       icon: "i-lucide-settings",
-      class: "cursor-pointer",
       to: "/settings",
     },
   ],
@@ -70,11 +67,9 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Theme",
       icon: "i-lucide-palette",
-      class: "cursor-pointer",
       children: [
         {
           label: "Primary",
-          class: "cursor-pointer",
           slot: "chip",
           chip: appConfig.ui.colors.primary,
           content: {
@@ -97,7 +92,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
         },
         {
           label: "Neutral",
-          class: "cursor-pointer",
           slot: "chip",
           chip:
             appConfig.ui.colors.neutral === "neutral"
@@ -126,7 +120,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Appearance",
       icon: "i-lucide-sun-moon",
-      class: "cursor-pointer",
       children: [
         {
           label: "Light",
@@ -162,7 +155,6 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Log out",
       icon: "i-lucide-log-out",
-      class: "cursor-pointer",
       onSelect: handleLogout,
     },
   ],
@@ -180,7 +172,6 @@ const handleLogout = async function () {
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-    class="cursor-pointer"
   >
     <UButton
       v-bind="{

@@ -8,7 +8,6 @@ defineProps<{
 const teams = ref([
   {
     label: "Nuxt",
-    class: "cursor-pointer",
     avatar: {
       src: "https://github.com/nuxt.png?size=128",
       alt: "Nuxt",
@@ -16,7 +15,6 @@ const teams = ref([
   },
   {
     label: "NuxtHub",
-    class: "cursor-pointer",
     avatar: {
       src: "https://github.com/nuxt-hub.png?size=128",
       alt: "NuxtHub",
@@ -24,7 +22,6 @@ const teams = ref([
   },
   {
     label: "NuxtLabs",
-    class: "cursor-pointer",
     avatar: {
       src: "https://github.com/nuxtlabs.png?size=128",
       alt: "NuxtLabs",
@@ -45,12 +42,10 @@ const items = computed<DropdownMenuItem[][]>(() => {
       {
         label: "Create team",
         icon: "i-lucide-circle-plus",
-        class: "cursor-pointer",
       },
       {
         label: "Manage teams",
         icon: "i-lucide-cog",
-        class: "cursor-pointer",
       },
     ],
   ];
@@ -62,7 +57,6 @@ const items = computed<DropdownMenuItem[][]>(() => {
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-40' : 'w-(--reka-dropdown-menu-trigger-width)' }"
-    class="cursor-pointer"
   >
     <UButton
       v-bind="{

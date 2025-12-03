@@ -38,7 +38,6 @@ const providers = [
   {
     label: "Google",
     icon: "i-simple-icons-google",
-    class: "cursor-pointer",
     onClick: () => {
       toast.add({ title: "Google", description: "Login with Google" });
     },
@@ -46,7 +45,6 @@ const providers = [
   {
     label: "GitHub",
     icon: "i-simple-icons-github",
-    class: "cursor-pointer",
     onClick: () => {
       toast.add({ title: "GitHub", description: "Login with GitHub" });
     },
@@ -104,7 +102,6 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
         :loading="loading"
         :submit="{
           label: 'Submit',
-          class: 'cursor-pointer',
         }"
         @submit="onSubmit"
       >

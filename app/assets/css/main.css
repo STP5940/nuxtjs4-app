@@ -1,5 +1,11 @@
+/* app/assets/css/main.css */
+
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+button:not([disabled]) {
+  cursor: pointer;
+}
 
 :root {
   --font-sans: 'Public Sans', sans-serif;

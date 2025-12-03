@@ -131,7 +131,7 @@ onMounted(async () => {
       <template #default="{ collapsed }">
         <UDashboardSearchButton
           :collapsed="collapsed"
-          class="bg-transparent ring-default cursor-pointer"
+          class="bg-transparent ring-default"
         />
 
         <UNavigationMenu

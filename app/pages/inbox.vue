@@ -1,54 +1,59 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { breakpointsTailwind } from '@vueuse/core'
-import type { Mail } from '~/types'
+import { computed, ref, watch } from "vue";
+import { breakpointsTailwind } from "@vueuse/core";
+import type { Mail } from "~/types";
 
 definePageMeta({
   middleware: ["auth"],
 });
 
-const tabItems = [{
-  label: 'All',
-  value: 'all'
-}, {
-  label: 'Unread',
-  value: 'unread'
-}]
-const selectedTab = ref('all')
+const tabItems = [
+  {
+    label: "All",
+    value: "all",
+    icon: "i-lucide-message-square-text",
+  },
+  {
+    label: "Unread",
+    value: "unread",
+    icon: "i-lucide-mail",
+  },
+];
+const selectedTab = ref("all");
 
-const { data: mails } = await useFetch<Mail[]>('/api/mails', { default: () => [] })
+const { data: mails } = await useFetch<Mail[]>("/api/mails", { default: () => [] });
 
 // Filter mails based on the selected tab
 const filteredMails = computed(() => {
-  if (selectedTab.value === 'unread') {
-    return mails.value.filter(mail => !!mail.unread)
+  if (selectedTab.value === "unread") {
+    return mails.value.filter((mail) => !!mail.unread);
   }
 
-  return mails.value
-})
+  return mails.value;
+});
 
-const selectedMail = ref<Mail | null>()
+const selectedMail = ref<Mail | null>();
 
 const isMailPanelOpen = computed({
   get() {
-    return !!selectedMail.value
+    return !!selectedMail.value;
   },
   set(value: boolean) {
     if (!value) {
-      selectedMail.value = null
+      selectedMail.value = null;
     }
-  }
-})
+  },
+});
 
 // Reset selected mail if it's not in the filtered mails
 watch(filteredMails, () => {
-  if (!filteredMails.value.find(mail => mail.id === selectedMail.value?.id)) {
-    selectedMail.value = null
+  if (!filteredMails.value.find((mail) => mail.id === selectedMail.value?.id)) {
+    selectedMail.value = null;
   }
-})
+});
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const isMobile = breakpoints.smaller('lg')
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller("lg");
 </script>
 
 <template>
@@ -87,7 +92,11 @@ const isMobile = breakpoints.smaller('lg')
   <ClientOnly>
     <USlideover v-if="isMobile" v-model:open="isMailPanelOpen">
       <template #content>
-        <InboxMail v-if="selectedMail" :mail="selectedMail" @close="selectedMail = null" />
+        <InboxMail
+          v-if="selectedMail"
+          :mail="selectedMail"
+          @close="selectedMail = null"
+        />
       </template>
     </USlideover>
   </ClientOnly>

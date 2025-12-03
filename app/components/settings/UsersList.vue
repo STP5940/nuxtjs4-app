@@ -38,7 +38,7 @@ const items = [{
             {{ user.name }}
           </p>
           <p class="text-muted truncate">
-            {{ user.email }}
+            {{ user.username }}
           </p>
         </div>
       </div>
