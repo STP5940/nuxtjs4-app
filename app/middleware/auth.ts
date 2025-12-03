@@ -80,7 +80,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 // ถ้า Access Token หมดอายุ ให้ลองขอ Access Token ใหม่
                 const refreshSuccess = await refreshAccessToken();
 
-                if (refreshSuccess) {
+                if (!refreshSuccess) {
+                    // ถ้า refresh ไม่สำเร็จ
                     return redirectToLogin();
                 }
             }

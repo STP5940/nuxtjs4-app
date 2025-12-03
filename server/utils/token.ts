@@ -118,6 +118,8 @@ export function setTokenCookies(
     accessToken: string, 
     refreshToken: string
 ) {
+    // sameSite: 'lax' or 'strict' or 'none' (ขึ้นกับความต้องการของแอป)
+
     // 1. จัดการ Refresh Token Cookie
     const DEFAULT_REFRESH_TOKEN_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000;
     const refreshDurationString: string = process.env.REFRESH_TOKEN_MAX_AGE || '7d';
@@ -127,7 +129,7 @@ export function setTokenCookies(
     setCookie(event, 'refresh_token', refreshToken, {
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        sameSite: 'strict',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
         maxAge: REFRESH_TOKEN_MAX_AGE_MS / 1000, // เปลี่ยนเป็นวินาที
     })
 
@@ -140,7 +142,7 @@ export function setTokenCookies(
     setCookie(event, 'access_token', accessToken, {
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        sameSite: 'strict',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
         maxAge: ACCESS_TOKEN_MAX_AGE_MS / 1000,  // เปลี่ยนเป็นวินาที
     })
 }

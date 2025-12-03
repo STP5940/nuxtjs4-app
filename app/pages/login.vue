@@ -3,6 +3,7 @@ import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 import * as z from "zod";
 
 definePageMeta({
+  middleware: ["guest"],
   layout: "blank",
 });
 
