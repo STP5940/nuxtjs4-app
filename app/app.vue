@@ -1,7 +1,12 @@
 <script setup lang="ts">
+import { breakpointsTailwind } from "@vueuse/core";
+
 const colorMode = useColorMode();
 
 const color = computed(() => (colorMode.value === "dark" ? "#1b1718" : "white"));
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const isMobile = breakpoints.smaller("lg");
 
 useHead({
   meta: [
@@ -31,7 +36,13 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
+  <UApp
+    :toaster="{
+      position: isMobile ? 'top-right' : 'bottom-right',
+      max: 3,
+      expand: false,
+    }"
+  >
     <NuxtRouteAnnouncer />
 
     <NuxtLayout>
