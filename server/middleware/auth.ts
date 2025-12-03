@@ -1,16 +1,13 @@
 // server/middleware/auth.ts
 
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { getCookie, deleteCookie, setResponseStatus } from 'h3';
+import { getCookie, setResponseStatus } from 'h3';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
 const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/refresh'];
 
 // Helper function to create the standard unauthorized response object
 const createUnauthorizedResponse = (event: any, message: string) => {
-    // Ensure the token is removed if there was an issue (invalid/expired)
-    // deleteCookie(event, 'access_token');
-
     // Set the HTTP status code
     setResponseStatus(event, 401);
 
@@ -53,12 +50,11 @@ export default defineEventHandler(async (event) => {
         const currentTime = Date.now() / 1000;
 
         if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
-            // ตรวจสอบว่า Token หมดอายุหรือไม่
-            // และถ้าหมดอายุ, ให้ลบ Cookie และให้คืนสถานะ Unauthorized
+            // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
             return createUnauthorizedResponse(event, 'Token expired');
         }
     } catch (error: unknown) {
-        // เกิดข้อผิดพลาด ให้ลบ Cookie และให้คืนสถานะ Unauthorized
+        // เกิดข้อผิดพลาด ให้คืนสถานะ Unauthorized
         return createUnauthorizedResponse(event, 'Invalid token format');
     }
 });

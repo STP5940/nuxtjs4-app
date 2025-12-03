@@ -75,11 +75,11 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       },
     });
 
-    toast.add({
-      title: "Login Successful",
-      description: "You have been logged in successfully.",
-      color: "success",
-    });
+    // toast.add({
+    //   title: "Login Successful",
+    //   description: "You have been logged in successfully.",
+    //   color: "success",
+    // });
     await navigateTo("/");
   } catch (error: any) {
     toast.add({
