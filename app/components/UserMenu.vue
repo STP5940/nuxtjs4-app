@@ -52,14 +52,17 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Profile",
       icon: "i-lucide-user",
+      class: "cursor-pointer",
     },
     {
       label: "Billing",
       icon: "i-lucide-credit-card",
+      class: "cursor-pointer",
     },
     {
       label: "Settings",
       icon: "i-lucide-settings",
+      class: "cursor-pointer",
       to: "/settings",
     },
   ],
@@ -67,9 +70,11 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Theme",
       icon: "i-lucide-palette",
+      class: "cursor-pointer",
       children: [
         {
           label: "Primary",
+          class: "cursor-pointer",
           slot: "chip",
           chip: appConfig.ui.colors.primary,
           content: {
@@ -78,6 +83,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
           },
           children: colors.map((color) => ({
             label: color,
+            class: "cursor-pointer",
             chip: color,
             slot: "chip",
             checked: appConfig.ui.colors.primary === color,
@@ -91,6 +97,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
         },
         {
           label: "Neutral",
+          class: "cursor-pointer",
           slot: "chip",
           chip:
             appConfig.ui.colors.neutral === "neutral"
@@ -102,6 +109,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
           },
           children: neutrals.map((color) => ({
             label: color,
+            class: "cursor-pointer",
             chip: color === "neutral" ? "old-neutral" : color,
             slot: "chip",
             type: "checkbox",
@@ -118,10 +126,12 @@ const items = computed<DropdownMenuItem[][]>(() => [
     {
       label: "Appearance",
       icon: "i-lucide-sun-moon",
+      class: "cursor-pointer",
       children: [
         {
           label: "Light",
           icon: "i-lucide-sun",
+          class: "cursor-pointer",
           type: "checkbox",
           checked: colorMode.value === "light",
           onSelect(e: Event) {
@@ -133,6 +143,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
         {
           label: "Dark",
           icon: "i-lucide-moon",
+          class: "cursor-pointer",
           type: "checkbox",
           checked: colorMode.value === "dark",
           onUpdateChecked(checked: boolean) {
@@ -149,63 +160,9 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
   [
     {
-      label: "Templates",
-      icon: "i-lucide-layout-template",
-      children: [
-        {
-          label: "Starter",
-          to: "https://starter-template.nuxt.dev/",
-        },
-        {
-          label: "Landing",
-          to: "https://landing-template.nuxt.dev/",
-        },
-        {
-          label: "Docs",
-          to: "https://docs-template.nuxt.dev/",
-        },
-        {
-          label: "SaaS",
-          to: "https://saas-template.nuxt.dev/",
-        },
-        {
-          label: "Dashboard",
-          to: "https://dashboard-template.nuxt.dev/",
-          color: "primary",
-          checked: true,
-          type: "checkbox",
-        },
-        {
-          label: "Chat",
-          to: "https://chat-template.nuxt.dev/",
-        },
-        {
-          label: "Portfolio",
-          to: "https://portfolio-template.nuxt.dev/",
-        },
-        {
-          label: "Changelog",
-          to: "https://changelog-template.nuxt.dev/",
-        },
-      ],
-    },
-  ],
-  [
-    {
-      label: "Documentation",
-      icon: "i-lucide-book-open",
-      to: "https://ui.nuxt.com/docs/getting-started/installation/nuxt",
-      target: "_blank",
-    },
-    {
-      label: "GitHub repository",
-      icon: "i-simple-icons-github",
-      to: "https://github.com/nuxt-ui-templates/dashboard",
-      target: "_blank",
-    },
-    {
       label: "Log out",
       icon: "i-lucide-log-out",
+      class: "cursor-pointer",
       onSelect: handleLogout,
     },
   ],
@@ -223,6 +180,7 @@ const handleLogout = async function () {
     :items="items"
     :content="{ align: 'center', collisionPadding: 12 }"
     :ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
+    class="cursor-pointer"
   >
     <UButton
       v-bind="{

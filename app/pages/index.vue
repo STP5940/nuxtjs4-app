@@ -31,7 +31,7 @@ const period = ref<Period>('daily')
     <template #header>
       <UDashboardNavbar title="Home" :ui="{ right: 'gap-3' }">
         <template #leading>
-          <UDashboardSidebarCollapse />
+          <UDashboardSidebarCollapse class="cursor-pointer" />
         </template>
 
         <template #right>
@@ -39,6 +39,7 @@ const period = ref<Period>('daily')
             <UButton
               color="neutral"
               variant="ghost"
+              class="cursor-pointer"
               square
               @click="isNotificationsSlideoverOpen = true"
             >
@@ -49,7 +50,7 @@ const period = ref<Period>('daily')
           </UTooltip>
 
           <UDropdownMenu :items="items">
-            <UButton icon="i-lucide-plus" size="md" class="rounded-full" />
+            <UButton icon="i-lucide-plus" size="md" class="rounded-full cursor-pointer" />
           </UDropdownMenu>
         </template>
       </UDashboardNavbar>

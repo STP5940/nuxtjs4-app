@@ -11,6 +11,7 @@ const { data: notifications } = await useFetch<Notification[]>('/api/notificatio
   <USlideover
     v-model:open="isNotificationsSlideoverOpen"
     title="Notifications"
+    :close="{ class: 'cursor-pointer' }"
   >
     <template #body>
       <NuxtLink

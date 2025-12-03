@@ -16,7 +16,7 @@ const fields: AuthFormField[] = [
     type: "text",
     placeholder: "Enter your username",
     required: true,
-    defaultValue: "antfu"
+    defaultValue: "antfu",
   },
   {
     name: "password",
@@ -24,13 +24,13 @@ const fields: AuthFormField[] = [
     type: "password",
     placeholder: "Enter your password",
     required: true,
-    defaultValue: "123456789"
+    defaultValue: "123456789",
   },
   {
     name: "remember",
     label: "Remember me",
     type: "checkbox",
-    defaultValue: true
+    defaultValue: true,
   },
 ];
 
@@ -38,6 +38,7 @@ const providers = [
   {
     label: "Google",
     icon: "i-simple-icons-google",
+    class: "cursor-pointer",
     onClick: () => {
       toast.add({ title: "Google", description: "Login with Google" });
     },
@@ -45,6 +46,7 @@ const providers = [
   {
     label: "GitHub",
     icon: "i-simple-icons-github",
+    class: "cursor-pointer",
     onClick: () => {
       toast.add({ title: "GitHub", description: "Login with GitHub" });
     },
@@ -92,14 +94,18 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
   <div class="flex flex-col items-center justify-start gap-4 p-4 min-h-screen pt-20">
     <UPageCard class="w-full max-w-md">
       <UAuthForm
-        :schema="schema"
         title="Login"
         description="Enter your credentials"
         icon="i-lucide-user"
+        :schema="schema"
         :fields="fields"
         :providers="providers"
         separator="Providers"
         :loading="loading"
+        :submit="{
+          label: 'Submit',
+          class: 'cursor-pointer',
+        }"
         @submit="onSubmit"
       >
         <template #password-hint>
