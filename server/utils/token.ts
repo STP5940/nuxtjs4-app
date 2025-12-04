@@ -14,15 +14,15 @@ type UserRole = typeof randomRoles[number];
 // ----------------------------------------------------------------------
 
 // Payload สำหรับ Access Token (อายุสั้น, ใช้เรียก API)
-interface AccessTokenPayload extends JwtPayload {
-    userId: number;
+export interface AccessTokenPayload extends JwtPayload {
+    userId: String;
     role: UserRole;
 }
 
-// Payload สำหรับ Refresh Token (อายุยาว, ต้องมี tokenId สำหรับ Revocation)
-interface RefreshTokenPayload extends JwtPayload {
-    userId: number;
-    tokenId: string; // ใช้สำหรับอ้างอิงในฐานข้อมูล
+// Payload สำหรับ Refresh Token (อายุยาว, ต้องมี jti สำหรับ Revocation)
+export interface RefreshTokenPayload extends JwtPayload {
+    userId: String;
+    jti: string; // ใช้สำหรับอ้างอิงในฐานข้อมูล
 }
 
 // ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
  * @param role บทบาทของผู้ใช้
  * @returns Object ที่ประกอบด้วย Tokens และ ID สำหรับบันทึกใน DB
  */
-export function generateTokens(userId: number, role: UserRole) {
+export function generateTokens(userId: String, role: UserRole) {
 
     // ในการผลิตจริง ควรใช้ uuidv4() เพื่อสร้าง ID ที่ไม่ซ้ำกัน
     const refreshTokenId = uuidv4();
@@ -67,7 +67,7 @@ export function generateTokens(userId: number, role: UserRole) {
     // 2. สร้าง Refresh Token (อายุ 7 วัน)
     const refreshTokenPayload: RefreshTokenPayload = {
         userId,
-        tokenId: refreshTokenId, // ผูก ID เข้ากับ Token
+        jti: refreshTokenId, // ใช้สำหรับอ้างอิงในฐานข้อมูล
     };
     const refreshToken = jwt.sign(
         refreshTokenPayload,
@@ -98,13 +98,37 @@ export function decodeRefreshToken(token: string): RefreshTokenPayload | null {
         return payload;
     } catch (error) {
         // หากเกิด error แสดงว่า token ไม่ถูกต้อง
-        // console.error("Invalid or expired refresh token:", error);
+        console.error("❌ Invalid or expired refresh token");
         return null;
     }
 }
 
 // ----------------------------------------------------------------------
-// 5. ฟังก์ชันกำหนด Cookie
+// 5. ฟังก์ชันดึงค่า Max Age ของ Tokens
+// ----------------------------------------------------------------------
+
+/**
+ * ดึงค่า Max Age ของ Refresh Token จาก Environment Variables (ในหน่วยมิลลิวินาที)
+ * @returns Max Age ของ Refresh Token ในหน่วยมิลลิวินาที
+ */
+export function getRefreshTokenMaxAge(): number {
+    const DEFAULT_REFRESH_TOKEN_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000; // 7 days
+    const refreshDurationString: string = process.env.REFRESH_TOKEN_MAX_AGE || '7d';
+    return parseDuration(refreshDurationString) || DEFAULT_REFRESH_TOKEN_MAX_AGE_MS;
+}
+
+/**
+ * ดึงค่า Max Age ของ Access Token จาก Environment Variables (ในหน่วยมิลลิวินาที)
+ * @returns Max Age ของ Access Token ในหน่วยมิลลิวินาที
+ */
+export function getAccessTokenMaxAge(): number {
+    const DEFAULT_ACCESS_TOKEN_MAX_AGE_MS: number = 15 * 60 * 1000; // 15 minutes
+    const accessDurationString: string = process.env.ACCESS_TOKEN_MAX_AGE || '15m';
+    return parseDuration(accessDurationString) || DEFAULT_ACCESS_TOKEN_MAX_AGE_MS;
+}
+
+// ----------------------------------------------------------------------
+// 6. ฟังก์ชันกำหนด Cookie
 // ----------------------------------------------------------------------
 
 /**
@@ -114,16 +138,14 @@ export function decodeRefreshToken(token: string): RefreshTokenPayload | null {
  * @param refreshToken Refresh Token
  */
 export function setTokenCookies(
-    event: H3Event, 
-    accessToken: string, 
+    event: H3Event,
+    accessToken: string,
     refreshToken: string
 ) {
     // sameSite: 'lax' or 'strict' or 'none' (ขึ้นกับความต้องการของแอป)
 
     // 1. จัดการ Refresh Token Cookie
-    const DEFAULT_REFRESH_TOKEN_MAX_AGE_MS: number = 7 * 24 * 60 * 60 * 1000;
-    const refreshDurationString: string = process.env.REFRESH_TOKEN_MAX_AGE || '7d';
-    const REFRESH_TOKEN_MAX_AGE_MS: number = parseDuration(refreshDurationString) || DEFAULT_REFRESH_TOKEN_MAX_AGE_MS;
+    const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
 
     // กำหนด refresh token ใน cookie
     setCookie(event, 'refresh_token', refreshToken, {
@@ -134,9 +156,7 @@ export function setTokenCookies(
     })
 
     // 2. จัดการ Access Token Cookie
-    const DEFAULT_ACCESS_TOKEN_MAX_AGE_MS: number = 15 * 60 * 1000;
-    const accessDurationString: string = process.env.ACCESS_TOKEN_MAX_AGE || '15m';
-    const ACCESS_TOKEN_MAX_AGE_MS: number = parseDuration(accessDurationString) || DEFAULT_ACCESS_TOKEN_MAX_AGE_MS;
+    const ACCESS_TOKEN_MAX_AGE_MS = getAccessTokenMaxAge();
 
     // กำหนด access token ใน cookie
     setCookie(event, 'access_token', accessToken, {

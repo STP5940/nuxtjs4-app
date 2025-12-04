@@ -2,7 +2,7 @@
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
-import { generateTokens, setTokenCookies } from '~~/server/utils/token';
+import { generateTokens, setTokenCookies, getRefreshTokenMaxAge } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 import { verifyPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
@@ -64,7 +64,19 @@ export default defineEventHandler(async (event) => {
             transformedUser.role
         );
 
-        // กำหนด Token Cookies ให้ accessToken และ refreshToken     
+        const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
+
+        // เพิ่ม RefreshToken ลงในฐานข้อมูล
+        await prisma.refreshToken.create({
+            data: {
+                jti: refreshTokenId,
+                token: refreshToken,
+                userId: transformedUser.id,
+                expiresAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE_MS)
+            }
+        });
+
+        // กำหนด Token Cookies ให้ accessToken และ refreshToken
         setTokenCookies(event, accessToken, refreshToken)
 
         return responseSuccess({

@@ -25,13 +25,27 @@ generator client {
 }
 
 model Users {
-  id        Int       @id @default(autoincrement())
-  name      String
-  username  String    @unique
-  email     String
-  avatar    String?
-  password  String
-  createdAt DateTime
-  updatedAt DateTime?
-  deletedAt DateTime?
+  id            String         @id @default(uuid())
+  name          String
+  username      String         @unique
+  email         String
+  avatar        String?
+  password      String
+  createdAt     DateTime
+  updatedAt     DateTime?
+  deletedAt     DateTime?
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  token     String   @unique
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  userId    String
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

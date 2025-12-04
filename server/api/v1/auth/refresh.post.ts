@@ -2,7 +2,7 @@
 
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
-import { generateTokens, decodeRefreshToken, setTokenCookies } from '~~/server/utils/token';
+import { generateTokens, decodeRefreshToken, setTokenCookies, getRefreshTokenMaxAge, type RefreshTokenPayload } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 
 import prisma from '~~/lib/prisma'
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event)
         const validatedData = userSchema.parse(body)
 
-        const payload = decodeRefreshToken(validatedData.refreshToken)
+        const payload: RefreshTokenPayload | null = decodeRefreshToken(validatedData.refreshToken)
 
         if (!payload) {
             throw createError({
@@ -30,10 +30,38 @@ export default defineEventHandler(async (event) => {
             });
         }
 
+        // ค้นหา Token ในฐานข้อมูลและตรวจสอบว่าถูก Revoke หรือไม่
+        const dbRefreshToken = await prisma.refreshToken.findUnique({
+            where: {
+                jti: payload.jti,
+                revoked: false
+            }
+        });
+
+        if (!dbRefreshToken) {
+            throw createError({
+                statusCode: 401,
+                statusMessage: "Unauthorized",
+                message: 'Refresh token is invalid or has been revoked'
+            });
+        }
+
+        const currentTime = Date.now() / 1000;
+        const dbExpiresIn: number = Math.floor(dbRefreshToken.expiresAt.getTime() / 1000);
+
+        if (dbExpiresIn && dbExpiresIn < currentTime) {
+            // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
+            throw createError({
+                statusCode: 401,
+                statusMessage: "Unauthorized",
+                message: 'Refresh token has expired'
+            });
+        }
+
         // ค้นหาผู้ใช้จาก userId ใน token
         const findingUser = await prisma.users.findUnique({
             where: {
-                id: payload.userId
+                id: String(payload.userId)
             }
         })
 
@@ -57,6 +85,28 @@ export default defineEventHandler(async (event) => {
             transformedUser.id,
             transformedUser.role
         );
+
+        // เพิกถอน Token เก่า
+        await prisma.refreshToken.update({
+            where: {
+                jti: payload.jti
+            },
+            data: {
+                revoked: true
+            }
+        });
+
+        const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
+
+        // บันทึก Refresh Token ใหม่ลงในฐานข้อมูล
+        await prisma.refreshToken.create({
+            data: {
+                jti: refreshTokenId,
+                token: refreshToken,
+                userId: transformedUser.id,
+                expiresAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE_MS)
+            }
+        });
 
         // กำหนด Token Cookies ให้ accessToken และ refreshToken     
         setTokenCookies(event, accessToken, refreshToken)

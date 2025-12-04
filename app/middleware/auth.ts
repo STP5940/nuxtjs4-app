@@ -6,7 +6,7 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
  * ฟังก์ชันสำหรับขอ Access Token ใหม่โดยใช้ Refresh Token
  * @returns {Promise<boolean>} - true ถ้าการ Refresh สำเร็จ, false ถ้าไม่สำเร็จ
  */
-async function refreshAccessToken(): Promise<boolean> {
+export async function refreshAccessToken(): Promise<boolean> {
     const refreshToken = useCookie('refresh_token');
     const accessToken = useCookie('access_token');
 
@@ -42,8 +42,7 @@ async function refreshAccessToken(): Promise<boolean> {
         }
         return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
     } catch (refreshError) {
-        console.error("❌ Could not refresh token. Redirecting to login:", refreshError);
-
+        console.error("❌ Could not refresh token. Redirecting to login");
         // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมดและไปหน้า login
         accessToken.value = null;
         refreshToken.value = null;

@@ -5,6 +5,9 @@ async function seed() {
     await prisma.users.deleteMany({});
     console.log("Delete Users Success...");
 
+    // define a common password for all users
+    const passwordHash = await hashPassword("123456789");
+
     await prisma.users.createMany({
         data: [
             {
@@ -12,7 +15,7 @@ async function seed() {
                 username: 'antfu',
                 email: "antfu@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -20,7 +23,7 @@ async function seed() {
                 username: 'larbish',
                 email: "larbish@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/larbish",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -28,7 +31,7 @@ async function seed() {
                 username: 'benjamincanac',
                 email: "benjamincanac@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/benjamincanac",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -36,7 +39,7 @@ async function seed() {
                 username: 'celinedumerc',
                 email: "celinedumerc@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/celinedumerc",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -44,7 +47,7 @@ async function seed() {
                 username: 'danielroe',
                 email: "danielroe@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/danielroe",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -52,7 +55,7 @@ async function seed() {
                 username: 'farnabaz',
                 email: "farnabaz@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/farnabaz",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -60,7 +63,7 @@ async function seed() {
                 username: 'ferdinandcoumau',
                 email: "FerdinandCoumau@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/FerdinandCoumau",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -68,7 +71,7 @@ async function seed() {
                 username: 'hugorcd',
                 email: "hugorcd@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/hugorcd",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -76,7 +79,7 @@ async function seed() {
                 username: 'pi0',
                 email: "pi0@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/pi0",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -84,7 +87,7 @@ async function seed() {
                 username: 'sarahm19',
                 email: "SarahM19@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/SarahM19",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
             {
@@ -92,7 +95,7 @@ async function seed() {
                 username: 'atinux',
                 email: "Atinux@example.com",
                 avatar: "https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/atinux",
-                password: await hashPassword("123456789"),
+                password: passwordHash,
                 createdAt: new Date(),
             },
         ],
