@@ -1,6 +1,6 @@
 import { jwtDecode, type JwtPayload } from 'jwt-decode'
 
-// import { refreshAccessToken } from '~/middleware/auth'
+import { refreshAccessToken } from '~/middleware/auth'
 
 export default defineNuxtRouteMiddleware(async () => {
   const refreshToken = useCookie('refresh_token');
@@ -13,17 +13,14 @@ export default defineNuxtRouteMiddleware(async () => {
       const currentTime = Math.floor(Date.now() / 1000)
 
       if (decoded.exp && decoded.exp > currentTime) {
+
         // refresh token ยังไม่หมดอายุ ให้ลอง refresh access token ใหม่
-        // const refreshSuccess = await refreshAccessToken();
+        const refreshSuccess = await refreshAccessToken();
 
-        // if (refreshSuccess) {
-        // ถ้า refresh สำเร็จ ให้ไปที่หน้าแรก
-        return navigateTo("/");
-        // }
-
-        // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมด
-        // accessToken.value = null;
-        // refreshToken.value = null;
+        if (refreshSuccess) {
+          // ถ้า refresh สำเร็จ ให้ไปที่หน้าแรก
+          return navigateTo("/");
+        }
       }
     } catch (error) {
       // ถ้า decode ไม่สำเร็จ (token ไม่ถูกต้อง) ให้ปล่อยผ่าน

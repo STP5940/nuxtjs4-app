@@ -33,9 +33,6 @@ export async function refreshAccessToken(): Promise<boolean> {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
 
         if (newAccessToken && newRefreshToken) {
-
-            console.log("newRefreshToken: ", newRefreshToken);
-            
             // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
             refreshToken.value = newRefreshToken;
@@ -45,10 +42,13 @@ export async function refreshAccessToken(): Promise<boolean> {
         return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
     } catch (refreshError: unknown) {
         // refresh token ไม่มีจริงเพราะถูกลบออกไปแล้วจากฐานข้อมูล
-        // const status = (refreshError as any)?.response?.status;
-        // if (typeof status === 'number' && status === 403) {
-        refreshToken.value = null;
-        // }
+        const status = (refreshError as any)?.response?.status;
+
+        if (typeof status === 'number' && status === 403) {
+            console.log("❌ Kill Token: Refresh token is invalid/revoked (403).");
+            accessToken.value = null;
+            refreshToken.value = null;
+        }
 
         console.error("❌ Could not refresh token. Redirecting to login");
         return false;
@@ -61,16 +61,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
     const redirectToLogin = () => {
-        // accessToken.value = null;
-        // refreshToken.value = null;
         return navigateTo("/login");
     };
 
     try {
         // ถ้าไม่มี refresh token ให้ไปหน้า login
         if (!refreshToken.value) {
-            console.log("อ่าว refresh token หายยยย");
-            
             return redirectToLogin();
         }
 
