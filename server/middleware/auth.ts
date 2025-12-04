@@ -74,6 +74,6 @@ export default defineEventHandler(async (event) => {
         }
     } catch (error: unknown) {
         // เกิดข้อผิดพลาด ให้คืนสถานะ Unauthorized
-        return createUnauthorizedResponse(event, '❌ Invalid token format');
+        return createUnauthorizedResponse(event, 'Invalid token format');
     }
 });

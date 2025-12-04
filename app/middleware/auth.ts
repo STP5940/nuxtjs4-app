@@ -30,22 +30,27 @@ export async function refreshAccessToken(): Promise<boolean> {
             }
         });
 
+        // ตรวจสอบโครงสร้าง response ก่อนใช้งาน
+        if (response.error || !response.data) {
+            console.error("API response indicated an error or missing data:", response.message);
+            return false;
+        }
+
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
 
         if (newAccessToken && newRefreshToken) {
-            console.log("✅ Access Token refreshed successfully.");
-
             // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
             refreshToken.value = newRefreshToken;
             return true; // สำเร็จ
         }
+
         return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
     } catch (refreshError) {
         console.error("❌ Could not refresh token. Redirecting to login");
         // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมดและไปหน้า login
-        accessToken.value = null;
-        refreshToken.value = null;
+        // accessToken.value = null;
+        // refreshToken.value = null;
 
         return false;
     }
@@ -57,9 +62,9 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
     const redirectToLogin = () => {
-        accessToken.value = null;
-        refreshToken.value = null;
-        return navigateTo("/login");
+        // accessToken.value = null;
+        // refreshToken.value = null;
+        return navigateTo("/error");
     };
 
     try {
@@ -78,7 +83,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
                 // ถ้า Access Token หมดอายุ ให้ลองขอ Access Token ใหม่
                 const refreshSuccess = await refreshAccessToken();
-
                 if (!refreshSuccess) {
                     // ถ้า refresh ไม่สำเร็จ
                     return redirectToLogin();
@@ -90,7 +94,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         } else {
             // ให้ลองขอ Access Token ใหม่
             const refreshSuccess = await refreshAccessToken();
-
             if (!refreshSuccess) {
                 // ถ้า refresh ไม่สำเร็จ
                 return redirectToLogin();
