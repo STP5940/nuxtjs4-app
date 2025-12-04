@@ -56,21 +56,18 @@ export async function refreshAccessToken(): Promise<boolean> {
 }
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    const router = useRouter();
-
     const refreshToken = useCookie('refresh_token');
     const accessToken = useCookie('access_token');
 
     // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
-    // const redirectToLogin = async () => {
-    //     router.push("/login");
-    //     return navigateTo("/login");
-    // };
+    const redirectToLogin = async () => {
+        return navigateTo("/login", { replace: true });
+    };
 
     try {
         // ถ้าไม่มี refresh token ให้ไปหน้า login
         if (!refreshToken.value) {
-            return router.push("/login");
+            return redirectToLogin();
         }
 
         // ถ้ามี access token ให้ตรวจสอบต่อ
@@ -85,7 +82,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 const refreshSuccess = await refreshAccessToken();
                 if (!refreshSuccess) {
                     // ถ้า refresh ไม่สำเร็จ
-                    return router.push("/login");
+                    return redirectToLogin();
                 }
             }
 
@@ -96,12 +93,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             const refreshSuccess = await refreshAccessToken();
             if (!refreshSuccess) {
                 // ถ้า refresh ไม่สำเร็จ
-                return router.push("/login");
+                return redirectToLogin();
             }
         }
     } catch (accessError) {
         // ดักจับข้อผิดพลาดทั่วไป (เช่น jwtDecode ล้มเหลว)
         console.error("❌ Authentication process failed:", accessError);
-        return router.push("/login");
+        return redirectToLogin();
     }
 })
