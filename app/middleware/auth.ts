@@ -30,15 +30,12 @@ export async function refreshAccessToken(): Promise<boolean> {
             }
         });
 
-        // ตรวจสอบโครงสร้าง response ก่อนใช้งาน
-        if (response.error || !response.data) {
-            console.error("API response indicated an error or missing data:", response.message);
-            return false;
-        }
-
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
 
         if (newAccessToken && newRefreshToken) {
+
+            console.log("newRefreshToken: ", newRefreshToken);
+            
             // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
             refreshToken.value = newRefreshToken;
@@ -46,12 +43,14 @@ export async function refreshAccessToken(): Promise<boolean> {
         }
 
         return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
-    } catch (refreshError) {
-        console.error("❌ Could not refresh token. Redirecting to login");
-        // ถ้า refresh ไม่สำเร็จ ให้ลบ token ทั้งหมดและไปหน้า login
-        // accessToken.value = null;
-        // refreshToken.value = null;
+    } catch (refreshError: unknown) {
+        // refresh token ไม่มีจริงเพราะถูกลบออกไปแล้วจากฐานข้อมูล
+        // const status = (refreshError as any)?.response?.status;
+        // if (typeof status === 'number' && status === 403) {
+        refreshToken.value = null;
+        // }
 
+        console.error("❌ Could not refresh token. Redirecting to login");
         return false;
     }
 }
@@ -64,19 +63,21 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const redirectToLogin = () => {
         // accessToken.value = null;
         // refreshToken.value = null;
-        return navigateTo("/error");
+        return navigateTo("/login");
     };
 
     try {
         // ถ้าไม่มี refresh token ให้ไปหน้า login
         if (!refreshToken.value) {
+            console.log("อ่าว refresh token หายยยย");
+            
             return redirectToLogin();
         }
 
         // ถ้ามี access token ให้ตรวจสอบต่อ
         if (accessToken.value) {
             const accessTokenDecode: JwtPayload = jwtDecode(accessToken.value);
-            const currentTime = Date.now() / 1000;
+            const currentTime = Math.floor(Date.now() / 1000);
 
             // ถ้า access token หมดอายุ ให้ลองขอ Access Token ใหม่
             if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {

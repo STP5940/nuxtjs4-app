@@ -72,6 +72,7 @@ export default defineEventHandler(async (event) => {
                 jti: refreshTokenId,
                 token: refreshToken,
                 userId: transformedUser.id,
+                expiresIn: Math.floor((Date.now() + REFRESH_TOKEN_MAX_AGE_MS) / 1000),
                 expiresAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE_MS)
             }
         });

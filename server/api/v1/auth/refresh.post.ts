@@ -4,7 +4,6 @@ import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { generateTokens, decodeRefreshToken, setTokenCookies, getRefreshTokenMaxAge, type RefreshTokenPayload } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
-
 import prisma from '~~/lib/prisma'
 import { z } from 'zod';
 
@@ -36,18 +35,23 @@ export default defineEventHandler(async (event) => {
                 jti: payload.jti,
                 revoked: false
             }
-        });
+        });        
 
         if (!dbRefreshToken) {
+            // ไม่พบ Token หรือถูก Revoke แล้ว
             throw createError({
-                statusCode: 401,
-                statusMessage: "Unauthorized",
+                statusCode: 403,
+                statusMessage: "Forbidden",
                 message: 'Refresh token is invalid or has been revoked'
             });
-        }
+        }        
 
-        const currentTime = Date.now() / 1000;
-        const dbExpiresIn: number = Math.floor(dbRefreshToken.expiresAt.getTime() / 1000);
+        const currentTime = Math.floor(Date.now() / 1000);
+        const dbExpiresIn: number = dbRefreshToken.expiresIn;
+
+        // console.log('dbExpiresIn: ', dbExpiresIn);
+        // console.log('currentTime: ', currentTime);
+        
 
         if (dbExpiresIn && dbExpiresIn < currentTime) {
             // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
@@ -104,6 +108,7 @@ export default defineEventHandler(async (event) => {
                 jti: refreshTokenId,
                 token: refreshToken,
                 userId: transformedUser.id,
+                expiresIn: Math.floor((Date.now() + REFRESH_TOKEN_MAX_AGE_MS) / 1000),
                 expiresAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE_MS)
             }
         });

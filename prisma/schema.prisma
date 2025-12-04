@@ -41,6 +41,7 @@ model RefreshToken {
   id        String   @id @default(uuid())
   jti       String   @unique
   token     String   @unique
+  expiresIn Int
   revoked   Boolean  @default(false)
   createdAt DateTime @default(now())
   expiresAt DateTime

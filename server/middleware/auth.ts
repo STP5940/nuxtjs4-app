@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     // if (refreshToken) {
     //     try {
     //         const refreshTokenDecode: JwtPayload = jwtDecode(refreshToken);
-    //         const currentTime = Date.now() / 1000;
+
     //         if (refreshTokenDecode.exp && refreshTokenDecode.exp > currentTime) {
     //             // ถ้า refresh token ยังไม่หมดอายุ ให้ผ่านการตรวจสอบ
     //             return;
@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
     try {
         // อ่านค่า Token และถอดรหัส
         const accessTokenDecode: JwtPayload = jwtDecode(accessToken);
-        const currentTime = Date.now() / 1000;
+        const currentTime = Math.floor(Date.now() / 1000);
 
         if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
             // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized

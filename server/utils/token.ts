@@ -152,7 +152,7 @@ export function setTokenCookies(
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
-        maxAge: REFRESH_TOKEN_MAX_AGE_MS / 1000, // เปลี่ยนเป็นวินาที
+        maxAge: Math.floor(REFRESH_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
     })
 
     // 2. จัดการ Access Token Cookie
@@ -163,6 +163,6 @@ export function setTokenCookies(
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
-        maxAge: ACCESS_TOKEN_MAX_AGE_MS / 1000,  // เปลี่ยนเป็นวินาที
+        maxAge: Math.floor(ACCESS_TOKEN_MAX_AGE_MS / 1000),  // เปลี่ยนเป็นวินาที
     })
 }
