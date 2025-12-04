@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
     // เช็ค refresh token ก่อน ถ้ายังไม่หมดายุ ถึงค่อยสอบ access token
     // ใช้ในเคสที่มีการ revoke refresh token ก่อนหมดอายุ
-    const refreshToken = getCookie(event, 'refresh_token');
+    // const refreshToken = getCookie(event, 'refresh_token');
 
     // console.log(refreshToken);
     // if (refreshToken) {

@@ -4,7 +4,7 @@ import { refreshAccessToken } from '~/middleware/auth'
 
 export default defineNuxtRouteMiddleware(async () => {
   const refreshToken = useCookie('refresh_token');
-  const accessToken = useCookie('access_token');
+  // const accessToken = useCookie('access_token');
 
   // ถ้ามี refresh token และยังไม่หมดอายุ ให้ redirect ไปที่หน้าแรก
   if (refreshToken.value) {
