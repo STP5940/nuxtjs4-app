@@ -61,7 +61,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
     // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
     const redirectToLogin = async () => {
-        return navigateTo("/login", { replace: true });
+        return navigateTo("/login", { external: true });
     };
 
     try {
