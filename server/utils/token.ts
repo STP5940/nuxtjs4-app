@@ -129,7 +129,7 @@ export function setTokenCookies(
     setCookie(event, 'refresh_token', refreshToken, {
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
         maxAge: REFRESH_TOKEN_MAX_AGE_MS / 1000, // เปลี่ยนเป็นวินาที
     })
 
@@ -142,7 +142,7 @@ export function setTokenCookies(
     setCookie(event, 'access_token', accessToken, {
         httpOnly: false,    // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
+        sameSite: 'lax',    // ⭐ แนะนำ: ป้องกัน CSRF + UX ดี
         maxAge: ACCESS_TOKEN_MAX_AGE_MS / 1000,  // เปลี่ยนเป็นวินาที
     })
 }
