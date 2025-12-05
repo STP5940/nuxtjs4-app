@@ -26,16 +26,16 @@ export async function refreshAccessToken(): Promise<boolean> {
         }>('/api/v1/auth/refresh', {
             method: 'POST',
             body: {
+                grantType: 'access_token',
                 refreshToken: refreshToken.value
             }
         });
 
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data;
+        const { accessToken: newAccessToken } = response.data;
 
-        if (newAccessToken && newRefreshToken) {
+        if (newAccessToken) {
             // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
-            refreshToken.value = newRefreshToken;
             return true; // สำเร็จ
         }
 

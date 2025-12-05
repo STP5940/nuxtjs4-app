@@ -1,8 +1,8 @@
 // server/api/v1/auth/login.post.ts
 
+import { generateTokens, setAccessTokenCookie, setRefreshTokenCookie, getRefreshTokenMaxAge } from '~~/server/utils/token';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
-import { generateTokens, setTokenCookies, getRefreshTokenMaxAge } from '~~/server/utils/token';
 import { randomRoles } from '~~/constants/roles'
 import { verifyPassword } from '~~/lib/auth';
 import prisma from '~~/lib/prisma'
@@ -84,7 +84,8 @@ export default defineEventHandler(async (event) => {
         });
 
         // กำหนด Token Cookies ให้ accessToken และ refreshToken
-        setTokenCookies(event, accessToken, refreshToken)
+        setAccessTokenCookie(event, accessToken)
+        setRefreshTokenCookie(event, refreshToken)
 
         return responseSuccess({
             user: transformedUser

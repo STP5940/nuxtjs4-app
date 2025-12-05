@@ -1,10 +1,10 @@
 // server/api/v1/auth/login.post.ts
 
-import { defineEventHandler, getCookie, deleteCookie } from 'h3';
-
+import { decodeRefreshToken, type RefreshTokenPayload } from '~~/server/utils/token';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
-import { decodeRefreshToken, type RefreshTokenPayload } from '~~/server/utils/token';
+
+import { defineEventHandler, getCookie, deleteCookie } from 'h3';
 import prisma from '~~/lib/prisma'
 
 export default defineEventHandler(async (event) => {

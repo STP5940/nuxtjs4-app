@@ -1,11 +1,11 @@
 // server/utils/token.ts
 
+import { randomRoles } from '~~/constants/roles'
+
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import parseDuration from 'parse-duration';
 import { setCookie, H3Event } from 'h3';
 import { v4 as uuidv4 } from 'uuid';
-
-import { randomRoles } from '~~/constants/roles'
 
 type UserRole = typeof randomRoles[number];
 
@@ -103,6 +103,23 @@ export function decodeRefreshToken(token: string): RefreshTokenPayload | null {
     }
 }
 
+/**
+ * ถอดรหัสและตรวจสอบความถูกต้องของ Access Token
+ * @param token Access Token ที่เป็น string
+ * @returns Payload ของ Token หากถูกต้อง, หรือ null หากไม่ถูกต้อง (เช่น หมดอายุ, signature ไม่ตรง)
+ */
+export function decodeAccessToken(token: string): AccessTokenPayload | null {
+    try {
+        // ใช้ ACCESS_SECRET ในการตรวจสอบและถอดรหัส token
+        const payload = jwt.verify(token, ACCESS_SECRET) as AccessTokenPayload;
+        return payload;
+    } catch (error) {
+        // หากเกิด error แสดงว่า token ไม่ถูกต้อง
+        console.error("❌ Invalid or expired access token");
+        return null;
+    }
+}
+
 // ----------------------------------------------------------------------
 // 5. ฟังก์ชันดึงค่า Max Age ของ Tokens
 // ----------------------------------------------------------------------
@@ -132,44 +149,39 @@ export function getAccessTokenMaxAge(): number {
 // ----------------------------------------------------------------------
 
 /**
- * กำหนด Access Token และ Refresh Token ลงใน Cookie ของ Response
- * @param event H3 Event object
- * @param accessToken Access Token
- * @param refreshToken Refresh Token
- */
-export function setTokenCookies(
-    event: H3Event,
-    accessToken: string,
-    refreshToken: string
-) {
-    // sameSite: 
-    // 'lax'    ⭐⭐ ป้องกัน CSRF + UX ดี
-    // strict'  ⭐ ความปลอดภัยสูงสุด
-    // 'none'   ⚠️ ต้องใช้กับ HTTPS เท่านั้น
-
+กำหนด Access Token ลงใน Cookie ของ Response
+@param event H3 Event object
+@param accessToken Access Token
+*/
+export function setAccessTokenCookie(event: H3Event, accessToken: string) {
     const isProduction = process.env.NODE_ENV === 'production';
-
-    // 1. จัดการ Refresh Token Cookie
-    const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
-
-    // กำหนด refresh token ใน cookie
-    setCookie(event, 'refresh_token', refreshToken, {
-        httpOnly: false,                                        // ⚠️ เพื่อให้ JavaScript อ่านได้
-        secure: isProduction,                                   // ใช้เฉพาะกับ HTTPS ใน production
-        sameSite: 'strict',                                     // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
-        maxAge: Math.floor(REFRESH_TOKEN_MAX_AGE_MS / 1000),    // เปลี่ยนเป็นวินาที
-        path: '/',                                              // ใช้ได้กับทุก path
-    })
-
-    // 2. จัดการ Access Token Cookie
     const ACCESS_TOKEN_MAX_AGE_MS = getAccessTokenMaxAge();
 
-    // กำหนด access token ใน cookie
     setCookie(event, 'access_token', accessToken, {
-        httpOnly: false,                                        // ⚠️ เพื่อให้ JavaScript อ่านได้
-        secure: isProduction,                                   // ใช้เฉพาะกับ HTTPS ใน production
-        sameSite: 'strict',                                     // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
-        maxAge: Math.floor(ACCESS_TOKEN_MAX_AGE_MS / 1000),     // เปลี่ยนเป็นวินาที
-        path: '/',                                              // ใช้ได้กับทุก path
-    })
+        httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
+        secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
+        sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
+        maxAge: Math.floor(ACCESS_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
+        path: '/', // ใช้ได้กับทุก path
+    });
+
+}
+
+/**
+กำหนด Refresh Token ลงใน Cookie ของ Response
+@param event H3 Event object
+@param refreshToken Refresh Token
+*/
+export function setRefreshTokenCookie(event: H3Event, refreshToken: string) {
+    const isProduction = process.env.NODE_ENV === 'production';
+    const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
+
+    setCookie(event, 'refresh_token', refreshToken, {
+        httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
+        secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
+        sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
+        maxAge: Math.floor(REFRESH_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
+        path: '/', // ใช้ได้กับทุก path
+    });
+
 }
