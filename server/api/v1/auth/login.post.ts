@@ -76,8 +76,8 @@ export default defineEventHandler(async (event) => {
                 jti: refreshTokenId,
                 token: refreshToken,
                 userId: transformedUser.id,
-                ipAddress:String(ipAddress),
-                userAgent: String(userAgent),
+                ipAddress: ipAddress ? null : String(ipAddress),
+                userAgent: userAgent ? null : String(userAgent),
                 expiresIn: Math.floor((Date.now() + REFRESH_TOKEN_MAX_AGE_MS) / 1000),
                 expiresAt: new Date(Date.now() + REFRESH_TOKEN_MAX_AGE_MS)
             }
