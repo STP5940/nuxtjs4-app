@@ -9,7 +9,7 @@ definePageMeta({
 
 const toast = useToast();
 const loading = ref(false);
-const { start, finish } = useLoadingIndicator();
+const { start } = useLoadingIndicator();
 
 const fields: AuthFormField[] = [
   {
@@ -90,7 +90,6 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       color: "error",
     });
   } finally {
-    finish({ force: true });
     loading.value = false;
   }
 }
