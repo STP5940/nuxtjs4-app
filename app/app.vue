@@ -45,6 +45,7 @@ useSeoMeta({
   >
     <NuxtRouteAnnouncer />
 
+    <NuxtLoadingIndicator />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

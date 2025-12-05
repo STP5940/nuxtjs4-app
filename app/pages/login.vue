@@ -9,6 +9,7 @@ definePageMeta({
 
 const toast = useToast();
 const loading = ref(false);
+const { start, finish } = useLoadingIndicator();
 
 const fields: AuthFormField[] = [
   {
@@ -65,6 +66,7 @@ const schema = z.object({
 type Schema = z.output<typeof schema>;
 
 async function onSubmit(payload: FormSubmitEvent<Schema>) {
+  start({ force: true });
   loading.value = true;
   try {
     await $fetch("/api/v1/auth/login", {
@@ -88,6 +90,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       color: "error",
     });
   } finally {
+    finish({ force: true });
     loading.value = false;
   }
 }
