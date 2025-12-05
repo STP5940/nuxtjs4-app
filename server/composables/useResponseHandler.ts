@@ -1,5 +1,10 @@
 // server/composables/useResponseHandler.ts
 
+/**
+ * ฟังก์ชันสำหรับจัดการการตอบสนอง (response) ในแอปพลิเคชัน
+ * @param event - H3Event ที่ใช้ในการดึง URL ปัจจุบัน
+ * @returns ฟังก์ชันสำหรับสร้างการตอบสนองที่ประสบความสำเร็จ
+ */
 export function useResponseHandler(event: any) {
     const getCurrentUrl = () => getRequestURL(event).href;
 

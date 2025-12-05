@@ -11,6 +11,11 @@ interface CustomError extends Error {
     statusMessage?: string;
 }
 
+/**
+ * ฟังก์ชันสำหรับจัดการ errors ที่เกิดขึ้นในแอปพลิเคชัน
+ * @param error ข้อผิดพลาดที่ต้องการจัดการ
+ * @returns {AppError} ข้อผิดพลาดในรูปแบบมาตรฐานของแอปพลิเคชัน
+ */
 export function handleError(error: unknown): AppError {
     // Zod errors
     if (error instanceof z.ZodError) {
@@ -90,6 +95,11 @@ export function handleError(error: unknown): AppError {
     };
 }
 
+/**
+ * ฟังก์ชันสำหรับโยนข้อผิดพลาดในรูปแบบมาตรฐานของแอปพลิเคชัน
+ * @param error ข้อผิดพลาดที่ต้องการโยน
+ * @throws ข้อผิดพลาดในรูปแบบมาตรฐานของแอปพลิเคชัน
+ */
 export function throwAppError(error: unknown): never {
     const appError = handleError(error);
 
