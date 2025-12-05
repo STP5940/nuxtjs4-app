@@ -15,13 +15,13 @@ type UserRole = typeof randomRoles[number];
 
 // Payload สำหรับ Access Token (อายุสั้น, ใช้เรียก API)
 export interface AccessTokenPayload extends JwtPayload {
-    userId: String;
+    sub: string;
     role: UserRole;
 }
 
 // Payload สำหรับ Refresh Token (อายุยาว, ต้องมี jti สำหรับ Revocation)
 export interface RefreshTokenPayload extends JwtPayload {
-    userId: String;
+    sub: string;
     jti: string; // ใช้สำหรับอ้างอิงในฐานข้อมูล
 }
 
@@ -48,14 +48,14 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
  * @param role บทบาทของผู้ใช้
  * @returns Object ที่ประกอบด้วย Tokens และ ID สำหรับบันทึกใน DB
  */
-export function generateTokens(userId: String, role: UserRole) {
+export function generateTokens(userId: string, role: UserRole) {
 
     // ในการผลิตจริง ควรใช้ uuidv4() เพื่อสร้าง ID ที่ไม่ซ้ำกัน
     const refreshTokenId = uuidv4();
 
     // 1. สร้าง Access Token (อายุ 15 นาที)
     const accessTokenPayload: AccessTokenPayload = {
-        userId,
+        sub: userId,
         role
     };
     const accessToken = jwt.sign(
@@ -66,7 +66,7 @@ export function generateTokens(userId: String, role: UserRole) {
 
     // 2. สร้าง Refresh Token (อายุ 7 วัน)
     const refreshTokenPayload: RefreshTokenPayload = {
-        userId,
+        sub: userId,
         jti: refreshTokenId, // ใช้สำหรับอ้างอิงในฐานข้อมูล
     };
     const refreshToken = jwt.sign(

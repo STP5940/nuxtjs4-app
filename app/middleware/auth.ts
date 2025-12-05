@@ -10,12 +10,14 @@ export async function refreshAccessToken(): Promise<boolean> {
     const refreshToken = useCookie('refresh_token');
     const accessToken = useCookie('access_token');
 
+    // ถ้าไม่มี refresh token ให้คืนค่า false ทันที  
     if (!refreshToken.value) {
         console.error("No refresh token found for refreshing.");
         return false;
     }
 
     try {
+        // เรียก API เพื่อขอ Access Token ใหม่
         const response = await $fetch<{
             error: boolean;
             message: string;
@@ -33,23 +35,24 @@ export async function refreshAccessToken(): Promise<boolean> {
 
         const { accessToken: newAccessToken } = response.data;
 
+        // ถ้ามี token ใหม่ที่ได้กลับมา ให้อัปเดตค่า access token ใน cookie
         if (newAccessToken) {
-            // อัปเดตค่า token ใน cookie
             accessToken.value = newAccessToken;
             return true; // สำเร็จ
         }
 
         return false; // กรณีที่ API ไม่ได้โยน error แต่ไม่มี token ใหม่
     } catch (refreshError: unknown) {
-        // refresh token ไม่มีจริงเพราะถูกลบออกไปแล้วจากฐานข้อมูล
         const status = (refreshError as any)?.response?.status;
 
+        // refresh token ไม่มีจริงเพราะถูกลบออกไปแล้วจากฐานข้อมูล
         if (typeof status === 'number' && status === 403) {
             console.log("❌ Kill Token: Refresh token is invalid/revoked (403).");
             accessToken.value = null;
             refreshToken.value = null;
         }
 
+        // ข้อผิดพลาดทั่วไปในการขอ refresh token
         console.error("❌ Could not refresh token. Redirecting to login");
         return false;
     }

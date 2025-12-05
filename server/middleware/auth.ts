@@ -36,25 +36,6 @@ export default defineEventHandler(async (event) => {
         return;
     }
 
-    // เช็ค refresh token ก่อน ถ้ายังไม่หมดายุ ถึงค่อยสอบ access token
-    // ใช้ในเคสที่มีการ revoke refresh token ก่อนหมดอายุ
-    // const refreshToken = getCookie(event, 'refresh_token');
-
-    // console.log(refreshToken);
-    // if (refreshToken) {
-    //     try {
-    //         const refreshTokenDecode: JwtPayload = jwtDecode(refreshToken);
-
-    //         if (refreshTokenDecode.exp && refreshTokenDecode.exp > currentTime) {
-    //             // ถ้า refresh token ยังไม่หมดอายุ ให้ผ่านการตรวจสอบ
-    //             return;
-    //         }
-    //     } catch (error: unknown) {
-    //         // ถ้าเกิดข้อผิดพลาดในการถอดรหัส refresh token ให้ไปตรวจสอบ access token ต่อ
-    //         console.log(error);
-    //     }
-    // }
-
     // ดึง Access Token จาก Cookie
     const accessToken = getCookie(event, 'access_token');
 

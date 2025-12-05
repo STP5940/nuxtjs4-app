@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
         const { count } = await prisma.refreshToken.updateMany({
             where: {
                 jti: String(payload.jti),
-                userId: String(payload.userId),
+                userId: String(payload.sub),
                 revoked: false
             },
             data: {

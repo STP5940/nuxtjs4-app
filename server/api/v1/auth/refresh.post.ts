@@ -31,6 +31,7 @@ export default defineEventHandler(async (event) => {
 
         const refreshPayload: RefreshTokenPayload | null = decodeRefreshToken(validatedData.refreshToken)
 
+        // ตรวจสอบว่า payload ที่ถอดรหัสได้ถูกต้องหรือไม่
         if (!refreshPayload) {
             throw createError({
                 statusCode: 401,
@@ -47,8 +48,8 @@ export default defineEventHandler(async (event) => {
             }
         });
 
+        // ไม่พบ Token หรือถูก Revoke แล้ว
         if (!dbRefreshToken) {
-            // ไม่พบ Token หรือถูก Revoke แล้ว
             throw createError({
                 statusCode: 403,
                 statusMessage: "Forbidden",
@@ -59,6 +60,7 @@ export default defineEventHandler(async (event) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const dbExpiresIn: number = dbRefreshToken.expiresIn;
 
+        // ตรวจสอบว่า Token หมดอายุหรือไม่
         if (dbExpiresIn && dbExpiresIn < currentTime) {
             // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
             throw createError({
@@ -71,10 +73,11 @@ export default defineEventHandler(async (event) => {
         // ค้นหาผู้ใช้จาก userId ใน token
         const findingUser = await prisma.users.findUnique({
             where: {
-                id: String(refreshPayload.userId)
+                id: String(refreshPayload.sub)
             }
         })
 
+        // ไม่พบผู้ใช้
         if (!findingUser) {
             throw createError({
                 statusCode: 401,
