@@ -6,7 +6,7 @@ import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { randomRoles } from '~~/constants/roles'
 import prisma from '~~/lib/prisma'
 
-import { getRequestIP, getHeader } from 'h3';
+import { getRequestIP, getHeader, getCookie } from 'h3';
 import { z } from 'zod';
 
 const tokenRequestSchema = z.object({

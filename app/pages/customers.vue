@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui'
-import { upperFirst } from 'scule'
+// app/pages/customers.vue
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
+import type { TableColumn } from '@nuxt/ui'
+import { upperFirst } from 'scule'
+
 import type { User } from '~/types'
 
 definePageMeta({
@@ -25,9 +27,15 @@ const columnFilters = ref([{
 const columnVisibility = ref()
 const rowSelection = ref({ 1: true })
 
-const { data, status } = await useFetch<User[]>('/api/customers', {
-  lazy: true
-})
+const accessToken = useCookie("access_token");
+const { data, status } = await useFetch<User[]>("/api/customers",
+  {
+    lazy: true,
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+  }
+);
 
 function getRowItems(row: Row<User>) {
   return [

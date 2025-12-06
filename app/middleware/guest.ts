@@ -3,13 +3,13 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode'
 import { refreshAccessToken } from '~/middleware/auth'
 
 export default defineNuxtRouteMiddleware(async () => {
-  const refreshToken = useCookie('refresh_token');
-  // const accessToken = useCookie('access_token');
+  // const refreshToken = useCookie('refresh_token');
+  const accessToken = useCookie('access_token');
 
   // ถ้ามี refresh token และยังไม่หมดอายุ ให้ redirect ไปที่หน้าแรก
-  if (refreshToken.value) {
+  if (accessToken.value) {
     try {
-      const decoded: JwtPayload = jwtDecode(refreshToken.value)
+      const decoded: JwtPayload = jwtDecode(accessToken.value)
       const currentTime = Math.floor(Date.now() / 1000)
 
       if (decoded.exp && decoded.exp > currentTime) {

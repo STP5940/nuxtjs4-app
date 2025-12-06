@@ -37,7 +37,28 @@ export default defineEventHandler(async (event) => {
     }
 
     // ดึง Access Token จาก Cookie
-    const accessToken = getCookie(event, 'access_token');
+    // const accessToken = getCookie(event, 'access_token');
+    const authorizationHeader = getHeader(event, 'Authorization');
+    
+    if (!authorizationHeader) {
+        // ถ้าไม่มี header
+        throw createError({
+            statusCode: 401,
+            statusMessage: 'Unauthorized: Missing Authorization header',
+        });
+    }
+
+    const [scheme, token] = authorizationHeader.split(' ');
+
+    if (scheme !== 'Bearer' || !token) {
+        // ตรวจสอบว่ารูปแบบถูกต้องหรือไม่
+        throw createError({
+            statusCode: 401,
+            statusMessage: 'Unauthorized: Invalid token format',
+        });
+    }
+
+    const accessToken = token;
 
     if (!accessToken) {
         // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized

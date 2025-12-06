@@ -22,7 +22,6 @@ export async function refreshAccessToken(): Promise<boolean> {
             error: boolean;
             message: string;
             data: {
-                refreshToken: string;
                 accessToken: string;
             };
         }>('/api/v1/auth/refresh', {
@@ -37,7 +36,6 @@ export async function refreshAccessToken(): Promise<boolean> {
 
         // ถ้ามี token ใหม่ที่ได้กลับมา ให้อัปเดตค่า access token ใน cookie
         if (newAccessToken) {
-            accessToken.value = newAccessToken;
             return true; // สำเร็จ
         }
 
@@ -88,8 +86,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                     return redirectToLogin();
                 }
             }
-
-            // ถ้า Access Token ยังไม่หมดอายุ หรือ Refresh สำเร็จแล้ว
             return;
         } else {
             // ให้ลองขอ Access Token ใหม่
@@ -98,6 +94,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 // ถ้า refresh ไม่สำเร็จ
                 return redirectToLogin();
             }
+            return;
         }
     } catch (accessError) {
         // ดักจับข้อผิดพลาดทั่วไป (เช่น jwtDecode ล้มเหลว)

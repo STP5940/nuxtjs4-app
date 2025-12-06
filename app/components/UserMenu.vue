@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// app/components/UserMenu.vue
 import type { DropdownMenuItem } from "@nuxt/ui";
 
 defineProps<{
@@ -7,9 +8,6 @@ defineProps<{
 
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
-
-const refreshToken = useCookie("refresh_token");
-const accessToken = useCookie("access_token");
 
 const colors = [
   "red",

@@ -2,8 +2,15 @@
 // app/pages/settings/users.vue
 import type { UsersResponse, Users } from "~/types";
 
+const accessToken = useCookie("access_token");
 const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
-  "/api/v1/users"
+  "/api/v1/users",
+  {
+    lazy: true,
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+  }
 );
 
 // ⚠️ ตรวจจับข้อผิดพลาดแสดง alert
@@ -19,8 +26,7 @@ watch(
 );
 
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
-const usersCount: number = usersResponse.value?.data?.usersCount ?? 0; // ✅ ถูกต้อง
-
+const usersCount = computed(() => usersResponse.value?.data?.usersCount ?? 0);
 const q = ref<string>("");
 
 const filteredUsers = computed<Users[]>(() => {
@@ -37,13 +43,16 @@ const filteredUsers = computed<Users[]>(() => {
 
 <template>
   <!-- กำลังโหลดข้อมูลจาก API โปรดรอสักครู่ -->
-  <div v-if="pending" class="flex flex-col items-center justify-center h-48">
+  <div
+    v-if="!usersResponse && pending"
+    class="flex flex-col items-center justify-center h-48"
+  >
     <Icon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
-    <p class="mt-2 text-gray-500">Loading user data...</p>
+    <p class="mt-2 text-gray-500">Loading data...</p>
   </div>
 
   <!-- เกิดข้อผิดพลาดขณะดึงข้อมูลจาก API โปรดลองอีกครั้ง -->
-  <div v-if="error" class="flex flex-col items-center justify-center h-48">
+  <div v-if="!pending && error" class="flex flex-col items-center justify-center h-48">
     <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
     <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
     <UButton
@@ -56,7 +65,7 @@ const filteredUsers = computed<Users[]>(() => {
   </div>
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-else>
+  <div v-if="usersResponse && !pending && !error">
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."
