@@ -122,11 +122,23 @@ const items = computed<DropdownMenuItem[][]>(() => [
       icon: "i-lucide-sun-moon",
       children: [
         {
+          label: "System",
+          icon: "i-lucide-monitor",
+          class: "cursor-pointer",
+          type: "checkbox",
+          checked: colorMode.preference === "system",
+          onSelect(e: Event) {
+            e.preventDefault();
+
+            colorMode.preference = "system";
+          },
+        },
+        {
           label: "Light",
           icon: "i-lucide-sun",
           class: "cursor-pointer",
           type: "checkbox",
-          checked: colorMode.value === "light",
+          checked: colorMode.preference === "light",
           onSelect(e: Event) {
             e.preventDefault();
 
@@ -138,14 +150,11 @@ const items = computed<DropdownMenuItem[][]>(() => [
           icon: "i-lucide-moon",
           class: "cursor-pointer",
           type: "checkbox",
-          checked: colorMode.value === "dark",
-          onUpdateChecked(checked: boolean) {
-            if (checked) {
-              colorMode.preference = "dark";
-            }
-          },
+          checked: colorMode.preference === "dark",
           onSelect(e: Event) {
             e.preventDefault();
+
+            colorMode.preference = "dark";
           },
         },
       ],
