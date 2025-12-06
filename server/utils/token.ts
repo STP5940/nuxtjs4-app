@@ -61,7 +61,7 @@ export function generateTokens(userId: string, role: UserRole) {
     const accessToken = jwt.sign(
         accessTokenPayload,
         ACCESS_SECRET,
-        { expiresIn: '15m' }
+        { expiresIn: getAccessTokenMaxAge() / 1000 } // Convert to seconds
     );
 
     // 2. สร้าง Refresh Token (อายุ 7 วัน)
@@ -72,7 +72,7 @@ export function generateTokens(userId: string, role: UserRole) {
     const refreshToken = jwt.sign(
         refreshTokenPayload,
         REFRESH_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: getRefreshTokenMaxAge() / 1000 } // Convert to seconds
     );
 
     return {
