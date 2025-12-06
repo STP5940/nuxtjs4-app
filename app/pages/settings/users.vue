@@ -6,6 +6,13 @@ const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
   "/api/v1/users"
 );
 
+// ⚠️ ตรวจจับข้อผิดพลาดแสดง alert
+watch(error, (newError) => {
+  if (newError) {
+    alert(`Error fetching users: ${newError.message}`);
+  }
+});
+
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
 const usersCount: number = usersResponse.value?.data?.usersCount ?? 0; // ✅ ถูกต้อง
 
@@ -24,7 +31,27 @@ const filteredUsers = computed<Users[]>(() => {
 </script>
 
 <template>
-  <div>
+  <!-- กำลังโหลดข้อมูลจาก API โปรดรอสักครู่ -->
+  <div v-if="pending" class="flex flex-col items-center justify-center h-48">
+    <Icon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
+    <p class="mt-2 text-gray-500">Loading user data...</p>
+  </div>
+
+  <!-- เกิดข้อผิดพลาดขณะดึงข้อมูลจาก API โปรดลองอีกครั้ง -->
+  <div v-if="error" class="flex flex-col items-center justify-center h-48">
+    <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
+    <p class="mt-2 text-red-500">An error occurred while fetching Please try again.</p>
+    <UButton
+      icon="i-lucide-rocket"
+      label="Reload"
+      color="error"
+      class="mt-4"
+      @click="$router.go(0)"
+    />
+  </div>
+
+  <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
+  <div v-else>
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."
