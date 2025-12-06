@@ -9,7 +9,7 @@ definePageMeta({
 
 const toast = useToast();
 const loading = ref(false);
-const { start } = useLoadingIndicator();
+const { start, finish } = useLoadingIndicator();
 
 const fields: AuthFormField[] = [
   {
@@ -89,6 +89,7 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
       description: error.data?.message || "An unexpected error occurred.",
       color: "error",
     });
+    finish({ error: true });
   } finally {
     loading.value = false;
   }
