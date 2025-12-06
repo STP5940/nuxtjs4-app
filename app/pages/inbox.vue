@@ -21,7 +21,16 @@ const tabItems = [
 ];
 const selectedTab = ref("all");
 
-const { data: mails } = await useFetch<Mail[]>("/api/mails", { default: () => [] });
+const accessToken = useCookie("access_token");
+const { data: mails } = await useFetch<Mail[]>("/api/mails",
+  {
+    lazy: true,
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+    default: () => []
+  }
+);
 
 // Filter mails based on the selected tab
 const filteredMails = computed(() => {
