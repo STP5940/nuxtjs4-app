@@ -22,15 +22,14 @@ const tabItems = [
 const selectedTab = ref("all");
 
 const accessToken = useCookie("access_token");
-const { data: mails } = await useFetch<Mail[]>("/api/mails",
-  {
-    lazy: true,
-    headers: computed(() => ({
-      Authorization: `Bearer ${accessToken.value}`, // reactive
-    })),
-    default: () => []
-  }
-);
+const { data: mails } = await useFetch<Mail[]>("/api/mails", {
+  lazy: true,
+  method: "GET",
+  headers: computed(() => ({
+    Authorization: `Bearer ${accessToken.value}`, // reactive
+  })),
+  default: () => [],
+});
 
 // Filter mails based on the selected tab
 const filteredMails = computed(() => {
@@ -82,12 +81,7 @@ const isMobile = breakpoints.smaller("lg");
       </template>
 
       <template #right>
-        <UTabs
-          v-model="selectedTab"
-          :items="tabItems"
-          :content="false"
-          size="xs"
-        />
+        <UTabs v-model="selectedTab" :items="tabItems" :content="false" size="xs" />
       </template>
     </UDashboardNavbar>
     <InboxList v-model="selectedMail" :mails="filteredMails" />

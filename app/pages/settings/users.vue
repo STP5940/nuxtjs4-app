@@ -3,23 +3,26 @@
 import type { UsersResponse, Users } from "~/types";
 
 const accessToken = useCookie("access_token");
-const { data: usersResponse, pending, error } = await useFetch<UsersResponse>(
+
+const { data: usersResponse, pending, error, refresh } = await useFetch<UsersResponse>(
   "/api/v1/users",
   {
     lazy: true,
+    method: "GET",
     headers: computed(() => ({
       Authorization: `Bearer ${accessToken.value}`, // reactive
     })),
   }
 );
 
-// ⚠️ ตรวจจับข้อผิดพลาดแสดง alert
+// ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
 watch(
   error,
-  (newError) => {
-    // ตรวจสอบว่าเป็น Client-side เพื่อให้ alert ทำงาน
+  async (newError) => {
+    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
     if (import.meta.client && newError) {
-      alert(`Error fetching users: ${newError.message}`);
+      console.log(`Error fetching users: ${newError.message}`);
+      await refresh();
     }
   },
   { immediate: true }
@@ -43,16 +46,13 @@ const filteredUsers = computed<Users[]>(() => {
 
 <template>
   <!-- กำลังโหลดข้อมูลจาก API โปรดรอสักครู่ -->
-  <div
-    v-if="!usersResponse && pending"
-    class="flex flex-col items-center justify-center h-48"
-  >
+  <div v-if="pending || !usersResponse" class="flex flex-col items-center justify-center h-48">
     <Icon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
     <p class="mt-2 text-gray-500">Loading data...</p>
   </div>
 
   <!-- เกิดข้อผิดพลาดขณะดึงข้อมูลจาก API โปรดลองอีกครั้ง -->
-  <div v-if="!pending && error" class="flex flex-col items-center justify-center h-48">
+  <!-- <div v-else-if="error" class="flex flex-col items-center justify-center h-48">
     <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
     <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
     <UButton
@@ -62,10 +62,10 @@ const filteredUsers = computed<Users[]>(() => {
       class="mt-4"
       @click="$router.go(0)"
     />
-  </div>
+  </div> -->
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-if="usersResponse && !pending && !error">
+  <div v-if="usersResponse">
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."

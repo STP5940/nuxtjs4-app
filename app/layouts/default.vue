@@ -4,20 +4,9 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { refreshAccessToken } from '~/middleware/auth';
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const refreshToken = useCookie('refresh_token');
-const accessToken = useCookie("access_token");
-
 const route = useRoute()
-const toast = useToast()
 
 const open = ref(false)
-
-// ตัวแปรสำหรับเก็บ interval/timeout ID
-let intervalId: NodeJS.Timeout | null = null;
-
-// ตัวแปรสำหรับเก็บค่าเวลา
-const REFRESH_THRESHOLD = 10; // 10 วินาที - จะ refresh เมื่อเหลือเวลาน้อยกว่านี้
-const CHECK_INTERVAL = 5000; // 5 วินาที (5,000 milliseconds) - ตรวจสอบทุก 5 วินาที
 
 const links = [[{
   label: 'Home',
@@ -100,111 +89,6 @@ const groups = computed(() => [{
     target: '_blank'
   }]
 }])
-
-/**
- * ตรวจสอบว่า token เหลือเวลาน้อยกว่า REFRESH_THRESHOLD หรือไม่
- * @returns true ถ้าควร refresh, false ถ้ายังไม่ต้อง refresh
- */
-const shouldRefreshToken = (): boolean => {
-  try {
-    if (!accessToken.value) {
-      return false;
-    }
-
-    const decoded: JwtPayload = jwtDecode(accessToken.value);
-    
-    if (!decoded.exp) {
-      console.warn('⚠️ Token ไม่มี exp field');
-      return false;
-    }
-
-    const now = Math.floor(Date.now() / 1000);
-    const expiresIn = decoded.exp - now;
-    
-    console.log(`⏰ Token เหลืออายุอีก ${expiresIn} วินาที (${Math.floor(expiresIn / 60)} นาที)`);
-    
-    // ถ้าเหลือเวลาน้อยกว่า REFRESH_THRESHOLD (5 นาที) ให้ refresh
-    if (expiresIn <= REFRESH_THRESHOLD) {
-      console.log(`🔔 Token เหลือเวลาน้อยกว่า ${REFRESH_THRESHOLD / 60} นาที, ควร refresh!`);
-      return true;
-    }
-    
-    return false;
-  } catch (error) {
-    console.error('❌ ไม่สามารถ decode token:', error);
-    return false;
-  }
-};
-
-/**
- * ตรวจสอบและ refresh token ถ้าจำเป็น
- */
-const checkAndRefreshToken = async () => {
-  if (shouldRefreshToken()) {
-    console.log('🔄 Auto-refreshing access token...');
-    const success = await refreshAccessToken();
-
-    if (success) {
-      console.log('✅ Token refreshed successfully');
-    } else {
-      console.log('❌ Token refresh failed');
-      // หยุด interval ถ้า refresh ไม่สำเร็จ
-      stopAutoRefresh();
-    }
-  } else {
-    console.log('✓ Token ยังไม่ต้อง refresh');
-  }
-};
-
-/**
- * เริ่มต้น auto-check และ refresh token
- */
-const startAutoRefresh = () => {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
-  }
-
-  console.log(`🚀 Starting token auto-check (ตรวจสอบทุก ${CHECK_INTERVAL / 1000} วินาที)...`);
-
-  // ตรวจสอบทันทีครั้งแรก
-  checkAndRefreshToken();
-
-  // ตั้งเวลาตรวจสอบแบบ interval
-  intervalId = setInterval(() => {
-    checkAndRefreshToken();
-  }, CHECK_INTERVAL);
-};
-
-/**
- * หยุด auto-refresh token
- */
-const stopAutoRefresh = () => {
-  if (intervalId) {
-    clearInterval(intervalId);
-    intervalId = null;
-    console.log('⏸️ Token auto-refresh stopped');
-  }
-};
-
-onMounted(() => {
-  if (refreshToken.value && accessToken.value) {
-    startAutoRefresh();
-  }
-});
-
-onUnmounted(() => {
-  stopAutoRefresh();
-});
-
-watch(accessToken, (newToken) => {
-  if (newToken && refreshToken.value) {
-    console.log('🔄 Access token changed, restarting auto-refresh...');
-    startAutoRefresh();
-  } else if (!newToken) {
-    stopAutoRefresh();
-  }
-});
 </script>
 
 <template>
