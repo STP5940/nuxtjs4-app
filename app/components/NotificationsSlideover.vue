@@ -5,7 +5,7 @@ import type { Notification } from "~/types";
 const { isNotificationsSlideoverOpen } = useDashboard();
 
 const accessToken = useCookie("access_token");
-const { data: notifications } = await useFetch<Notification[]>("/api/notifications", {
+const { data: notifications, execute } = await useFetch<Notification[]>("/api/notifications", {
   lazy: true,
   method: "GET",
   headers: computed(() => ({

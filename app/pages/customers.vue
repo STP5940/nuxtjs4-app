@@ -30,7 +30,7 @@ const columnVisibility = ref();
 const rowSelection = ref({ 1: true });
 
 const accessToken = useCookie("access_token");
-const { data, status } = await useFetch<User[]>("/api/customers", {
+const { data, status, execute } = await useFetch<User[]>("/api/customers", {
   lazy: true,
   method: "GET",
   headers: computed(() => ({

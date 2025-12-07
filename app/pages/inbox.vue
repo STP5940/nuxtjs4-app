@@ -22,7 +22,7 @@ const tabItems = [
 const selectedTab = ref("all");
 
 const accessToken = useCookie("access_token");
-const { data: mails } = await useFetch<Mail[]>("/api/mails", {
+const { data: mails, execute } = await useFetch<Mail[]>("/api/mails", {
   lazy: true,
   method: "GET",
   headers: computed(() => ({
