@@ -30,12 +30,25 @@ export function useResponseHandler(event: any) {
         };
     };
 
+    const unauthorized = (message: string, statusCode: number = 401) => {
+        setResponseStatus(event, statusCode);
+        return {
+            error: true,
+            url: getCurrentUrl(),
+            statusCode: statusCode,
+            statusMessage: 'Unauthorized',
+            message: message || 'Unauthorized access',
+        };
+    }
+
     // หรือจะใช้ชื่ออื่นๆ ที่สื่อความหมาย
     const responseSuccess = success; // alias
     const responseCreated = created; // alias
+    const responseUnauthorized = unauthorized; // alias
 
     return {
         responseSuccess,
         responseCreated,
+        responseUnauthorized,
     };
 }

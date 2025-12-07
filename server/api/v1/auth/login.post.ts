@@ -1,6 +1,9 @@
 // server/api/v1/auth/login.post.ts
 
-import { generateTokens, setAccessTokenCookie, setRefreshTokenCookie, getRefreshTokenMaxAge } from '~~/server/utils/token';
+import {
+    generateRefreshToken, generateAccessToken, setAccessTokenCookie, setRefreshTokenCookie,
+    getRefreshTokenMaxAge, hashToken
+} from '~~/server/utils/token';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { randomRoles } from '~~/constants/roles'
@@ -63,9 +66,14 @@ export default defineEventHandler(async (event) => {
             role: randomRoles[Math.floor(Math.random() * randomRoles.length)]
         };
 
-        const { accessToken, refreshToken, refreshTokenId } = generateTokens(
+        const { refreshToken, refreshTokenId } = generateRefreshToken(
+            transformedUser.id
+        );
+
+        const { accessToken } = await generateAccessToken(
             transformedUser.id,
-            transformedUser.role
+            transformedUser.role,
+            refreshTokenId
         );
 
         const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
@@ -74,7 +82,7 @@ export default defineEventHandler(async (event) => {
         await prisma.refreshToken.create({
             data: {
                 jti: refreshTokenId,
-                token: refreshToken,
+                token: hashToken(refreshToken),
                 userId: transformedUser.id,
                 ipAddress: ipAddress ? String(ipAddress) : null,
                 userAgent: userAgent ? String(userAgent) : null,

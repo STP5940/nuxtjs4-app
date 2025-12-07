@@ -1,6 +1,9 @@
 // server/api/v1/auth/refresh.post.ts
 
-import { generateTokens, decodeRefreshToken, setAccessTokenCookie, setRefreshTokenCookie, getRefreshTokenMaxAge, type RefreshTokenPayload } from '~~/server/utils/token';
+import {
+    generateRefreshToken, generateAccessToken, decodeRefreshToken, setAccessTokenCookie,
+    setRefreshTokenCookie, getRefreshTokenMaxAge, type RefreshTokenPayload, hashToken
+} from '~~/server/utils/token';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';
 import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { randomRoles } from '~~/constants/roles'
@@ -101,10 +104,17 @@ export default defineEventHandler(async (event) => {
         // 1. คำขอ Refresh Token ใหม่
         if (validatedData.grantType === 'refresh_token') {
 
-            // สร้าง refresh token และ access token ใหม่
-            const { accessToken, refreshToken, refreshTokenId } = generateTokens(
+
+            // สร้าง Refresh Token ใหม่
+            const { refreshToken, refreshTokenId } = generateRefreshToken(
+                transformedUser.id
+            );
+
+            // สร้าง Access Token ใหม่
+            const { accessToken } = await generateAccessToken(
                 transformedUser.id,
-                transformedUser.role
+                transformedUser.role,
+                refreshTokenId
             );
 
             // เพิกถอน Token เก่า
@@ -123,7 +133,7 @@ export default defineEventHandler(async (event) => {
             await prisma.refreshToken.create({
                 data: {
                     jti: refreshTokenId,
-                    token: refreshToken,
+                    token: hashToken(refreshToken),
                     userId: transformedUser.id,
                     ipAddress: ipAddress ? String(ipAddress) : null,
                     userAgent: userAgent ? String(userAgent) : null,
@@ -145,10 +155,10 @@ export default defineEventHandler(async (event) => {
         // 2. คำขอ Access Token ใหม่
         if (validatedData.grantType === 'access_token') {
 
-            // สร้าง access token ใหม่
-            const { accessToken } = generateTokens(
+            const { accessToken } = await generateAccessToken(
                 transformedUser.id,
-                transformedUser.role
+                transformedUser.role,
+                refreshPayload.jti
             );
 
             // กำหนด Token Cookies ให้ accessToken 

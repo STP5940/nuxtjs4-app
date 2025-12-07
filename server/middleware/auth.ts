@@ -1,29 +1,17 @@
 // server/middleware/auth.ts
 
-import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { getCookie, setResponseStatus } from 'h3';
+import { useResponseHandler } from '~~/server/composables/useResponseHandler';
+import { AccessTokenPayload } from '~~/server/utils/token';
+import prisma from '~~/lib/prisma'
+
+import { jwtDecode } from 'jwt-decode';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
 const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'];
 
-// Helper function to create the standard unauthorized response object
-const createUnauthorizedResponse = (event: any, message: string) => {
-    // Set the HTTP status code
-    setResponseStatus(event, 401);
-
-    // Get the current URL for the response payload
-    const currentUrl = getRequestURL(event).href;
-
-    return {
-        error: true,
-        url: currentUrl,
-        statusCode: 401,
-        statusMessage: 'Unauthorized',
-        message: `Unauthorized: ${message}`,
-    };
-};
-
 export default defineEventHandler(async (event) => {
+    const { responseUnauthorized } = useResponseHandler(event);
+
     const path = event.path;
 
     // ถ้าไม่ใช่ API ให้ข้ามการตรวจสอบสิทธิ์
@@ -37,9 +25,8 @@ export default defineEventHandler(async (event) => {
     }
 
     // ดึง Access Token จาก Cookie
-    // const accessToken = getCookie(event, 'access_token');
     const authorizationHeader = getHeader(event, 'Authorization');
-    
+
     if (!authorizationHeader) {
         // ถ้าไม่มี header
         throw createError({
@@ -62,20 +49,38 @@ export default defineEventHandler(async (event) => {
 
     if (!accessToken) {
         // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
-        return createUnauthorizedResponse(event, 'No token provided');
+        return responseUnauthorized('No token provided');
     }
 
     try {
         // อ่านค่า Token และถอดรหัส
-        const accessTokenDecode: JwtPayload = jwtDecode(accessToken);
+        const accessTokenDecode: AccessTokenPayload = jwtDecode(accessToken);
         const currentTime = Math.floor(Date.now() / 1000);
 
         if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
             // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
-            return createUnauthorizedResponse(event, 'Token expired');
+            return responseUnauthorized('Token expired');
+        }
+
+        // ค้นหา Token ในฐานข้อมูลและตรวจสอบว่าถูก Revoke หรือไม่
+        const dbRefreshToken = await prisma.refreshToken.findUnique({
+            where: {
+                jti: String(accessTokenDecode?.rtid),
+                revoked: false
+            }
+        });
+
+        // ไม่พบ Token หรือถูก Revoke แล้ว 
+        if (!dbRefreshToken) {
+            return responseUnauthorized('Refresh token is invalid or has been revoked', 403);
+            // throw createError({
+            //     statusCode: 403,
+            //     statusMessage: "Forbidden",
+            //     message: 'Refresh token is invalid or has been revoked'
+            // });
         }
     } catch (error: unknown) {
         // เกิดข้อผิดพลาด ให้คืนสถานะ Unauthorized
-        return createUnauthorizedResponse(event, 'Invalid token format');
+        return responseUnauthorized('Invalid token format');
     }
 });

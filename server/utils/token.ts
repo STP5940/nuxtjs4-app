@@ -6,6 +6,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import parseDuration from 'parse-duration';
 import { setCookie, H3Event } from 'h3';
 import { v4 as uuidv4 } from 'uuid';
+import * as crypto from 'crypto';
+
+import prisma from '~~/lib/prisma'
 
 type UserRole = typeof randomRoles[number];
 
@@ -15,13 +18,17 @@ type UserRole = typeof randomRoles[number];
 
 // Payload สำหรับ Access Token (อายุสั้น, ใช้เรียก API)
 export interface AccessTokenPayload extends JwtPayload {
-    sub: string;
-    role: UserRole;
+    sub: string; // ID ผู้ใช้
+    rtid: string; // อ้างอิง Refresh Token ID
+    role: UserRole; // บทบาทของผู้ใช้
+    username: string; // ชื่อผู้ใช้ (ถ้าต้องการ)
+    email?: string; // อีเมลผู้ใช้ (ถ้าต้องการ)
+    avatar?: string; // URL รูปประจำตัว (ถ้าต้องการ)
 }
 
 // Payload สำหรับ Refresh Token (อายุยาว, ต้องมี jti สำหรับ Revocation)
 export interface RefreshTokenPayload extends JwtPayload {
-    sub: string;
+    sub: string; // ID ผู้ใช้
     jti: string; // ใช้สำหรับอ้างอิงในฐานข้อมูล
 }
 
@@ -43,32 +50,58 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
 // ----------------------------------------------------------------------
 
 /**
- * สร้าง Access Token และ Refresh Token คู่กัน
+ * สร้าง Access Token
  * @param userId ID ผู้ใช้
  * @param role บทบาทของผู้ใช้
- * @returns Object ที่ประกอบด้วย Tokens และ ID สำหรับบันทึกใน DB
+ * @param refreshTokenId ID ของ Refresh Token ที่เกี่ยวข้อง
+ * @returns Access Token string
  */
-export function generateTokens(userId: string, role: UserRole) {
+export async function generateAccessToken(userId: string, role: UserRole, refreshTokenId: string) {
+    // ค้นหาผู้ใช้จาก userId
+    const findingUser = await prisma.users.findUnique({
+        where: {
+            id: String(userId)
+        }
+    });
 
-    // ในการผลิตจริง ควรใช้ uuidv4() เพื่อสร้าง ID ที่ไม่ซ้ำกัน
-    const refreshTokenId = uuidv4();
+    if (!findingUser) {
+        throw new Error('User not found when generating access token');
+    }
 
-    // 1. สร้าง Access Token (อายุ 15 นาที)
     const accessTokenPayload: AccessTokenPayload = {
         sub: userId,
-        role
+        rtid: refreshTokenId, // อ้างอิง Refresh Token ID
+        role,
+        username: findingUser?.username,
+        ...(findingUser?.email && { email: findingUser.email }),
+        ...(findingUser?.avatar && { avatar: findingUser.avatar }),
     };
+
     const accessToken = jwt.sign(
         accessTokenPayload,
         ACCESS_SECRET,
         { expiresIn: getAccessTokenMaxAge() / 1000 } // Convert to seconds
     );
 
-    // 2. สร้าง Refresh Token (อายุ 7 วัน)
+    return {
+        accessToken // Access Token string
+    };
+}
+
+/**
+ * สร้าง Refresh Token
+ * @param userId ID ผู้ใช้
+ * @param refreshTokenId ID ของ Refresh Token (jti)
+ * @returns Object ที่ประกอบด้วย Refresh Token string และ ID สำหรับบันทึกใน DB
+ */
+export function generateRefreshToken(userId: string) {
+    const refreshTokenId = uuidv4();
+
     const refreshTokenPayload: RefreshTokenPayload = {
         sub: userId,
         jti: refreshTokenId, // ใช้สำหรับอ้างอิงในฐานข้อมูล
     };
+
     const refreshToken = jwt.sign(
         refreshTokenPayload,
         REFRESH_SECRET,
@@ -76,8 +109,7 @@ export function generateTokens(userId: string, role: UserRole) {
     );
 
     return {
-        accessToken,
-        refreshToken,
+        refreshToken, // Refresh Token string
         refreshTokenId, // ต้องนำค่านี้ไปบันทึกใน Database
     };
 }
@@ -160,7 +192,7 @@ export function setAccessTokenCookie(event: H3Event, accessToken: string) {
     setCookie(event, 'access_token', accessToken, {
         httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
-        // sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
+        sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
         // maxAge: Math.floor(ACCESS_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
         path: '/', // ใช้ได้กับทุก path
     });
@@ -179,9 +211,18 @@ export function setRefreshTokenCookie(event: H3Event, refreshToken: string) {
     setCookie(event, 'refresh_token', refreshToken, {
         httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
-        // sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
+        sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
         // maxAge: Math.floor(REFRESH_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
         path: '/', // ใช้ได้กับทุก path
     });
 
+}
+
+/**
+แฮช Token ด้วย SHA-256
+@param token Token ที่ต้องการแฮช
+@returns ค่าแฮชของ Token ในรูปแบบ hexadecimal string
+*/
+export function hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
 }

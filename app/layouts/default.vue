@@ -111,7 +111,7 @@ const shouldRefreshToken = (): boolean => {
     }
 
     const decoded: JwtPayload = jwtDecode(accessToken.value);
-    
+
     if (!decoded.exp) {
       console.warn('⚠️ Token ไม่มี exp field');
       return false;
@@ -119,15 +119,15 @@ const shouldRefreshToken = (): boolean => {
 
     const now = Math.floor(Date.now() / 1000);
     const expiresIn = decoded.exp - now;
-    
+
     // console.log(`⏰ Token เหลืออายุอีก ${expiresIn} วินาที (${Math.floor(expiresIn / 60)} นาที)`);
-    
+
     // ถ้าเหลือเวลาน้อยกว่า REFRESH_THRESHOLD (5 นาที) ให้ refresh
     if (expiresIn <= REFRESH_THRESHOLD) {
       console.log(`🔔 Token เหลือเวลาน้อยกว่า ${REFRESH_THRESHOLD / 60} นาที, ควร refresh!`);
       return true;
     }
-    
+
     return false;
   } catch (error) {
     console.error('❌ ไม่สามารถ decode token:', error);
@@ -149,6 +149,7 @@ const checkAndRefreshToken = async () => {
       console.log('❌ Token refresh failed');
       // หยุด interval ถ้า refresh ไม่สำเร็จ
       stopAutoRefresh();
+      return navigateTo("/login", { external: true });
     }
   } else {
     // console.log('✓ Token ยังไม่ต้อง refresh');
