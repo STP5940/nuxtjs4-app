@@ -53,7 +53,7 @@ const filteredUsers = computed<Users[]>(() => {
   </div>
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-if="usersResponse">
+  <div v-if="usersResponse && !pending && !error">
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."
