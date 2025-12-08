@@ -7,7 +7,7 @@ import prisma from '~~/lib/prisma'
 import { jwtDecode } from 'jwt-decode';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
-const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/logout', '/api/v1/auth/refresh'];
+const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'];
 
 export default defineEventHandler(async (event) => {
     const { responseUnauthorized } = useResponseHandler(event);

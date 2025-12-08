@@ -1,31 +1,57 @@
 import { jwtDecode, type JwtPayload } from 'jwt-decode'
 
-import { refreshAccessToken } from '~/middleware/auth'
+import { callRefreshToken } from '~/middleware/auth'
 
 export default defineNuxtRouteMiddleware(async () => {
-  // const refreshToken = useCookie('refresh_token');
+  const refreshToken = useCookie('refresh_token');
   const accessToken = useCookie('access_token');
 
-  // ถ้ามี refresh token และยังไม่หมดอายุ ให้ redirect ไปที่หน้าแรก
-  if (accessToken.value) {
-    try {
-      const decoded: JwtPayload = jwtDecode(accessToken.value)
+  try {
+
+    if (accessToken.value) {
+      const accessTokenDecode: JwtPayload = jwtDecode(accessToken.value)
       const currentTime = Math.floor(Date.now() / 1000)
 
-      if (decoded.exp && decoded.exp > currentTime) {
+      if (accessTokenDecode.exp) {
+        // ถ้า access token หมดอายุ ให้ลอง refresh access token ใหม่
+        if (accessTokenDecode.exp >= currentTime) {
+          const refreshSuccess = await callRefreshToken('access_token');
+          if (refreshSuccess) {
+            return navigateTo("/");
+          }
+        }
 
-        // refresh token ยังไม่หมดอายุ ให้ลอง refresh access token ใหม่
-        const refreshSuccess = await refreshAccessToken();
-
-        if (refreshSuccess) {
-          // ถ้า refresh สำเร็จ ให้ไปที่หน้าแรก
+        // ถ้า access token ยังไม่หมดอายุ ให้ไปหน้าแรก
+        if (accessTokenDecode.exp < currentTime) {
           return navigateTo("/");
         }
       }
-    } catch (error) {
-      // ถ้า decode ไม่สำเร็จ (token ไม่ถูกต้อง) ให้ปล่อยผ่าน
-      // เพื่อให้ผู้ใช้สามารถเข้าสู่หน้า login ได้ตามปกติ
-      console.error('❌ Invalid refresh token on guest page')
     }
+
+    if (refreshToken.value) {
+      const refreshTokenDecode: JwtPayload = jwtDecode(refreshToken.value)
+      const currentTime = Math.floor(Date.now() / 1000)
+
+      if (refreshTokenDecode.exp) {
+        // ถ้า refresh token ยังไม่หมดอายุ ให้ไปหน้าแรก
+        if (refreshTokenDecode.exp >= currentTime) {
+          const refreshSuccess = await callRefreshToken('access_token');
+          if (refreshSuccess) {
+            return navigateTo("/");
+          }
+        }
+
+        // ถ้า refresh token หมดอายุ ให้ล้าง cookie ทั้งหมด
+        if (refreshTokenDecode.exp < currentTime) {
+          return navigateTo("/");
+        }
+      }
+    }
+
+    return;
+  } catch (error) {
+    accessToken.value = null;
+    refreshToken.value = null;
+    console.error('❌ Invalid refresh token on guest page')
   }
 })

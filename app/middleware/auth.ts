@@ -6,9 +6,9 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
  * ฟังก์ชันสำหรับขอ Access Token ใหม่โดยใช้ Refresh Token
  * @returns {Promise<boolean>} - true ถ้าการ Refresh สำเร็จ, false ถ้าไม่สำเร็จ
  */
-export async function refreshAccessToken(): Promise<boolean> {
-    const refreshToken = useCookie('refresh_token');
+export async function callRefreshToken(grantType: string = 'access_token'): Promise<boolean> {
     const accessToken = useCookie('access_token');
+    const refreshToken = useCookie('refresh_token');
 
     // ถ้าไม่มี refresh token ให้คืนค่า false ทันที  
     if (!refreshToken.value) {
@@ -22,20 +22,19 @@ export async function refreshAccessToken(): Promise<boolean> {
             error: boolean;
             message: string;
             data: {
+                refreshToken?: string;
                 accessToken: string;
             };
         }>('/api/v1/auth/refresh', {
             method: 'POST',
             body: {
-                grantType: 'access_token',
+                grantType: grantType,
                 refreshToken: refreshToken.value
             }
         });
 
-        const { accessToken: newAccessToken } = response.data;
-
-        // ถ้ามี token ใหม่ที่ได้กลับมา ให้อัปเดตค่า access token ใน cookie
-        if (newAccessToken) {
+        // ถ้ามี token ใหม่ที่ได้กลับมา
+        if (response.data) {
             return true; // สำเร็จ
         }
 
@@ -47,7 +46,8 @@ export async function refreshAccessToken(): Promise<boolean> {
         if (typeof status === 'number' && status === 403) {
             console.log("❌ Kill Token: Refresh token is invalid/revoked (403).");
             accessToken.value = null;
-            // refreshToken.value = null;
+            refreshToken.value = null;
+            return false;
         }
 
         // ข้อผิดพลาดทั่วไปในการขอ refresh token
@@ -80,7 +80,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
 
                 // ถ้า Access Token หมดอายุ ให้ลองขอ Access Token ใหม่
-                const refreshSuccess = await refreshAccessToken();
+                const refreshSuccess = await callRefreshToken('access_token');
                 if (!refreshSuccess) {
                     // ถ้า refresh ไม่สำเร็จ
                     return redirectToLogin();
@@ -89,7 +89,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return;
         } else {
             // ให้ลองขอ Access Token ใหม่
-            const refreshSuccess = await refreshAccessToken();
+            const refreshSuccess = await callRefreshToken('access_token');
             if (!refreshSuccess) {
                 // ถ้า refresh ไม่สำเร็จ
                 return redirectToLogin();

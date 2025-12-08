@@ -22,7 +22,7 @@ const tabItems = [
 const selectedTab = ref("all");
 
 const accessToken = useCookie("access_token");
-const { data: mails, execute } = await useFetch<Mail[]>("/api/mails", {
+const { data: mails, error, execute } = await useFetch<Mail[]>("/api/mails", {
   lazy: true,
   method: "GET",
   headers: computed(() => ({
@@ -30,6 +30,27 @@ const { data: mails, execute } = await useFetch<Mail[]>("/api/mails", {
   })),
   default: () => [],
 });
+
+// ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
+// กรณีที่ token ถูก revoke ก่อนหมดอายุ
+watch(
+  error,
+  async (newError) => {
+    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
+    if (import.meta.client && newError) {
+      // refresh token ถูก revoked ให้ไปที่หน้า login
+      if (newError.statusCode === 403) {
+        console.log("Unauthorized access - possibly invalid token.");
+        console.log("Status code:", newError.statusCode);
+        console.log(`Error fetching users: ${newError.message}`);
+        setTimeout(async () => {
+          await navigateTo("/login");
+        }, 2000); // หน่วงเวลา 2000 มิลลิวินาที (2 วินาที)
+      }
+    }
+  },
+  { immediate: true }
+);
 
 // Filter mails based on the selected tab
 const filteredMails = computed(() => {

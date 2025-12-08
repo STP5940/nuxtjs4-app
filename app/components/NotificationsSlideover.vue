@@ -5,13 +5,37 @@ import type { Notification } from "~/types";
 const { isNotificationsSlideoverOpen } = useDashboard();
 
 const accessToken = useCookie("access_token");
-const { data: notifications, execute } = await useFetch<Notification[]>("/api/notifications", {
-  lazy: true,
-  method: "GET",
-  headers: computed(() => ({
-    Authorization: `Bearer ${accessToken.value}`, // reactive
-  })),
-});
+const { data: notifications, error, execute } = await useFetch<Notification[]>(
+  "/api/notifications",
+  {
+    lazy: true,
+    method: "GET",
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+  }
+);
+
+// ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
+// กรณีที่ token ถูก revoke ก่อนหมดอายุ
+watch(
+  error,
+  async (newError) => {
+    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
+    if (import.meta.client && newError) {
+      // refresh token ถูก revoked ให้ไปที่หน้า login
+      if (newError.statusCode === 403) {
+        console.log("Unauthorized access - possibly invalid token.");
+        console.log("Status code:", newError.statusCode);
+        console.log(`Error fetching users: ${newError.message}`);
+        setTimeout(async () => {
+          await navigateTo("/login");
+        }, 2000); // หน่วงเวลา 2000 มิลลิวินาที (2 วินาที)
+      }
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

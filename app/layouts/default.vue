@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // app/layouts/default.vue
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
-import { refreshAccessToken } from '~/middleware/auth';
+import { callRefreshToken } from '~/middleware/auth';
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const refreshToken = useCookie('refresh_token');
@@ -16,7 +16,7 @@ let intervalId: NodeJS.Timeout | null = null;
 
 // ตัวแปรสำหรับเก็บค่าเวลา
 const REFRESH_THRESHOLD = 10; // 10 วินาที - จะ refresh เมื่อเหลือเวลาน้อยกว่านี้
-const CHECK_INTERVAL = 5000; // 5 วินาที (5,000 milliseconds) - ตรวจสอบทุก 5 วินาที
+const CHECK_INTERVAL = 10000; // 10 วินาที (10,000 milliseconds) - ตรวจสอบทุก 10 วินาที
 
 const links = [[{
   label: 'Home',
@@ -120,7 +120,7 @@ const shouldRefreshToken = (): boolean => {
     const now = Math.floor(Date.now() / 1000);
     const expiresIn = decoded.exp - now;
 
-    // console.log(`⏰ Token เหลืออายุอีก ${expiresIn} วินาที (${Math.floor(expiresIn / 60)} นาที)`);
+    console.log(`⏰ Token เหลืออายุอีก ${expiresIn} วินาที (${Math.floor(expiresIn / 60)} นาที)`);
 
     // ถ้าเหลือเวลาน้อยกว่า REFRESH_THRESHOLD (5 นาที) ให้ refresh
     if (expiresIn <= REFRESH_THRESHOLD) {
@@ -141,7 +141,7 @@ const shouldRefreshToken = (): boolean => {
 const checkAndRefreshToken = async () => {
   if (shouldRefreshToken()) {
     // console.log('🔄 Auto-refreshing access token...');
-    const success = await refreshAccessToken();
+    const success = await callRefreshToken('access_token');
 
     if (success) {
       console.log('✅ Token refreshed successfully');
