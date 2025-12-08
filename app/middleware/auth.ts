@@ -45,8 +45,6 @@ export async function callRefreshToken(grantType: string = 'access_token'): Prom
         // refresh token ไม่มีจริงเพราะถูกลบออกไปแล้วจากฐานข้อมูล
         if (typeof status === 'number' && status === 403) {
             console.log("❌ Kill Token: Refresh token is invalid/revoked (403).");
-            accessToken.value = null;
-            refreshToken.value = null;
             return false;
         }
 

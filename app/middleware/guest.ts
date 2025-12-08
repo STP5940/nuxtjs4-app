@@ -50,8 +50,6 @@ export default defineNuxtRouteMiddleware(async () => {
 
     return;
   } catch (error) {
-    accessToken.value = null;
-    refreshToken.value = null;
     console.error('❌ Invalid refresh token on guest page')
   }
 })

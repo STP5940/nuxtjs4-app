@@ -9,7 +9,7 @@ import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { randomRoles } from '~~/constants/roles'
 import prisma from '~~/lib/prisma'
 
-import { getRequestIP, getHeader, getCookie } from 'h3';
+import { getRequestIP, getHeader, deleteCookie } from 'h3';
 import { z } from 'zod';
 
 const tokenRequestSchema = z.object({
@@ -53,6 +53,8 @@ export default defineEventHandler(async (event) => {
 
         // ไม่พบ Token หรือถูก Revoke แล้ว
         if (!dbRefreshToken) {
+            deleteCookie(event, 'access_token');
+            deleteCookie(event, 'refresh_token');
             throw createError({
                 statusCode: 403,
                 statusMessage: "Forbidden",
