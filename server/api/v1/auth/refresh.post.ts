@@ -25,6 +25,14 @@ export default defineEventHandler(async (event) => {
     const userAgent = getHeader(event, 'user-agent');
     const refreshToken = getCookie(event, 'refresh_token');
 
+    if (!refreshToken) {
+        throw createError({
+            statusCode: 401,
+            statusMessage: "Unauthorized",
+            message: 'Invalid refresh token'
+        });
+    }
+
     try {
         /** 
          * เริ่มต้น การตรวจสอบทั่วไปสำหรับทั้งสองกรณี 
@@ -33,7 +41,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event)
         const validatedData = tokenRequestSchema.parse(body)
 
-        const refreshPayload: RefreshTokenPayload | null = decodeRefreshToken(refreshToken as string);
+        const refreshPayload: RefreshTokenPayload | null = decodeRefreshToken(refreshToken);
 
         // ตรวจสอบว่า payload ที่ถอดรหัสได้ถูกต้องหรือไม่
         if (!refreshPayload) {

@@ -17,6 +17,8 @@ export async function callRefreshToken(grantType: string = 'access_token'): Prom
     // }
 
     try {
+        // ดึง headers ปัจจุบันรวมถึง cookie
+        const headers = useRequestHeaders(['cookie']);
         // เรียก API เพื่อขอ Access Token ใหม่
         const response = await $fetch<{
             error: boolean;
@@ -27,6 +29,7 @@ export async function callRefreshToken(grantType: string = 'access_token'): Prom
             };
         }>('/api/v1/auth/refresh', {
             method: 'POST',
+            headers: headers,
             body: {
                 grantType: grantType,
                 // refreshToken: refreshToken.value
