@@ -3,16 +3,19 @@
 import type { UsersResponse, Users } from "~/types";
 
 const accessToken = useCookie("access_token");
-const { data: usersLists, pending, error, execute } = await useFetch<UsersResponse>(
-  "/api/v1/users",
-  {
-    immediate: false, // ไม่ต้องเรียกใช้ทันที
-    method: "GET",
-    headers: computed(() => ({
-      Authorization: `Bearer ${accessToken.value}`, // reactive
-    })),
-  }
-);
+const {
+  data: usersLists,
+  pending,
+  error,
+  execute,
+  refresh,
+} = await useFetch<UsersResponse>("/api/v1/users", {
+  immediate: false, // ไม่ต้องเรียกใช้ทันที
+  method: "GET",
+  headers: computed(() => ({
+    Authorization: `Bearer ${accessToken.value}`, // reactive
+  })),
+});
 
 // ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
 // กรณีที่ token ถูก revoke ก่อนหมดอายุ
@@ -21,14 +24,16 @@ watch(
   async (newError) => {
     // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
+      await refresh();
       // refresh token ถูก revoked ให้ไปที่หน้า login
       if (newError.statusCode === 403) {
-        console.log("Unauthorized access - possibly invalid token.");
-        console.log("Status code:", newError.statusCode);
-        console.log(`Error fetching users: ${newError.message}`);
-        setTimeout(async () => {
-          await navigateTo("/login");
-        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
+        alert(accessToken.value);
+        //   console.log("Unauthorized access - possibly invalid token.");
+        //   console.log("Status code:", newError.statusCode);
+        //   console.log(`Error fetching users: ${newError.message}`);
+        //   setTimeout(async () => {
+        //     await navigateTo("/login");
+        //   }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }
   },
