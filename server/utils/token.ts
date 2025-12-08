@@ -192,7 +192,7 @@ export function setAccessTokenCookie(event: H3Event, accessToken: string) {
     setCookie(event, 'access_token', accessToken, {
         httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
-        sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
+        sameSite: 'lax', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
         // maxAge: Math.floor(ACCESS_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที
         path: '/', // ใช้ได้กับทุก path
     });
@@ -209,7 +209,7 @@ export function setRefreshTokenCookie(event: H3Event, refreshToken: string) {
     const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
 
     setCookie(event, 'refresh_token', refreshToken, {
-        httpOnly: false, // ⚠️ เพื่อให้ JavaScript อ่านได้
+        httpOnly: true, // ⚠️ เพื่อให้ JavaScript อ่านได้
         secure: isProduction, // ใช้เฉพาะกับ HTTPS ใน production
         sameSite: 'strict', // ⭐ เปลี่ยนเป็น 'strict' เพื่อความปลอดภัยสูงสุด
         // maxAge: Math.floor(REFRESH_TOKEN_MAX_AGE_MS / 1000), // เปลี่ยนเป็นวินาที

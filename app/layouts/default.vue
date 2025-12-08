@@ -4,7 +4,7 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { callRefreshToken } from '~/middleware/auth';
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const refreshToken = useCookie('refresh_token');
+// const refreshToken = useCookie('refresh_token');
 const accessToken = useCookie("access_token");
 
 const route = useRoute()
@@ -188,7 +188,7 @@ const stopAutoRefresh = () => {
 };
 
 onMounted(() => {
-  if (refreshToken.value && accessToken.value) {
+  if (accessToken.value) {
     startAutoRefresh();
   }
 });
@@ -198,7 +198,7 @@ onUnmounted(() => {
 });
 
 watch(accessToken, (newToken) => {
-  if (newToken && refreshToken.value) {
+  if (newToken) {
     console.log('🔄 Access token changed, restarting auto-refresh...');
     startAutoRefresh();
   } else if (!newToken) {

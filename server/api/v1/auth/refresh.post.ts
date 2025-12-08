@@ -9,12 +9,12 @@ import { useErrorHandler } from '~~/server/composables/useErrorHandler';
 import { randomRoles } from '~~/constants/roles'
 import prisma from '~~/lib/prisma'
 
-import { getRequestIP, getHeader, deleteCookie } from 'h3';
+import { getRequestIP, getHeader, getCookie, deleteCookie } from 'h3';
 import { z } from 'zod';
 
 const tokenRequestSchema = z.object({
     grantType: z.literal(['refresh_token', 'access_token']),
-    refreshToken: z.string().min(1, "Refresh token is required")
+    // refreshToken: z.string().min(1, "Refresh token is required")
 });
 
 export default defineEventHandler(async (event) => {
@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
 
     const ipAddress = getRequestIP(event, { xForwardedFor: true });
     const userAgent = getHeader(event, 'user-agent');
+    const refreshToken = getCookie(event, 'refresh_token');
 
     try {
         /** 
@@ -32,7 +33,7 @@ export default defineEventHandler(async (event) => {
         const body = await readBody(event)
         const validatedData = tokenRequestSchema.parse(body)
 
-        const refreshPayload: RefreshTokenPayload | null = decodeRefreshToken(validatedData.refreshToken)
+        const refreshPayload: RefreshTokenPayload | null = decodeRefreshToken(refreshToken as string);
 
         // ตรวจสอบว่า payload ที่ถอดรหัสได้ถูกต้องหรือไม่
         if (!refreshPayload) {
@@ -149,7 +150,7 @@ export default defineEventHandler(async (event) => {
             setRefreshTokenCookie(event, refreshToken)
 
             return responseSuccess({
-                refreshToken: refreshToken,
+                // refreshToken: refreshToken,
                 accessToken: accessToken,
             }, 'Tokens refreshed successfully')
         }
