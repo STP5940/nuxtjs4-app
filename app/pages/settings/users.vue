@@ -65,7 +65,7 @@ const filteredUsers = computed<Users[]>(() => {
     <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
     <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
     <h1 class="mt-2 text-sm">
-      <code>Message: {{ error.data.message }}</code>
+      <code>{{ error.data.message }}</code>
     </h1>
     <UButton
       icon="i-lucide-refresh-cw"
@@ -101,7 +101,6 @@ const filteredUsers = computed<Users[]>(() => {
           v-model="q"
           icon="i-lucide-search"
           placeholder="Search users"
-          autofocus
           class="w-full"
         />
       </template>
