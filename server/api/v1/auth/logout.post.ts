@@ -1,4 +1,4 @@
-// server/api/v1/auth/login.post.ts
+// server/api/v1/auth/logout.post.ts
 
 import { decodeRefreshToken, type RefreshTokenPayload } from '~~/server/utils/token';
 import { useResponseHandler } from '~~/server/composables/useResponseHandler';

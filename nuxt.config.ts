@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: true,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -15,10 +14,57 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@vueuse/nuxt',
     'nuxt-security',
+    '@vite-pwa/nuxt',
 
     // Development only modules
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
   ],
+
+  pwa: {
+// 1. เปิดใช้งานการสร้าง Manifest (ไฟล์ที่อธิบาย PWA ของคุณ)
+    registerType: 'autoUpdate', 
+
+    // 2. การตั้งค่าไฟล์ Manifest (สำคัญสำหรับข้อมูลการติดตั้ง)
+    manifest: {
+      name: 'ชื่อ PWA ของคุณ', // ชื่อที่จะแสดงเมื่อติดตั้ง
+      short_name: 'ชื่อย่อ', // ชื่อย่อสำหรับหน้าจอหลัก
+      description: 'คำอธิบายสั้นๆ เกี่ยวกับแอปพลิเคชันของคุณ',
+      theme_color: '#ffffff', // สีของแถบเครื่องมือ/เบราว์เซอร์
+      background_color: '#ffffff', // สีพื้นหลังระหว่างการโหลด
+      icons: [
+        // เพิ่มไอคอนแอปพลิเคชัน (จำเป็น)
+        {
+          src: 'pwa-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        },
+        {
+          src: 'pwa-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable', // สำหรับ Android ที่ต้องการไอคอน Maskable
+        },
+      ],
+    },
+
+    // 3. การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
+    workbox: {
+      // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
+      navigateFallback: '/', 
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}'], // แพทเทิร์นไฟล์ที่ Workbox จะแคช
+    },
+
+    // 4. การเปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
+    devOptions: {
+      enabled: true, // อนุญาตให้ Service Worker ทำงานในโหมด dev
+      type: 'module', // ใช้ ES module (แนะนำ)
+    },
+  },
 
   css: ['~/assets/css/main.css'],
 
