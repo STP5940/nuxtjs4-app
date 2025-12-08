@@ -10,7 +10,8 @@ const {
   execute,
   refresh,
 } = await useFetch<UsersResponse>("/api/v1/users", {
-  immediate: false, // ไม่ต้องเรียกใช้ทันที
+  lazy: true,
+  // immediate: false, // ไม่ต้องเรียกใช้ทันที
   method: "GET",
   headers: computed(() => ({
     Authorization: `Bearer ${accessToken.value}`, // reactive
@@ -40,9 +41,9 @@ watch(
   { immediate: true }
 );
 
-onMounted(() => {
-  execute();
-});
+// onMounted(() => {
+//   execute();
+// });
 
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
 const usersCount = computed(() => usersLists.value?.data?.usersCount ?? 0);
