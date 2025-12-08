@@ -14,6 +14,27 @@ const { data: usersLists, pending, error, execute } = await useFetch<UsersRespon
   }
 );
 
+// ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
+// กรณีที่ token ถูก revoke ก่อนหมดอายุ
+watch(
+  error,
+  async (newError) => {
+    // ตรวจสอบว่าเป็น Client-side
+    if (import.meta.client && newError) {
+      // refresh token ถูก revoked ให้ไปที่หน้า login
+      if (newError.statusCode === 403) {
+        console.log("Unauthorized access - possibly invalid token.");
+        console.log("Status code:", newError.statusCode);
+        console.log(`Error fetching users: ${newError.message}`);
+        setTimeout(async () => {
+          await navigateTo("/login");
+        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
+      }
+    }
+  },
+  { immediate: true }
+);
+
 onMounted(() => {
   execute();
 });
