@@ -50,9 +50,5 @@
     "prisma": "^6.7.0",
     "tsx": "^4.20.6",
     "vue-tsc": "^3.1.5"
-  },
-  "overrides": {
-    "vite": "npm:rolldown-vite@7.2.10",
-    "@nuxt/vite-builder": "npm:@nuxt/vite-builder-nightly@4.2.2-29413365.2a912219"
   }
 }
