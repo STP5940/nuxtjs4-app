@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     const path = event.path;
 
     // ถ้าไม่ใช่ API ให้ข้ามการตรวจสอบสิทธิ์
-    if (!path.startsWith('/api/')) {
+    if (!path.startsWith('/api/v1/')) {
         return;
     }
 
@@ -29,20 +29,14 @@ export default defineEventHandler(async (event) => {
 
     if (!authorizationHeader) {
         // ถ้าไม่มี header
-        throw createError({
-            statusCode: 401,
-            statusMessage: 'Unauthorized: Missing Authorization header',
-        });
+        return responseUnauthorized('Missing Authorization header');
     }
 
     const [scheme, token] = authorizationHeader.split(' ');
 
     if (scheme !== 'Bearer' || !token) {
         // ตรวจสอบว่ารูปแบบถูกต้องหรือไม่
-        throw createError({
-            statusCode: 401,
-            statusMessage: 'Unauthorized: Invalid token format',
-        });
+        return responseUnauthorized('Invalid token format');
     }
 
     const accessToken = token;

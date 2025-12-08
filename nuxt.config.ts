@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: true,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -44,7 +45,7 @@ export default defineNuxtConfig({
   vite: {
     build: {
       sourcemap: false      // ปิด sourcemap ถ้าไม่ต้องการใช้งาน
-    }
+    },
   },
 
   security: {

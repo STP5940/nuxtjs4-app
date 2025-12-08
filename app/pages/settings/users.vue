@@ -3,12 +3,10 @@
 import type { UsersResponse, Users } from "~/types";
 
 const accessToken = useCookie("access_token");
-
-const { data: usersResponse, pending, error, execute } = await useFetch<UsersResponse>(
+const { data: usersLists, pending, error, execute } = await useFetch<UsersResponse>(
   "/api/v1/users",
   {
-    lazy: true,
-    // immediate: false, // ไม่ดึงข้อมูลอัตโนมัติบน Server-side
+    immediate: false, // ไม่ต้องเรียกใช้ทันที
     method: "GET",
     headers: computed(() => ({
       Authorization: `Bearer ${accessToken.value}`, // reactive
@@ -16,34 +14,17 @@ const { data: usersResponse, pending, error, execute } = await useFetch<UsersRes
   }
 );
 
-// ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
-// กรณีที่ token ถูก revoke ก่อนหมดอายุ
-watch(
-  error,
-  async (newError) => {
-    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
-    if (import.meta.client && newError) {
-      // refresh token ถูก revoked ให้ไปที่หน้า login
-      if (newError.statusCode === 403) {
-        console.log("Unauthorized access - possibly invalid token.");
-        console.log("Status code:", newError.statusCode);
-        console.log(`Error fetching users: ${newError.message}`);
-        setTimeout(async () => {
-          await navigateTo("/login");
-        }, 2000); // หน่วงเวลา 2000 มิลลิวินาที (2 วินาที)
-      }
-    }
-  },
-  { immediate: true }
-);
+onMounted(() => {
+  execute();
+});
 
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
-const usersCount = computed(() => usersResponse.value?.data?.usersCount ?? 0);
+const usersCount = computed(() => usersLists.value?.data?.usersCount ?? 0);
 const q = ref<string>("");
 
 const filteredUsers = computed<Users[]>(() => {
-  const users = usersResponse.value?.data?.users ?? [];
-  return users.filter((user) => {
+  const users = usersLists.value?.data?.users ?? [];
+  return users.filter((user: Users) => {
     return (
       user.name.search(new RegExp(q.value, "i")) !== -1 ||
       user.username.search(new RegExp(q.value, "i")) !== -1 ||
@@ -65,7 +46,7 @@ const filteredUsers = computed<Users[]>(() => {
     <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
     <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
     <h1 class="mt-2 text-sm">
-      <code>{{ error.data.message }}</code>
+      <code>{{ error.data?.message || "Unknown error" }}</code>
     </h1>
     <UButton
       icon="i-lucide-refresh-cw"
@@ -77,7 +58,7 @@ const filteredUsers = computed<Users[]>(() => {
   </div>
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-if="usersResponse && !pending && !error">
+  <div v-if="usersLists && !pending && !error">
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."

@@ -81,3 +81,11 @@ export interface UsersResponse {
     users: Users[]
   }
 }
+
+export interface ErrorResponse {
+  error: boolean;
+  url: string;
+  statusCode: number;
+  statusMessage: string;
+  message: string;
+}
