@@ -47,7 +47,7 @@ export async function refreshAccessToken(): Promise<boolean> {
         if (typeof status === 'number' && status === 403) {
             console.log("❌ Kill Token: Refresh token is invalid/revoked (403).");
             accessToken.value = null;
-            refreshToken.value = null;
+            // refreshToken.value = null;
         }
 
         // ข้อผิดพลาดทั่วไปในการขอ refresh token
