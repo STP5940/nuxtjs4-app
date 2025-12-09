@@ -120,6 +120,12 @@ export default defineNuxtConfig({
     }
   },
 
+  nitro: {
+    prerender: {
+      routes: ['/offline']
+    }
+  },
+
   // เพิ่มการตั้งค่าสำหรับโมดูล @prisma/nuxt ตรงนี้
   // @ts-ignore
   prisma: {
