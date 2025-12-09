@@ -61,8 +61,8 @@ export default defineEventHandler(async (event) => {
 
         // ไม่พบ Token หรือถูก Revoke แล้ว
         if (!dbRefreshToken) {
-            // deleteCookie(event, 'access_token');
-            // deleteCookie(event, 'refresh_token');
+            deleteCookie(event, 'access_token');
+            deleteCookie(event, 'refresh_token');
             throw createError({
                 statusCode: 403,
                 statusMessage: "Forbidden",

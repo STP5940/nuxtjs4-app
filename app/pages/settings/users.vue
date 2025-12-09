@@ -3,20 +3,16 @@
 import type { UsersResponse, Users } from "~/types";
 
 const accessToken = useCookie("access_token");
-const {
-  data: usersLists,
-  pending,
-  error,
-  execute,
-  refresh,
-} = await useFetch<UsersResponse>("/api/v1/users", {
-  lazy: true,
-  // immediate: false, // ไม่ต้องเรียกใช้ทันที
-  method: "GET",
-  headers: computed(() => ({
-    Authorization: `Bearer ${accessToken.value}`, // reactive
-  })),
-});
+const { data: usersLists, pending, error, refresh } = await useFetch<UsersResponse>(
+  "/api/v1/users",
+  {
+    lazy: true,
+    method: "GET",
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+  }
+);
 
 // ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
 // กรณีที่ token ถูก revoke ก่อนหมดอายุ
@@ -40,10 +36,6 @@ watch(
   },
   { immediate: true }
 );
-
-// onMounted(() => {
-//   execute();
-// });
 
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
 const usersCount = computed(() => usersLists.value?.data?.usersCount ?? 0);
