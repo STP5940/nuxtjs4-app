@@ -7,15 +7,6 @@ import { jwtDecode, type JwtPayload } from 'jwt-decode';
  * @returns {Promise<boolean>} - true ถ้าการ Refresh สำเร็จ, false ถ้าไม่สำเร็จ
  */
 export async function callRefreshToken(grantType: string = 'access_token'): Promise<boolean> {
-    // const accessToken = useCookie('access_token');
-    // const refreshToken = useCookie('refresh_token');
-
-    // ถ้าไม่มี refresh token ให้คืนค่า false ทันที  
-    // if (!refreshToken.value) {
-    //     console.error("No refresh token found for refreshing.");
-    //     return false;
-    // }
-
     try {
         // ดึง headers ปัจจุบันรวมถึง cookie
         const headers = useRequestHeaders(['cookie']);
@@ -32,7 +23,6 @@ export async function callRefreshToken(grantType: string = 'access_token'): Prom
             headers: headers,
             body: {
                 grantType: grantType,
-                // refreshToken: refreshToken.value
             }
         });
 
@@ -58,7 +48,6 @@ export async function callRefreshToken(grantType: string = 'access_token'): Prom
 }
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    // const refreshToken = useCookie('refresh_token');
     const accessToken = useCookie('access_token');
 
     // ฟังก์ชันช่วยในการล้าง Token และ Redirect ไปหน้า Login
@@ -67,11 +56,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     };
 
     try {
-        // ถ้าไม่มี refresh token ให้ไปหน้า login
-        // if (!refreshToken.value) {
-        //     return redirectToLogin();
-        // }
-
         // ถ้ามี access token ให้ตรวจสอบต่อ
         if (accessToken.value) {
             const accessTokenDecode: JwtPayload = jwtDecode(accessToken.value);
