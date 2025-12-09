@@ -55,24 +55,15 @@ export default defineNuxtConfig({
       ],
     },
 
-    // 3. การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
+    // การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
     workbox: {
-      // navigateFallback: '/offline', // ❌ ปิดบรรทัดนี้: สาเหตุที่ทำให้ทุกหน้าเด้งไป offline
-      navigateFallbackDenylist: [
-        /^\/api\//,    // API routes
-        /^\/_/,        // Nuxt internal files
-        /^\/sw\.js$/,  // Service worker itself
-        /^\/workbox-/, // Workbox libs
-      ], // ไม่ fallback สำหรับ API
-
       // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
-      // navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'], // แพทเทิร์นไฟล์ที่ Workbox จะแคช
 
       // เพิ่ม runtime caching สำหรับ navigation requests
       runtimeCaching: [
         {
-          // 1. ย้าย caching รูปภาพขึ้นมาก่อน (เพื่อให้ match ก่อน rule ของ pages)
+          // ย้าย caching รูปภาพขึ้นมาก่อน (เพื่อให้ match ก่อน rule ของ pages)
           urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
           handler: 'CacheFirst',
           options: {
@@ -83,24 +74,9 @@ export default defineNuxtConfig({
             }
           }
         },
-        {
-          // 2. ปรับ caching สำหรับ pages ให้ครอบคลุมทุกหน้า
-          // Regex นี้จะ match URL ที่ไม่มีนามสกุลไฟล์ (เช่น /about, /users)
-          urlPattern: /^https?:\/\/[^/]+(?:\/|[^.]*)$/,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'pages',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 86400 // 1 day
-            },
-            networkTimeoutSeconds: 10 // Timeout หลัง 10 วินาที
-          }
-        }
       ]
     },
-
-    // 4. การเปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
+    // เปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
     devOptions: {
       enabled: true, // Enable in dev mode to serve sw.js
       type: 'module', // ใช้ ES module (แนะนำ)
@@ -119,12 +95,6 @@ export default defineNuxtConfig({
         commaDangle: 'never',
         braceStyle: '1tbs'
       }
-    }
-  },
-
-  nitro: {
-    prerender: {
-      routes: ['/offline']
     }
   },
 
