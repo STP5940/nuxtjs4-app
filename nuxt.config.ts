@@ -57,6 +57,15 @@ export default defineNuxtConfig({
 
     // 3. การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
     workbox: {
+      navigateFallback: '/offline', // เปลี่ยนเป็นหน้า offline
+      navigateFallbackDenylist: [
+        /^\/$/,
+        /^\/_/,
+        /^\/api\//,
+        /^\/sw\.js$/,
+        /^\/workbox-/,
+      ], // ไม่ fallback สำหรับ API
+
       // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
       // navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'], // แพทเทิร์นไฟล์ที่ Workbox จะแคช
@@ -71,6 +80,19 @@ export default defineNuxtConfig({
             expiration: {
               maxEntries: 10,
               maxAgeSeconds: 86400 // 1 day
+            },
+            networkTimeoutSeconds: 10 // Timeout หลัง 10 วินาที
+          }
+        },
+        {
+          // เพิ่ม caching สำหรับรูปภาพ
+          urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'images',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 2592000 // 30 days
             }
           }
         }
@@ -79,7 +101,7 @@ export default defineNuxtConfig({
 
     // 4. การเปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
     devOptions: {
-      enabled: false, // ปิดใน dev mode
+      enabled: true, // Enable in dev mode to serve sw.js
       type: 'module', // ใช้ ES module (แนะนำ)
     },
   },
