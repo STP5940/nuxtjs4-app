@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: true,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -21,8 +22,8 @@ export default defineNuxtConfig({
   ],
 
   pwa: {
-// 1. เปิดใช้งานการสร้าง Manifest (ไฟล์ที่อธิบาย PWA ของคุณ)
-    registerType: 'autoUpdate', 
+    // 1. เปิดใช้งานการสร้าง Manifest (ไฟล์ที่อธิบาย PWA ของคุณ)
+    registerType: 'autoUpdate',
 
     // 2. การตั้งค่าไฟล์ Manifest (สำคัญสำหรับข้อมูลการติดตั้ง)
     manifest: {
@@ -31,20 +32,22 @@ export default defineNuxtConfig({
       description: 'คำอธิบายสั้นๆ เกี่ยวกับแอปพลิเคชันของคุณ',
       theme_color: '#ffffff', // สีของแถบเครื่องมือ/เบราว์เซอร์
       background_color: '#ffffff', // สีพื้นหลังระหว่างการโหลด
+      display: 'standalone',
+      start_url: '/',
       icons: [
         // เพิ่มไอคอนแอปพลิเคชัน (จำเป็น)
         {
-          src: 'pwa-192x192.png',
+          src: '/pwa-192x192.png',
           sizes: '192x192',
           type: 'image/png',
         },
         {
-          src: 'pwa-512x512.png',
+          src: '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
         },
         {
-          src: 'pwa-512x512.png',
+          src: '/pwa-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable', // สำหรับ Android ที่ต้องการไอคอน Maskable
@@ -55,13 +58,28 @@ export default defineNuxtConfig({
     // 3. การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
     workbox: {
       // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
-      navigateFallback: '/', 
+      // navigateFallback: '/',
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'], // แพทเทิร์นไฟล์ที่ Workbox จะแคช
+
+      // เพิ่ม runtime caching สำหรับ navigation requests
+      runtimeCaching: [
+        {
+          urlPattern: /^https?:\/\/[^/]+\/$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 86400 // 1 day
+            }
+          }
+        }
+      ]
     },
 
     // 4. การเปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
     devOptions: {
-      enabled: true, // อนุญาตให้ Service Worker ทำงานในโหมด dev
+      enabled: false, // ปิดใน dev mode
       type: 'module', // ใช้ ES module (แนะนำ)
     },
   },
