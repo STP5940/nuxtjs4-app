@@ -27,9 +27,9 @@ export default defineNuxtConfig({
 
     // 2. การตั้งค่าไฟล์ Manifest (สำคัญสำหรับข้อมูลการติดตั้ง)
     manifest: {
-      name: 'ชื่อ PWA ของคุณ', // ชื่อที่จะแสดงเมื่อติดตั้ง
-      short_name: 'ชื่อย่อ', // ชื่อย่อสำหรับหน้าจอหลัก
-      description: 'คำอธิบายสั้นๆ เกี่ยวกับแอปพลิเคชันของคุณ',
+      name: 'Nuxt4 Application', // ชื่อที่จะแสดงเมื่อติดตั้ง
+      short_name: 'Nuxt4 App', // ชื่อย่อสำหรับหน้าจอหลัก
+      description: 'Nuxt4JS Full Stack Application',
       theme_color: '#ffffff', // สีของแถบเครื่องมือ/เบราว์เซอร์
       background_color: '#ffffff', // สีพื้นหลังระหว่างการโหลด
       display: 'standalone',
