@@ -67,15 +67,8 @@ export default defineEventHandler(async (event) => {
         // ไม่พบ Token หรือถูก Revoke แล้ว 
         if (!dbRefreshToken) {
 
-            deleteCookie(event, 'access_token', {
-                httpOnly: false, // ⚠️ ต้องตรงกับตอนตั้งค่า!
-                path: '/', // ⚠️ ต้องตรงกับตอนตั้งค่า!
-            });
-
-            deleteCookie(event, 'refresh_token', {
-                httpOnly: true, // ⚠️ ต้องตรงกับตอนตั้งค่า!
-                path: '/', // ⚠️ ต้องตรงกับตอนตั้งค่า!
-            });
+            deleteCookie(event, 'access_token');
+            deleteCookie(event, 'refresh_token');
 
             return responseUnauthorized('Refresh token is invalid or has been revoked', 403);
         }

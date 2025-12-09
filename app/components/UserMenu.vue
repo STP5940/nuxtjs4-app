@@ -168,15 +168,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 ]);
 
 const handleLogout = async function () {
-  try {
-    await $fetch("/api/v1/auth/logout", {
-      method: "POST",
-    });
-  } catch (error) {
-    console.error("Logout failed", error);
-  } finally {
-    await navigateTo("/login");
-  }
+  await navigateTo("/logout");
 };
 </script>
 
