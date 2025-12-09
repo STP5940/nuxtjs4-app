@@ -59,11 +59,10 @@ export default defineNuxtConfig({
     workbox: {
       navigateFallback: '/offline', // เปลี่ยนเป็นหน้า offline
       navigateFallbackDenylist: [
-        /^\/$/,
-        /^\/_/,
-        /^\/api\//,
-        /^\/sw\.js$/,
-        /^\/workbox-/,
+        /^\/api\//,    // API routes
+        /^\/_/,        // Nuxt internal files
+        /^\/sw\.js$/,  // Service worker itself
+        /^\/workbox-/, // Workbox libs
       ], // ไม่ fallback สำหรับ API
 
       // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
