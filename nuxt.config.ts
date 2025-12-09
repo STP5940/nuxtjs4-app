@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: true,
+  ssr: false,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -32,8 +32,7 @@ export default defineNuxtConfig({
       description: 'Nuxt4JS Full Stack Application',
       theme_color: '#ffffff', // สีของแถบเครื่องมือ/เบราว์เซอร์
       background_color: '#ffffff', // สีพื้นหลังระหว่างการโหลด
-      display: 'standalone',
-      start_url: '/',
+      display: 'standalone', // โหมดการแสดงผล (standalone, fullscreen, minimal-ui, browser)
       icons: [
         // เพิ่มไอคอนแอปพลิเคชัน (จำเป็น)
         {
@@ -57,6 +56,13 @@ export default defineNuxtConfig({
 
     // การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
     workbox: {
+      navigateFallbackDenylist: [
+        /^\/_/,        // Nuxt internal routes
+        /^\/api\//,    // API routes
+        /^\/sw\.js$/,  // Service Worker file
+        /^\/workbox-/, // workbox files
+      ], // ป้องกันไม่ให้จับคู่กับ API routes
+
       // ตัวเลือกการแคชเบื้องต้น: แคชไฟล์ที่สร้างโดย Nuxt โดยอัตโนมัติ
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'], // แพทเทิร์นไฟล์ที่ Workbox จะแคช
 
@@ -74,6 +80,21 @@ export default defineNuxtConfig({
             }
           }
         },
+        {
+          // รองรับ iconify & lucide ทุกอัน
+          urlPattern: ({ url }) => /(iconify|lucide)/.test(url.origin),
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'icons',
+            expiration: {
+              maxEntries: 200,
+              maxAgeSeconds: 2592000 // 30 วัน
+            },
+            cacheableResponse: {
+              statuses: [0, 200]
+            }
+          }
+        }
       ]
     },
     // เปิดใช้งาน Development (แนะนำให้เปิดเฉพาะในโหมด dev)
