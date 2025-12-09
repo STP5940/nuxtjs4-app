@@ -57,7 +57,7 @@ export default defineNuxtConfig({
 
     // 3. การตั้งค่า Service Worker (สำหรับ Offline และ Caching)
     workbox: {
-      navigateFallback: '/offline', // เปลี่ยนเป็นหน้า offline
+      // navigateFallback: '/offline', // ❌ ปิดบรรทัดนี้: สาเหตุที่ทำให้ทุกหน้าเด้งไป offline
       navigateFallbackDenylist: [
         /^\/api\//,    // API routes
         /^\/_/,        // Nuxt internal files
@@ -72,19 +72,7 @@ export default defineNuxtConfig({
       // เพิ่ม runtime caching สำหรับ navigation requests
       runtimeCaching: [
         {
-          urlPattern: /^https?:\/\/[^/]+\/$/,
-          handler: 'NetworkFirst',
-          options: {
-            cacheName: 'pages',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 86400 // 1 day
-            },
-            networkTimeoutSeconds: 10 // Timeout หลัง 10 วินาที
-          }
-        },
-        {
-          // เพิ่ม caching สำหรับรูปภาพ
+          // 1. ย้าย caching รูปภาพขึ้นมาก่อน (เพื่อให้ match ก่อน rule ของ pages)
           urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
           handler: 'CacheFirst',
           options: {
@@ -93,6 +81,20 @@ export default defineNuxtConfig({
               maxEntries: 50,
               maxAgeSeconds: 2592000 // 30 days
             }
+          }
+        },
+        {
+          // 2. ปรับ caching สำหรับ pages ให้ครอบคลุมทุกหน้า
+          // Regex นี้จะ match URL ที่ไม่มีนามสกุลไฟล์ (เช่น /about, /users)
+          urlPattern: /^https?:\/\/[^/]+(?:\/|[^.]*)$/,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'pages',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 86400 // 1 day
+            },
+            networkTimeoutSeconds: 10 // Timeout หลัง 10 วินาที
           }
         }
       ]
