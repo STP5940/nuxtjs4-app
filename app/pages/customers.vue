@@ -31,7 +31,7 @@ const rowSelection = ref({ 1: true });
 
 const accessToken = useCookie("access_token");
 const { data, status, pending, error, refresh } = await useFetch<User[]>(
-  "/api/customers",
+  "/api/v1/customers",
   {
     lazy: true,
     method: "GET",
@@ -48,16 +48,16 @@ watch(
   async (newError) => {
     // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      await refresh();
+      // await refresh();
       // refresh token ถูก revoked ให้ไปที่หน้า login
       if (newError.statusCode === 403) {
-        alert(accessToken.value);
+        // alert(accessToken.value);
         //   console.log("Unauthorized access - possibly invalid token.");
         //   console.log("Status code:", newError.statusCode);
         //   console.log(`Error fetching users: ${newError.message}`);
-        //   setTimeout(async () => {
-        //     await navigateTo("/login");
-        //   }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
+        setTimeout(async () => {
+          await navigateTo("/login");
+        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }
   },

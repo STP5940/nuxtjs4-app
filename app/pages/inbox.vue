@@ -22,7 +22,7 @@ const tabItems = [
 const selectedTab = ref("all");
 
 const accessToken = useCookie("access_token");
-const { data: mails, error, execute } = await useFetch<Mail[]>("/api/mails", {
+const { data: mails, error, execute } = await useFetch<Mail[]>("/api/v1/mails", {
   lazy: true,
   method: "GET",
   headers: computed(() => ({
@@ -40,12 +40,12 @@ watch(
     if (import.meta.client && newError) {
       // refresh token ถูก revoked ให้ไปที่หน้า login
       if (newError.statusCode === 403) {
-        console.log("Unauthorized access - possibly invalid token.");
-        console.log("Status code:", newError.statusCode);
-        console.log(`Error fetching users: ${newError.message}`);
+        // console.log("Unauthorized access - possibly invalid token.");
+        // console.log("Status code:", newError.statusCode);
+        // console.log(`Error fetching users: ${newError.message}`);
         setTimeout(async () => {
           await navigateTo("/login");
-        }, 2000); // หน่วงเวลา 2000 มิลลิวินาที (2 วินาที)
+        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }
   },
