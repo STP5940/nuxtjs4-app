@@ -27,3 +27,6 @@ package-lock.json
 
 /app/generated/prisma
 /prisma/migrations
+
+# Service Worker files
+sw.*
