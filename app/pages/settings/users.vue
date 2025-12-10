@@ -3,7 +3,7 @@
 import type { UsersResponse, Users } from "~/types";
 
 const accessToken = useCookie("access_token");
-const { data: usersLists, pending, error, refresh } = await useFetch<UsersResponse>(
+const { data: users, status, pending, error, refresh } = await useFetch<UsersResponse>(
   "/api/v1/users",
   {
     lazy: true,
@@ -15,22 +15,21 @@ const { data: usersLists, pending, error, refresh } = await useFetch<UsersRespon
 );
 
 // ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
-// กรณีที่ token ถูก revoke ก่อนหมดอายุ
+// 🔑 ตรวจจับ token ถูก revoke หรือหมดอายุ
 watch(
   error,
   async (newError) => {
     // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      // await refresh();
-      // refresh token ถูก revoked ให้ไปที่หน้า login
+      // Forbidden 403 - ไปเข้าสู่ระบบหลัง 5 วินาที
       if (newError.statusCode === 403) {
-        //   alert(accessToken.value);
-        //   console.log("Unauthorized access - possibly invalid token.");
-        //   console.log("Status code:", newError.statusCode);
-        //   console.log(`Error fetching users: ${newError.message}`);
         setTimeout(async () => {
           await navigateTo("/login");
         }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
+      }
+      // Unauthorized 401 - รีเฟรชหน้านี้ใหม่
+      if (newError.statusCode === 401) {
+        await refresh();
       }
     }
   },
@@ -38,12 +37,12 @@ watch(
 );
 
 // ข้อมูลมีอยู่แล้ว จึงสามารถใช้ค่าได้ทันที
-const usersCount = computed(() => usersLists.value?.data?.usersCount ?? 0);
+const usersCount = computed(() => users.value?.data?.usersCount ?? 0);
 const q = ref<string>("");
 
 const filteredUsers = computed<Users[]>(() => {
-  const users = usersLists.value?.data?.users ?? [];
-  return users.filter((user: Users) => {
+  const usersLists = users.value?.data?.users ?? [];
+  return usersLists.filter((user: Users) => {
     return (
       user.name.search(new RegExp(q.value, "i")) !== -1 ||
       user.username.search(new RegExp(q.value, "i")) !== -1 ||
@@ -77,7 +76,7 @@ const filteredUsers = computed<Users[]>(() => {
   </div>
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-if="usersLists && !pending && !error">
+  <div v-if="users && !pending && !error">
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."

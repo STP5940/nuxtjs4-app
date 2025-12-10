@@ -22,30 +22,34 @@ const tabItems = [
 const selectedTab = ref("all");
 
 const accessToken = useCookie("access_token");
-const { data: mails, error, execute } = await useFetch<Mail[]>("/api/v1/mails", {
-  lazy: true,
-  method: "GET",
-  headers: computed(() => ({
-    Authorization: `Bearer ${accessToken.value}`, // reactive
-  })),
-  default: () => [],
-});
+const { data: mails, status, pending, error, refresh } = await useFetch<Mail[]>(
+  "/api/v1/mails",
+  {
+    lazy: true,
+    method: "GET",
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+    default: () => [],
+  }
+);
 
 // ⚠️ ตรวจจับข้อผิดพลาดแสดง log console
-// กรณีที่ token ถูก revoke ก่อนหมดอายุ
+// 🔑 ตรวจจับ token ถูก revoke หรือหมดอายุ
 watch(
   error,
   async (newError) => {
-    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
+    // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      // refresh token ถูก revoked ให้ไปที่หน้า login
+      // Forbidden 403 - ไปเข้าสู่ระบบหลัง 5 วินาที
       if (newError.statusCode === 403) {
-        // console.log("Unauthorized access - possibly invalid token.");
-        // console.log("Status code:", newError.statusCode);
-        // console.log(`Error fetching users: ${newError.message}`);
         setTimeout(async () => {
           await navigateTo("/login");
         }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
+      }
+      // Unauthorized 401 - รีเฟรชหน้านี้ใหม่
+      if (newError.statusCode === 401) {
+        await refresh();
       }
     }
   },

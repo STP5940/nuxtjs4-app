@@ -7,7 +7,9 @@ import prisma from '~~/lib/prisma'
 import { jwtDecode } from 'jwt-decode';
 
 // กำหนดรายการ API ที่ไม่ต้องตรวจสอบสิทธิ์ (ส่วนใหญ่จะเป็น Authentication endpoint)
-const PUBLIC_API_PREFIXES = ['/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'];
+const PUBLIC_API_PREFIXES = [
+    '/api/v1/auth/login', '/api/v1/auth/logout', '/api/v1/auth/refresh'
+];
 
 export default defineEventHandler(async (event) => {
     const { responseUnauthorized } = useResponseHandler(event);
@@ -24,26 +26,17 @@ export default defineEventHandler(async (event) => {
         return;
     }
 
-    // ดึง Access Token จาก Cookie
+    // ดึง Access Token จาก Authorization Header
     const authorizationHeader = getHeader(event, 'Authorization');
 
     if (!authorizationHeader) {
-        // ถ้าไม่มี header
         return responseUnauthorized('Missing Authorization header');
     }
 
-    const [scheme, token] = authorizationHeader.split(' ');
+    const [scheme, accessToken] = authorizationHeader.trim().split(' ');
 
-    if (scheme !== 'Bearer' || !token) {
-        // ตรวจสอบว่ารูปแบบถูกต้องหรือไม่
-        return responseUnauthorized('Invalid token format');
-    }
-
-    const accessToken = token;
-
-    if (!accessToken) {
-        // ถ้าไม่มี Token ให้คืนสถานะ Unauthorized
-        return responseUnauthorized('No token provided');
+    if (scheme !== 'Bearer' || !accessToken || ['null', 'undefined'].includes(accessToken)) {
+        return responseUnauthorized('Invalid or missing token', 403);
     }
 
     try {
@@ -74,6 +67,6 @@ export default defineEventHandler(async (event) => {
         }
     } catch (error: unknown) {
         // เกิดข้อผิดพลาด ให้คืนสถานะ Unauthorized
-        return responseUnauthorized('Invalid token format');
+        return responseUnauthorized('Authentication failed');
     }
 });

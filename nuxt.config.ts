@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: false,
+  ssr: true,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -33,6 +33,7 @@ export default defineNuxtConfig({
       theme_color: '#ffffff', // สีของแถบเครื่องมือ/เบราว์เซอร์
       background_color: '#ffffff', // สีพื้นหลังระหว่างการโหลด
       display: 'standalone', // โหมดการแสดงผล (standalone, fullscreen, minimal-ui, browser)
+      start_url: '/login', // URL เริ่มต้นเมื่อเปิดแอปจากไอคอน
       icons: [
         // เพิ่มไอคอนแอปพลิเคชัน (จำเป็น)
         {
@@ -88,7 +89,7 @@ export default defineNuxtConfig({
             cacheName: 'icons',
             expiration: {
               maxEntries: 200,
-              maxAgeSeconds: 2592000 // 30 วัน
+              maxAgeSeconds: 2592000 // 30 days
             },
             cacheableResponse: {
               statuses: [0, 200]
