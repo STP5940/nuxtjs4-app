@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { callRefreshToken } from "~/middleware/auth";
 import { formatTimeAgo } from "@vueuse/core";
 import type { Notification } from "~/types";
 
 const { isNotificationsSlideoverOpen } = useDashboard();
 
 const accessToken = useCookie("access_token");
-const { data: notifications, error, execute } = await useFetch<Notification[]>(
+const { data: notifications, error, refresh } = await useFetch<Notification[]>(
   "/api/v1/notifications",
   {
     lazy: true,
@@ -21,15 +22,16 @@ const { data: notifications, error, execute } = await useFetch<Notification[]>(
 watch(
   error,
   async (newError) => {
-    // ตรวจสอบว่าเป็น Client-side เพื่อให้ log console ทำงาน
+    // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      // refresh token ถูก revoked ให้ไปที่หน้า login
-      if (newError.statusCode === 403) {
-        // console.log("Unauthorized access - possibly invalid token.");
-        // console.log("Status code:", newError.statusCode);
-        // console.log(`Error fetching users: ${newError.message}`);
+      const success = await callRefreshToken("access_token");
+      if (success) {
+        console.log("✅ Token refreshed successfully");
+        await refresh();
+      } else {
+        console.log("❌ Token refresh failed");
         setTimeout(async () => {
-          await navigateTo("/login");
+          await navigateTo("/login", { external: true });
         }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }

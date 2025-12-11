@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
     const [scheme, accessToken] = authorizationHeader.trim().split(' ');
 
     if (scheme !== 'Bearer' || !accessToken || ['null', 'undefined'].includes(accessToken)) {
-        return responseUnauthorized('Invalid or missing token', 403);
+        return responseUnauthorized('Invalid or missing token', 401);
     }
 
     try {

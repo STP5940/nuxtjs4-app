@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // app/pages/customers.vue
 import { getPaginationRowModel } from "@tanstack/table-core";
+import { callRefreshToken } from "~/middleware/auth";
 import type { Row } from "@tanstack/table-core";
 import type { TableColumn } from "@nuxt/ui";
-import { upperFirst } from "scule";
-
 import type { User } from "~/types";
+import { upperFirst } from "scule";
 
 definePageMeta({
   middleware: ["auth"],
@@ -48,15 +48,15 @@ watch(
   async (newError) => {
     // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      // Forbidden 403 - ไปเข้าสู่ระบบหลัง 5 วินาที
-      if (newError.statusCode === 403) {
-        setTimeout(async () => {
-          await navigateTo("/login");
-        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
-      }
-      // Unauthorized 401 - รีเฟรชหน้านี้ใหม่
-      if (newError.statusCode === 401) {
+      const success = await callRefreshToken("access_token");
+      if (success) {
+        console.log("✅ Token refreshed successfully");
         await refresh();
+      } else {
+        console.log("❌ Token refresh failed");
+        setTimeout(async () => {
+          await navigateTo("/login", { external: true });
+        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }
   },

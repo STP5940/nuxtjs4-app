@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+// app/pages/inbox.vue
+import { callRefreshToken } from "~/middleware/auth";
 import { breakpointsTailwind } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
 import type { Mail } from "~/types";
 
 definePageMeta({
@@ -41,15 +43,15 @@ watch(
   async (newError) => {
     // ตรวจสอบว่าเป็น Client-side
     if (import.meta.client && newError) {
-      // Forbidden 403 - ไปเข้าสู่ระบบหลัง 5 วินาที
-      if (newError.statusCode === 403) {
-        setTimeout(async () => {
-          await navigateTo("/login");
-        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
-      }
-      // Unauthorized 401 - รีเฟรชหน้านี้ใหม่
-      if (newError.statusCode === 401) {
+      const success = await callRefreshToken("access_token");
+      if (success) {
+        console.log("✅ Token refreshed successfully");
         await refresh();
+      } else {
+        console.log("❌ Token refresh failed");
+        setTimeout(async () => {
+          await navigateTo("/login", { external: true });
+        }, 5000); // หน่วงเวลา 5,000 มิลลิวินาที (5 วินาที)
       }
     }
   },
