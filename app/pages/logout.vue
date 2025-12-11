@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-950">
     <UCard class="w-full max-w-sm text-center">
       <div class="py-8">
         <span class="text-6xl mx-auto block cute-bounce">🦊</span>
