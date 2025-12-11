@@ -104,7 +104,20 @@ const filteredUsers = computed<Users[]>(() => {
         />
       </template>
 
-      <SettingsUsersList :users="filteredUsers" />
+      <SettingsUsersList v-if="filteredUsers.length > 0" :users="filteredUsers" />
+
+      <div v-else class="p-4 text-center">
+        <UIcon
+          name="i-lucide-users"
+          class="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2"
+        />
+        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+          No users found
+        </p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          Try adjusting your search criteria.
+        </p>
+      </div>
     </UPageCard>
   </div>
 </template>
