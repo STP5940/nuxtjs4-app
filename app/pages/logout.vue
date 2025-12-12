@@ -27,7 +27,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center justify-center min-h-screen">
+  <div class="flex items-center justify-center min-h-screen p-4 pb-20">
     <UCard class="w-full max-w-sm text-center">
       <div class="py-8">
         <img
