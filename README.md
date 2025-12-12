@@ -102,5 +102,11 @@ server/
 - ไม่ควรใช้ Vetur ให้ใช้ Volar
 - Vetur ไม่รองรับ Top-level await ใน script setup
 
-
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+<div align="center">
+  
+  ## 🚀 Nuxtjs4 App 🖥️
+
+  <img src="https://github.com/user-attachments/assets/70de239b-febb-4249-b415-95b81b0c4df0" width="1882" height="943" alt="Nuxt4 Minimal Starter"/>
+</div>
