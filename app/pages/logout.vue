@@ -30,9 +30,13 @@ onMounted(() => {
   <div class="flex items-center justify-center min-h-screen">
     <UCard class="w-full max-w-sm text-center">
       <div class="py-8">
-        <span class="text-6xl mx-auto block cute-bounce">🦊</span>
+        <img
+          src="/loading.gif"
+          alt="Logging out..."
+          class="h-30 w-30 mx-auto block"
+        />
 
-        <p class="mt-4 text-lg font-semibold text-gray-700 dark:text-gray-200">
+        <p class="mt-2 text-lg font-semibold text-gray-700 dark:text-gray-200">
           Logging out...
         </p>
 
