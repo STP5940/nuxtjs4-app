@@ -15,6 +15,7 @@ npm install
 ```bash
 # รันคำสั่งนี้แค่ครั้งแรก ของการติดตั้งโปรแกรม
 $ npm install prisma -g
+$ npm install @prisma/client@6.7.0
 ```
 
 ## สร้าง structure ฐานข้อมูล และใส่ข้อมูลตัวอย่าง
