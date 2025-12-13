@@ -31,6 +31,14 @@ const items = [{
           v-bind="user.avatar"
           :alt="user.avatar?.alt || `User avatar`"
           size="md"
+          :chip="
+            user.online
+              ? {
+                  inset: true, // จัดวาง Chip ที่มุมด้านใน
+                  color: 'success', // สีเขียวสำหรับออนไลน์
+                }
+              : undefined
+          "
         />
 
         <div class="text-sm min-w-0">

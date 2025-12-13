@@ -184,5 +184,9 @@ const customers: User[] = [{
 }]
 
 export default eventHandler(async () => {
-  return customers
+  const customersWithStatus = customers.map(customer => ({
+    ...customer, // คัดลอก properties เดิมทั้งหมด
+    online: Math.random() < 0.5, // 🚨 เพิ่ม field 'online' ที่สุ่ม true หรือ false
+  }));
+  return customersWithStatus
 })

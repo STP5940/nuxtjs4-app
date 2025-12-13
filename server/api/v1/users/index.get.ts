@@ -24,6 +24,7 @@ export default defineEventHandler(async (event) => {
         return {
             ...user,
             role: randomRoles[Math.floor(Math.random() * randomRoles.length)],
+            online: Math.random() < 0.5,
             avatar: avatarProps,
         }
     })

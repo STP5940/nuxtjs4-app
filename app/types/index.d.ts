@@ -10,6 +10,7 @@ export interface User {
   email: string
   avatar?: AvatarProps
   status: UserStatus
+  online?: boolean
   location: string
 }
 
@@ -65,6 +66,7 @@ export interface Users {
   email: string
   role: UserRole
   avatar: AvatarProps | null
+  online: boolean
   createdAt: Date
   updatedAt: Date | null
   deletedAt: Date | null

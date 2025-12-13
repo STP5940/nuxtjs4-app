@@ -140,6 +140,12 @@ const columns: TableColumn<User>[] = [
         h(UAvatar, {
           ...row.original.avatar,
           size: "lg",
+          chip: row.original.online
+            ? {
+                inset: true, // จัดวาง Chip ที่มุมด้านใน
+                color: "success", // สีเขียวสำหรับออนไลน์
+              }
+            : undefined,
         }),
         h("div", undefined, [
           h("p", { class: "font-medium text-highlighted" }, row.original.name),
