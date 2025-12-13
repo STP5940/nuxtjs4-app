@@ -27,6 +27,13 @@ export default defineNuxtConfig({
     storesDirs: ['app/stores/**'], // กำหนดให้ Pinia สแกนไฟล์ Store ในโฟลเดอร์ stores
   },
 
+  piniaPluginPersistedstate: {
+    cookieOptions: {
+      sameSite: 'strict',
+    },
+    storage: 'cookies', // ใช้ cookies แทน localStorage
+  },
+
   pwa: {
     // 1. เปิดใช้งานการสร้าง Manifest (ไฟล์ที่อธิบาย PWA ของคุณ)
     registerType: 'autoUpdate',

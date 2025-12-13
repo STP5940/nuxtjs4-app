@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/auth";
+
 import type { FormSubmitEvent, AuthFormField } from "@nuxt/ui";
 import * as z from "zod";
 
@@ -9,6 +11,7 @@ definePageMeta({
 
 const toast = useToast();
 const loading = ref(false);
+const authStore = useAuthStore();
 const { start, finish } = useLoadingIndicator();
 
 const fields: AuthFormField[] = [
@@ -82,6 +85,13 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
     //   description: "You have been logged in successfully.",
     //   color: "success",
     // });
+
+    const accessToken = useCookie("access_token");
+    if (accessToken.value) {
+      authStore.setToken(accessToken.value);
+      await authStore.fetchUser();
+    }
+
     await navigateTo("/");
   } catch (error: any) {
     toast.add({
