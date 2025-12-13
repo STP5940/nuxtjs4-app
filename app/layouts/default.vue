@@ -1,12 +1,15 @@
 <script setup lang="ts">
 // app/layouts/default.vue
-import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import { callRefreshToken } from '~/middleware/auth';
+import { useAuthStore } from '@/stores/auth'
+
+import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 // const refreshToken = useCookie('refresh_token');
 const accessToken = useCookie("access_token");
 
+const authStore = useAuthStore()
 const route = useRoute()
 
 const open = ref(false)
@@ -187,9 +190,12 @@ const stopAutoRefresh = () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   if (accessToken.value) {
     startAutoRefresh();
+
+    authStore.setToken(accessToken.value);
+    await authStore.fetchUser();
   }
 });
 

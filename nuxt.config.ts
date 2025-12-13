@@ -16,10 +16,16 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-security',
     '@vite-pwa/nuxt',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
 
     // Development only modules
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
   ],
+
+  pinia: {
+    storesDirs: ['app/stores/**'], // กำหนดให้ Pinia สแกนไฟล์ Store ในโฟลเดอร์ stores
+  },
 
   pwa: {
     // 1. เปิดใช้งานการสร้าง Manifest (ไฟล์ที่อธิบาย PWA ของคุณ)

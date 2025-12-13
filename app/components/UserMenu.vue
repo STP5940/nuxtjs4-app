@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // app/components/UserMenu.vue
 import type { DropdownMenuItem } from "@nuxt/ui";
+import { useAuthStore } from "@/stores/auth";
 
 defineProps<{
   collapsed?: boolean;
@@ -8,6 +9,7 @@ defineProps<{
 
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
+const authStore = useAuthStore();
 
 const colors = [
   "red",
@@ -30,13 +32,13 @@ const colors = [
 ];
 const neutrals = ["slate", "gray", "zinc", "neutral", "stone"];
 
-const user = ref({
-  name: "Benjamin Canac",
+const user = computed(() => ({
+  name: authStore.user?.name || "Guest",
   avatar: {
-    src: "https://github.com/benjamincanac.png",
-    alt: "Benjamin Canac",
+    src: String(authStore.user?.avatar) || "https://github.com/nuxtlabs.png?size=128",
+    alt: authStore.user?.name || "User avatar",
   },
-});
+}));
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
