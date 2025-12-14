@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: {
-      externalizeIconsJson: true, // อาจช่วยให้การ Bundle เร็วขึ้นสำหรับโปรเจกต์ที่มี icon เยอะมาก
+      auto: true,
     }
   },
 
