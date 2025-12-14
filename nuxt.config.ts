@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: {
-      auto: true,
+      externalizeIconsJson: false, // ตั้งค่าเป็น false เพื่อฝังไอคอนทั้งหมดในบันเดิลเซิร์ฟเวอร์
     }
   },
 
