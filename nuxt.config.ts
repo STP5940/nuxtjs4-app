@@ -23,6 +23,12 @@ export default defineNuxtConfig({
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
   ],
 
+  icon: {
+    serverBundle: {
+      externalizeIconsJson: true, // อาจช่วยให้การ Bundle เร็วขึ้นสำหรับโปรเจกต์ที่มี icon เยอะมาก
+    }
+  },
+
   pinia: {
     storesDirs: ['app/stores/**'], // กำหนดให้ Pinia สแกนไฟล์ Store ในโฟลเดอร์ stores
   },
