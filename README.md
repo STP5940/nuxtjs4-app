@@ -15,7 +15,7 @@ npm install
 ```bash
 # รันคำสั่งนี้แค่ครั้งแรก ของการติดตั้งโปรแกรม
 $ npm install prisma -g
-$ npm install @prisma/client@6.7.0
+$ npm install @prisma/client
 $ npx prisma generate
 ```
 
