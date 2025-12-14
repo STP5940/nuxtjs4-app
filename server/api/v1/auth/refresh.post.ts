@@ -21,6 +21,7 @@ export default defineEventHandler(async (event) => {
     const { responseSuccess } = useResponseHandler(event);
 
     const ipAddress = getRequestIP(event, { xForwardedFor: true });
+    const getOriginUrl = getRequestURL(event).origin;
     const userAgent = getHeader(event, 'user-agent');
     const refreshToken = getCookie(event, 'refresh_token');
 
@@ -63,7 +64,7 @@ export default defineEventHandler(async (event) => {
         if (!dbRefreshToken) {
             deleteCookie(event, 'access_token');
             deleteCookie(event, 'refresh_token');
-            
+
             throw createError({
                 statusCode: 403,
                 statusMessage: "Forbidden",
@@ -118,13 +119,15 @@ export default defineEventHandler(async (event) => {
 
             // สร้าง Refresh Token ใหม่
             const { refreshToken, refreshTokenId } = generateRefreshToken(
-                transformedUser.id
+                transformedUser.id,
+                getOriginUrl
             );
 
             // สร้าง Access Token ใหม่
             const { accessToken } = await generateAccessToken(
                 transformedUser.id,
                 transformedUser.role,
+                getOriginUrl,
                 refreshTokenId
             );
 
@@ -168,6 +171,7 @@ export default defineEventHandler(async (event) => {
             const { accessToken } = await generateAccessToken(
                 transformedUser.id,
                 transformedUser.role,
+                getOriginUrl,
                 refreshPayload.jti
             );
 

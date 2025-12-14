@@ -19,6 +19,7 @@ type UserRole = typeof randomRoles[number];
 // Payload สำหรับ Access Token (อายุสั้น, ใช้เรียก API)
 export interface AccessTokenPayload extends JwtPayload {
     sub: string; // ID ผู้ใช้
+    iss: string; // ชื่อแอปของคุณ
     rtid: string; // อ้างอิง Refresh Token ID
     role: UserRole; // บทบาทของผู้ใช้
     username: string; // ชื่อผู้ใช้ (ถ้าต้องการ)
@@ -29,6 +30,7 @@ export interface AccessTokenPayload extends JwtPayload {
 // Payload สำหรับ Refresh Token (อายุยาว, ต้องมี jti สำหรับ Revocation)
 export interface RefreshTokenPayload extends JwtPayload {
     sub: string; // ID ผู้ใช้
+    iss: string; // ชื่อแอปของคุณ
     jti: string; // ใช้สำหรับอ้างอิงในฐานข้อมูล
 }
 
@@ -56,7 +58,7 @@ if (!ACCESS_SECRET || !REFRESH_SECRET) {
  * @param refreshTokenId ID ของ Refresh Token ที่เกี่ยวข้อง
  * @returns Access Token string
  */
-export async function generateAccessToken(userId: string, role: UserRole, refreshTokenId: string) {
+export async function generateAccessToken(userId: string, role: UserRole, iss: string, refreshTokenId: string) {
     // ค้นหาผู้ใช้จาก userId
     const findingUser = await prisma.users.findUnique({
         where: {
@@ -69,12 +71,13 @@ export async function generateAccessToken(userId: string, role: UserRole, refres
     }
 
     const accessTokenPayload: AccessTokenPayload = {
-        sub: userId,
+        sub: userId, // ID ผู้ใช้
         rtid: refreshTokenId, // อ้างอิง Refresh Token ID
         role,
         username: findingUser?.username,
         ...(findingUser?.email && { email: findingUser.email }),
         ...(findingUser?.avatar && { avatar: findingUser.avatar }),
+        iss: iss, // ชื่อแอปของคุณ
     };
 
     const accessToken = jwt.sign(
@@ -94,12 +97,13 @@ export async function generateAccessToken(userId: string, role: UserRole, refres
  * @param refreshTokenId ID ของ Refresh Token (jti)
  * @returns Object ที่ประกอบด้วย Refresh Token string และ ID สำหรับบันทึกใน DB
  */
-export function generateRefreshToken(userId: string) {
+export function generateRefreshToken(userId: string, iss: string) {
     const refreshTokenId = uuidv4();
 
     const refreshTokenPayload: RefreshTokenPayload = {
         sub: userId,
         jti: refreshTokenId, // ใช้สำหรับอ้างอิงในฐานข้อมูล
+        iss: iss, // ชื่อแอปของคุณ
     };
 
     const refreshToken = jwt.sign(

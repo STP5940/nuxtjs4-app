@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
     const { responseSuccess } = useResponseHandler(event);
 
     const ipAddress = getRequestIP(event, { xForwardedFor: true });
+    const getOriginUrl = getRequestURL(event).origin;
     const userAgent = getHeader(event, 'user-agent');
 
     try {
@@ -67,12 +68,14 @@ export default defineEventHandler(async (event) => {
         };
 
         const { refreshToken, refreshTokenId } = generateRefreshToken(
-            transformedUser.id
+            transformedUser.id,
+            getOriginUrl
         );
 
         const { accessToken } = await generateAccessToken(
             transformedUser.id,
             transformedUser.role,
+            getOriginUrl,
             refreshTokenId
         );
 
