@@ -85,7 +85,7 @@ const filteredUsers = computed<Users[]>(() => {
       orientation="horizontal"
       class="mb-4"
     >
-      <UButton label="Invite people" color="neutral" class="w-fit lg:ms-auto" />
+      <UButton label="Invite people" icon="i-lucide-user-plus" color="neutral" class="w-fit lg:ms-auto" />
     </UPageCard>
 
     <UPageCard

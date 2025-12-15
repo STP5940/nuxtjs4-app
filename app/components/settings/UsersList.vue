@@ -11,9 +11,11 @@ defineProps<{
 
 const items = [{
   label: 'Edit users',
+  icon: 'i-lucide-edit',
   onSelect: () => console.log('Edit users')
 }, {
   label: 'Remove users',
+  icon: 'i-lucide-trash',
   color: 'error' as const,
   onSelect: () => console.log('Remove users')
 }] satisfies DropdownMenuItem[]

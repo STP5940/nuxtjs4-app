@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 const fileRef = ref<HTMLInputElement>()
 
@@ -15,9 +18,9 @@ const profileSchema = z.object({
 type ProfileSchema = z.output<typeof profileSchema>
 
 const profile = reactive<Partial<ProfileSchema>>({
-  name: 'Benjamin Canac',
-  email: 'ben@nuxtlabs.com',
-  username: 'benjamincanac',
+  name: authStore.user?.name || "Guest",
+  email: authStore.user?.email,
+  username: authStore.user?.username,
   avatar: undefined,
   bio: undefined
 })
@@ -64,6 +67,7 @@ function onFileClick() {
       <UButton
         form="settings"
         label="Save changes"
+        icon="i-lucide-save"
         color="neutral"
         type="submit"
         class="w-fit lg:ms-auto"
@@ -126,6 +130,7 @@ function onFileClick() {
           />
           <UButton
             label="Choose"
+            icon="i-lucide-image-plus"
             color="neutral"
             @click="onFileClick"
           />
