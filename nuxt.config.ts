@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   piniaPluginPersistedstate: {
     cookieOptions: {
-      sameSite: 'strict',
+      sameSite: 'lax',
     },
     storage: 'cookies', // ใช้ cookies แทน localStorage
   },
