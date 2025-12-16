@@ -13,9 +13,9 @@ useHead({
     { rel: "icon", href: "/favicon.ico" },
     { rel: "manifest", href: "/manifest.webmanifest" },
   ],
-  htmlAttrs: {
-    lang: "en",
-  },
+  // htmlAttrs: {
+  //   lang: "en",
+  // },
 });
 
 const title = "Nuxt Dashboard Template";

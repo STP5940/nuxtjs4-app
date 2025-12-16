@@ -18,10 +18,37 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
+    '@nuxtjs/i18n',
 
     // Development only modules
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
   ],
+
+  i18n: {
+    // กำหนดภาษาที่รองรับ
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        flag: 'twemoji:flag-united-kingdom',
+        file: 'en.json', // ชื่อไฟล์คำแปล
+      },
+      {
+        code: 'th',
+        name: 'Thai',
+        flag: 'twemoji:flag-thailand',
+        file: 'th.json', // ชื่อไฟล์คำแปล
+      },
+    ],
+    langDir: 'locales',
+    defaultLocale: 'th',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root'
+    }
+  },
 
   icon: {
     serverBundle: {
