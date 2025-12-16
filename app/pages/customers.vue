@@ -259,7 +259,7 @@ const pagination = ref({
 <template>
   <UDashboardPanel id="customers">
     <template #header>
-      <UDashboardNavbar title="Customers">
+      <UDashboardNavbar :title="$t('customers_link')">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>

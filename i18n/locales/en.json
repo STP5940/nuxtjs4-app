@@ -1,4 +1,20 @@
 {
-  "welcome": "Welcome to my website!",
-  "home_link": "Home"
+  "search_placeholder": "Search...",
+  "home_link": "Home",
+  "inbox_link": "Inbox",
+  "customers_link": "Customers",
+  "settings_link": "Settings",
+  "general_link": "General",
+  "user_link": "User",
+  "notifications_link": "Notifications",
+  "security_link": "Security",
+  "feedback_link": "Feedback",
+  "help_link": "Help & Support",
+  "documentation_link": "Documentation",
+  "profile_link": "Profile",
+  "billing_link": "Billing",
+  "theme_link": "Theme",
+  "appearance_link": "Appearance",
+  "language_link": "Language",
+  "logout_link": "Logout"
 }

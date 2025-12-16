@@ -7,6 +7,8 @@ defineProps<{
   collapsed?: boolean;
 }>();
 
+const { locale, locales, setLocale } = useI18n();
+
 const colorMode = useColorMode();
 const appConfig = useAppConfig();
 const authStore = useAuthStore();
@@ -50,23 +52,23 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
   [
     {
-      label: "Profile",
+      label: $t("profile_link"),
       icon: "i-lucide-user",
     },
     {
-      label: "Billing",
+      label: $t("billing_link"),
       icon: "i-lucide-credit-card",
     },
     {
-      label: "Settings",
+      label: $t("settings_link"),
       icon: "i-lucide-settings",
       to: "/settings",
-      kbds: ['g', 's']
+      kbds: ["g", "s"],
     },
   ],
   [
     {
-      label: "Theme",
+      label: $t("theme_link"),
       icon: "i-lucide-palette",
       children: [
         {
@@ -119,7 +121,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
       ],
     },
     {
-      label: "Appearance",
+      label: $t("appearance_link"),
       icon: "i-lucide-sun-moon",
       children: [
         {
@@ -160,10 +162,25 @@ const items = computed<DropdownMenuItem[][]>(() => [
         },
       ],
     },
+    {
+      label: $t("language_link"),
+      icon: "i-lucide-globe",
+      children: locales.value.map((l) => ({
+        label: l.name,
+        icon: l.flag,
+        class: "cursor-pointer",
+        type: "checkbox",
+        checked: locale.value === l.code,
+        onSelect(e: Event) {
+          e.preventDefault();
+          setLocale(l.code);
+        },
+      })),
+    },
   ],
   [
     {
-      label: "Log out",
+      label: $t("logout_link"),
       icon: "i-lucide-log-out",
       onSelect: handleLogout,
     },

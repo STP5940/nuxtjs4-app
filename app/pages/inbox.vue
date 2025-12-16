@@ -99,7 +99,7 @@ const isMobile = breakpoints.smaller("lg");
     :max-size="30"
     resizable
   >
-    <UDashboardNavbar title="Inbox">
+    <UDashboardNavbar :title="$t('inbox_link')">
       <template #leading>
         <UDashboardSidebarCollapse />
       </template>

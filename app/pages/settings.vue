@@ -5,35 +5,35 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const links = [[{
-  label: 'General',
+const links = computed(() => [[{
+  label: $t("general_link"),
   icon: 'i-lucide-user',
   to: '/settings',
   exact: true
 }, {
-  label: 'Users',
+  label: $t("user_link"),
   icon: 'i-lucide-users',
   to: '/settings/users'
 }, {
-  label: 'Notifications',
+  label: $t("notifications_link"),
   icon: 'i-lucide-bell',
   to: '/settings/notifications'
 }, {
-  label: 'Security',
+  label: $t("security_link"),
   icon: 'i-lucide-shield',
   to: '/settings/security'
 }], [{
-  label: 'Documentation',
+  label: $t('documentation_link'),
   icon: 'i-lucide-book-open',
   to: 'https://ui.nuxt.com/docs/getting-started/installation/nuxt',
   target: '_blank'
-}]] satisfies NavigationMenuItem[][]
+}]] satisfies NavigationMenuItem[][])
 </script>
 
 <template>
   <UDashboardPanel id="settings" :ui="{ body: 'lg:py-12' }">
     <template #header>
-      <UDashboardNavbar title="Settings">
+      <UDashboardNavbar :title="$t('settings_link')">
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>

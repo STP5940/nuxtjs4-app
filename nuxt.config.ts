@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  ssr: true,
+  ssr: false,
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   logLevel: 'silent',
@@ -35,7 +35,7 @@ export default defineNuxtConfig({
       },
       {
         code: 'th',
-        name: 'Thai',
+        name: 'ไทย',
         flag: 'twemoji:flag-thailand',
         file: 'th.json', // ชื่อไฟล์คำแปล
       },

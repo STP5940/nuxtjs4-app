@@ -21,15 +21,15 @@ let intervalId: NodeJS.Timeout | null = null;
 const REFRESH_THRESHOLD = 10; // 10 วินาที - จะ refresh เมื่อเหลือเวลาน้อยกว่านี้
 const CHECK_INTERVAL = 10000; // 10 วินาที (10,000 milliseconds) - ตรวจสอบทุก 10 วินาที
 
-const links = [[{
-  label: 'Home',
+const links = computed(() => [[{
+  label: $t("home_link"),
   icon: 'i-lucide-house',
   to: '/',
   onSelect: () => {
     open.value = false
   }
 }, {
-  label: 'Inbox',
+  label: $t("inbox_link"),
   icon: 'i-lucide-inbox',
   to: '/inbox',
   badge: '4',
@@ -37,60 +37,60 @@ const links = [[{
     open.value = false
   }
 }, {
-  label: 'Customers',
+  label: $t("customers_link"),
   icon: 'i-lucide-users',
   to: '/customers',
   onSelect: () => {
     open.value = false
   }
 }, {
-  label: 'Settings',
+  label: $t("settings_link"),
   to: '/settings',
   icon: 'i-lucide-settings',
   defaultOpen: true,
   type: 'trigger',
   children: [{
-    label: 'General',
+    label: $t("general_link"),
     to: '/settings',
     exact: true,
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Users',
+    label: $t("user_link"),
     to: '/settings/users',
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Notifications',
+    label: $t("notifications_link"),
     to: '/settings/notifications',
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'Security',
+    label: $t("security_link"),
     to: '/settings/security',
     onSelect: () => {
       open.value = false
     }
   }]
 }], [{
-  label: 'Feedback',
+  label: $t('feedback_link'),
   icon: 'i-lucide-message-circle',
   to: 'https://github.com/STP5940/nuxtjs4-app/issues',
   target: '_blank'
 }, {
-  label: 'Help & Support',
+  label: $t('help_link'),
   icon: 'i-lucide-info',
   to: 'https://www.facebook.com/home.htmI',
   target: '_blank'
-}]] satisfies NavigationMenuItem[][]
+}]] satisfies NavigationMenuItem[][])
 
 const groups = computed(() => [{
   id: 'links',
   label: 'Go to',
-  items: links.flat()
+  items: links.value.flat()
 }, {
   id: 'code',
   label: 'Code',
@@ -231,7 +231,11 @@ watch(accessToken, (newToken) => {
         <UDashboardSearchButton
           :collapsed="collapsed"
           class="bg-transparent ring-default"
-        />
+        >
+          <template v-if="!collapsed">
+            <span class="text-sm text-dimmed">{{ $t("search_placeholder") }}</span>
+          </template>
+        </UDashboardSearchButton>
 
         <UNavigationMenu
           :collapsed="collapsed"

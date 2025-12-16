@@ -1,4 +1,20 @@
 {
-  "welcome": "ยินดีต้อนรับสู่เว็บไซต์ของฉัน!",
-  "home_link": "หน้าหลัก"
+  "search_placeholder": "ค้นหา...",
+  "home_link": "หน้าหลัก",
+  "inbox_link": "กล่องข้อความ",
+  "customers_link": "ลูกค้า",
+  "settings_link": "การตั้งค่า",
+  "general_link": "ทั่วไป",
+  "user_link": "ผู้ใช้",
+  "notifications_link": "แจ้งเตือน",
+  "security_link": "ความปลอดภัย",
+  "feedback_link": "ข้อเสนอแนะ",
+  "help_link": "ช่วยเหลือ & สนับสนุน",
+  "documentation_link": "เอกสารประกอบ",
+  "profile_link": "โปรไฟล์",
+  "billing_link": "การเรียกเก็บเงิน",
+  "theme_link": "ธีม",
+  "appearance_link": "ลักษณะ",
+  "language_link": "ภาษา",
+  "logout_link": "ออกจากระบบ"
 }
