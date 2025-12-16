@@ -21,5 +21,9 @@
     "system": "System"
   },
   "language": "Language",
-  "logout_link": "Logout"
+  "logout_link": "Logout",
+  "logout": {
+    "title": "Logging out...",
+    "description": "Please wait. redirected to login page."
+  }
 }

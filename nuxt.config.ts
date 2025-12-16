@@ -31,13 +31,25 @@ export default defineNuxtConfig({
         code: 'en',
         name: 'English',
         flag: 'twemoji:flag-united-kingdom',
-        file: 'en.json', // ชื่อไฟล์คำแปล
+        file: 'en.json', // English language
+      },
+      {
+        code: 'chn',
+        name: '中文',
+        flag: 'twemoji:flag-china',
+        file: 'chn.json', // Chinese language
       },
       {
         code: 'th',
         name: 'ไทย',
         flag: 'twemoji:flag-thailand',
-        file: 'th.json', // ชื่อไฟล์คำแปล
+        file: 'th.json', // Thai language
+      },
+      {
+        code: 'la',
+        name: 'ລາວ',
+        flag: 'twemoji:flag-laos',
+        file: 'la.json', // Lao language
       },
     ],
     langDir: 'locales',

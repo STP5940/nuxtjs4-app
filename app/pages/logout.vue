@@ -34,14 +34,18 @@ onMounted(() => {
   <div class="flex items-center justify-center min-h-screen p-4 pb-20">
     <UCard class="w-full max-w-md text-center">
       <div class="py-8">
-        <img src="/loading.gif" alt="Logging out..." class="h-30 w-30 mx-auto block" />
+        <img
+          src="/loading.gif"
+          :alt="$t('logout.title')"
+          class="h-30 w-30 mx-auto block"
+        />
 
         <p class="mt-2 text-lg font-semibold text-gray-700 dark:text-gray-200">
-          Logging out...
+          {{ $t("logout.title") }}
         </p>
 
         <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          Please wait. redirected to login page.
+          {{ $t("logout.description") }}
         </p>
       </div>
       <UProgress animation="swing" />
