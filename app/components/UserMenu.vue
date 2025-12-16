@@ -68,7 +68,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
   [
     {
-      label: $t("theme_link"),
+      label: $t("theme"),
       icon: "i-lucide-palette",
       children: [
         {
@@ -121,11 +121,11 @@ const items = computed<DropdownMenuItem[][]>(() => [
       ],
     },
     {
-      label: $t("appearance_link"),
+      label: $t("appearance.name"),
       icon: "i-lucide-sun-moon",
       children: [
         {
-          label: "System",
+          label: $t("appearance.system"),
           icon: "i-lucide-monitor",
           class: "cursor-pointer",
           type: "checkbox",
@@ -137,7 +137,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
           },
         },
         {
-          label: "Light",
+          label: $t("appearance.light"),
           icon: "i-lucide-sun",
           class: "cursor-pointer",
           type: "checkbox",
@@ -149,7 +149,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
           },
         },
         {
-          label: "Dark",
+          label: $t("appearance.dark"),
           icon: "i-lucide-moon",
           class: "cursor-pointer",
           type: "checkbox",
@@ -163,7 +163,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
       ],
     },
     {
-      label: $t("language_link"),
+      label: $t("language"),
       icon: "i-lucide-globe",
       children: locales.value.map((l) => ({
         label: l.name,

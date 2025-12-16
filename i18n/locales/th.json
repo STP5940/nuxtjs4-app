@@ -2,10 +2,10 @@
   "search_placeholder": "ค้นหา...",
   "home_link": "หน้าหลัก",
   "inbox_link": "กล่องข้อความ",
-  "customers_link": "ลูกค้า",
+  "customers_link": "รายชื่อลูกค้า",
   "settings_link": "การตั้งค่า",
   "general_link": "ทั่วไป",
-  "user_link": "ผู้ใช้",
+  "user_link": "รายชื่อผู้ใช้",
   "notifications_link": "แจ้งเตือน",
   "security_link": "ความปลอดภัย",
   "feedback_link": "ข้อเสนอแนะ",
@@ -13,8 +13,13 @@
   "documentation_link": "เอกสารประกอบ",
   "profile_link": "โปรไฟล์",
   "billing_link": "การเรียกเก็บเงิน",
-  "theme_link": "ธีม",
-  "appearance_link": "ลักษณะ",
-  "language_link": "ภาษา",
+  "theme": "ธีม",
+  "appearance": {
+    "name": "ลักษณะ",
+    "light": "โหมดสว่าง",
+    "dark": "โหมดมืด",
+    "system": "ปรับอัตโนมัติ"
+  },
+  "language": "ภาษา",
   "logout_link": "ออกจากระบบ"
 }

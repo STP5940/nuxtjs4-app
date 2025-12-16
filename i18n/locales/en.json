@@ -13,8 +13,13 @@
   "documentation_link": "Documentation",
   "profile_link": "Profile",
   "billing_link": "Billing",
-  "theme_link": "Theme",
-  "appearance_link": "Appearance",
-  "language_link": "Language",
+  "theme": "Theme",
+  "appearance": {
+    "name": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": "Language",
   "logout_link": "Logout"
 }
