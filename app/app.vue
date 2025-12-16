@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { breakpointsTailwind } from "@vueuse/core";
+import * as locales from "@nuxt/ui/locale";
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 const isMobile = breakpoints.smaller("lg");
+const { locale } = useI18n();
+
+const uiLocale = computed(() => {
+  const key = getUiLocale(locale.value);
+  return locales[key];
+});
 
 useHead({
   meta: [
@@ -35,6 +42,7 @@ useSeoMeta({
 
 <template>
   <UApp
+    :locale="uiLocale"
     :toaster="{
       position: isMobile ? 'top-right' : 'bottom-right',
       max: 3,

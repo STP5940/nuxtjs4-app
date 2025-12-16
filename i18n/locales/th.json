@@ -1,8 +1,12 @@
 {
   "search_placeholder": "ค้นหา...",
+  "goto_label": "เลือกไปที่รายการ",
   "home_link": "หน้าหลัก",
   "inbox_link": "กล่องข้อความ",
   "customers_link": "รายชื่อลูกค้า",
+  "conversions_link": "การแปลง",
+  "revenue_link": "รายได้",
+  "orders_link": "คำสั่งซื้อ",
   "settings_link": "การตั้งค่า",
   "general_link": "ทั่วไป",
   "user_link": "รายชื่อผู้ใช้",
@@ -13,7 +17,13 @@
   "documentation_link": "เอกสารประกอบ",
   "profile_link": "โปรไฟล์",
   "billing_link": "การเรียกเก็บเงิน",
-  "theme": "ธีม",
+  "code_link": {
+    "name": "Code",
+    "description": "View source code on GitHub"
+  },
+  "theme": {
+    "name": "ธีม"
+  },
   "appearance": {
     "name": "ลักษณะ",
     "light": "โหมดสว่าง",
@@ -25,5 +35,13 @@
   "logout": {
     "title": "กำลังออกจากระบบ...",
     "description": "กรุณารอสักครู่ กำลังเปลี่ยนเส้นทางไปยังหน้าล็อกอิน"
+  },
+  "date_range": {
+    "last_7_days": "7 วันที่ผ่านมา",
+    "last_14_days": "14 วันที่ผ่านมา",
+    "last_30_days": "30 วันที่ผ่านมา",
+    "last_3_months": "3 เดือนที่ผ่านมา",
+    "last_6_months": "6 เดือนที่ผ่านมา",
+    "last_year": "ปีที่ผ่านมา"
   }
 }

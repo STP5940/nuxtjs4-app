@@ -26,6 +26,7 @@ export default defineNuxtConfig({
 
   i18n: {
     // กำหนดภาษาที่รองรับ
+    // https://ui.nuxt.com/docs/getting-started/integrations/i18n/nuxt#supported-languages
     locales: [
       {
         code: 'en',
@@ -34,22 +35,16 @@ export default defineNuxtConfig({
         file: 'en.json', // English language
       },
       {
-        code: 'chn',
-        name: '中文',
+        code: 'zh-CN',
+        name: '简体中文',
         flag: 'twemoji:flag-china',
-        file: 'chn.json', // Chinese language
+        file: 'zh_cn.json', // Chinese language
       },
       {
         code: 'th',
         name: 'ไทย',
         flag: 'twemoji:flag-thailand',
         file: 'th.json', // Thai language
-      },
-      {
-        code: 'la',
-        name: 'ລາວ',
-        flag: 'twemoji:flag-laos',
-        file: 'la.json', // Lao language
       },
     ],
     langDir: 'locales',

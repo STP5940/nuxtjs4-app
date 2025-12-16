@@ -1,8 +1,12 @@
 {
   "search_placeholder": "搜索...",
+  "goto_label": "选择前往项目",
   "home_link": "首页",
   "inbox_link": "收件箱",
   "customers_link": "客户",
+  "conversions_link": "转化",
+  "revenue_link": "收入",
+  "orders_link": "订单",
   "settings_link": "设置",
   "general_link": "常规",
   "user_link": "用户",
@@ -13,7 +17,13 @@
   "documentation_link": "文档",
   "profile_link": "个人资料",
   "billing_link": "账单",
-  "theme": "主题",
+  "code_link": {
+    "name": "Code",
+    "description": "View source code on GitHub"
+  },
+  "theme": {
+    "name": "主题"
+  },
   "appearance": {
     "name": "外观",
     "light": "浅色",
@@ -25,5 +35,13 @@
   "logout": {
     "title": "正在退出登录...",
     "description": "请稍候，正在跳转到登录页面。"
+  },
+  "date_range": {
+    "last_7_days": "最近 7 天",
+    "last_14_days": "最近 14 天",
+    "last_30_days": "最近 30 天",
+    "last_3_months": "最近 3 个月",
+    "last_6_months": "最近 6 个月",
+    "last_year": "去年"
   }
 }

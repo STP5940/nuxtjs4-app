@@ -1,8 +1,12 @@
 {
   "search_placeholder": "Search...",
+  "goto_label": "Go to",
   "home_link": "Home",
   "inbox_link": "Inbox",
   "customers_link": "Customers",
+  "conversions_link": "Conversions",
+  "revenue_link": "Revenue",
+  "orders_link": "Orders",
   "settings_link": "Settings",
   "general_link": "General",
   "user_link": "User",
@@ -13,7 +17,13 @@
   "documentation_link": "Documentation",
   "profile_link": "Profile",
   "billing_link": "Billing",
-  "theme": "Theme",
+  "code_link": {
+    "name": "Code",
+    "description": "View source code on GitHub"
+  },
+  "theme": {
+    "name": "Theme"
+  },
   "appearance": {
     "name": "Appearance",
     "light": "Light",
@@ -25,5 +35,13 @@
   "logout": {
     "title": "Logging out...",
     "description": "Please wait. redirected to login page."
+  },
+  "date_range": {
+    "last_7_days": "Last 7 days",
+    "last_14_days": "Last 14 days",
+    "last_30_days": "Last 30 days",
+    "last_3_months": "Last 3 months",
+    "last_6_months": "Last 6 months",
+    "last_year": "Last year"
   }
 }

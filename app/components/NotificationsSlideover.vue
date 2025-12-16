@@ -41,7 +41,7 @@ watch(
 </script>
 
 <template>
-  <USlideover v-model:open="isNotificationsSlideoverOpen" title="Notifications">
+  <USlideover v-model:open="isNotificationsSlideoverOpen" :title="$t('notifications_link')">
     <template #body>
       <NuxtLink
         v-for="notification in notifications"

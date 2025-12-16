@@ -68,7 +68,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
   ],
   [
     {
-      label: $t("theme"),
+      label: $t("theme.name"),
       icon: "i-lucide-palette",
       children: [
         {

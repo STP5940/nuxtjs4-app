@@ -6,9 +6,8 @@ import { useAuthStore } from '@/stores/auth'
 import { jwtDecode, type JwtPayload } from 'jwt-decode';
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-// const refreshToken = useCookie('refresh_token');
 const accessToken = useCookie("access_token");
-
+const colorMode = useColorMode();
 const authStore = useAuthStore()
 const route = useRoute()
 
@@ -89,14 +88,33 @@ const links = computed(() => [[{
 
 const groups = computed(() => [{
   id: 'links',
-  label: 'Go to',
+  label: $t('goto_label'),
   items: links.value.flat()
 }, {
+  id: 'theme',
+  label: $t('theme.name'),
+  items: [{
+    id: 'system',
+    label: $t('appearance.system'),
+    icon: 'i-lucide-monitor',
+    onSelect: () => colorMode.preference = 'system'
+  },{
+    id: 'light',
+    label: $t('appearance.light'),
+    icon: 'i-lucide-sun',
+    onSelect: () => colorMode.preference = 'light'
+  }, {
+    id: 'dark',
+    label: $t('appearance.dark'),
+    icon: 'i-lucide-moon',
+    onSelect: () => colorMode.preference = 'dark'
+  }]
+}, {
   id: 'code',
-  label: 'Code',
+  label: $t('code_link.name'),
   items: [{
     id: 'source',
-    label: 'View page source',
+    label: $t('code_link.description'),
     icon: 'i-simple-icons-github',
     to: `https://github.com/STP5940/nuxtjs4-app/blob/main/app/pages${route.path === '/' ? '/index' : route.path}.vue`,
     target: '_blank'
@@ -231,11 +249,7 @@ watch(accessToken, (newToken) => {
         <UDashboardSearchButton
           :collapsed="collapsed"
           class="bg-transparent ring-default"
-        >
-          <template v-if="!collapsed">
-            <span class="text-sm text-dimmed">{{ $t("search_placeholder") }}</span>
-          </template>
-        </UDashboardSearchButton>
+        />
 
         <UNavigationMenu
           :collapsed="collapsed"
@@ -259,7 +273,7 @@ watch(accessToken, (newToken) => {
       </template>
     </UDashboardSidebar>
 
-    <UDashboardSearch :groups="groups" />
+    <UDashboardSearch :groups="groups" :colorMode="false" />
 
     <!-- <CookieConsentToast /> -->
 
