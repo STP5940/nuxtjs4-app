@@ -41,6 +41,12 @@ export default defineNuxtConfig({
         file: 'zh_cn.json', // Chinese language
       },
       {
+        code: 'ru',
+        name: 'Русский',
+        flag: 'twemoji:flag-russia',
+        file: 'ru.json', // Russian language
+      },
+      {
         code: 'th',
         name: 'ไทย',
         flag: 'twemoji:flag-thailand',

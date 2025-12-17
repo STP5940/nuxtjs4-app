@@ -1,0 +1,64 @@
+{
+    "search_placeholder": "Поиск...",
+    "goto_label": "Перейти к",
+    "home_link": "Главная",
+    "inbox_link": "Входящие",
+    "customers_link": "Клиенты",
+    "conversions_link": "Конверсии",
+    "revenue_link": "Доход",
+    "orders_link": "Заказы",
+    "settings_link": "Настройки",
+    "general_link": "Общие",
+    "user_link": "Пользователь",
+    "notifications_link": "Уведомления",
+    "security_link": "Безопасность",
+    "feedback_link": "Обратная связь",
+    "help_link": "Помощь и поддержка",
+    "documentation_link": "Документация",
+    "profile_link": "Профиль",
+    "billing_link": "Оплата",
+    "code_link": {
+        "name": "Код",
+        "description": "Посмотреть исходный код на GitHub"
+    },
+    "theme": {
+        "name": "Тема"
+    },
+    "appearance": {
+        "name": "Внешний вид",
+        "light": "Светлая",
+        "dark": "Темная",
+        "system": "Системная"
+    },
+    "language": "Язык",
+    "logout_link": "Выйти",
+    "logout": {
+        "title": "Выход из системы...",
+        "description": "Пожалуйста, подождите. Перенаправление на страницу входа."
+    },
+    "login": {
+        "title": "Вход",
+        "enter_credentials": "Введите свои данные",
+        "providers": "Провайдеры",
+        "username": "Имя пользователя",
+        "enter_username": "Введите имя пользователя",
+        "password": "Пароль",
+        "enter_password": "Введите пароль",
+        "forgot_password": "Забыли пароль?",
+        "remember_me": "Запомнить меня",
+        "submit": "Войти"
+    },
+    "date_range": {
+        "last_7_days": "Последние 7 дней",
+        "last_14_days": "Последние 14 дней",
+        "last_30_days": "Последние 30 дней",
+        "last_3_months": "Последние 3 месяца",
+        "last_6_months": "Последние 6 месяцев",
+        "last_year": "Последний год"
+    },
+    "period": {
+        "daily": "Ежедневно",
+        "weekly": "Еженедельно",
+        "monthly": "Ежемесячно"
+    }
+}
