@@ -14,30 +14,30 @@ const loading = ref(false);
 const authStore = useAuthStore();
 const { start, finish } = useLoadingIndicator();
 
-const fields: AuthFormField[] = [
+const fields = computed<AuthFormField[]>(() => [
   {
     name: "username",
-    label: "Username",
+    label: $t("login.username"),
     type: "text",
-    placeholder: "Enter your username",
+    placeholder: $t("login.enter_username"),
     required: true,
     defaultValue: "antfu",
   },
   {
     name: "password",
-    label: "Password",
+    label: $t("login.password"),
     type: "password",
-    placeholder: "Enter your password",
+    placeholder: $t("login.enter_password"),
     required: true,
     defaultValue: "123456789",
   },
   {
     name: "remember",
-    label: "Remember me",
+    label: $t("login.remember_me"),
     type: "checkbox",
     defaultValue: true,
   },
-];
+]);
 
 const providers = [
   {
@@ -108,24 +108,24 @@ async function onSubmit(payload: FormSubmitEvent<Schema>) {
 
 <template>
   <div class="flex items-center justify-center min-h-screen p-4 pb-20">
-    <UPageCard class="w-full max-w-md">
+    <UPageCard class="w-full max-w-md shadow-md">
       <UAuthForm
-        title="Login"
-        description="Enter your credentials"
+        :title="$t('login.title')"
+        :description="$t('login.enter_credentials')"
         icon="i-lucide-user"
         :schema="schema"
         :fields="fields"
         :providers="providers"
-        separator="Providers"
+        :separator="$t('login.providers')"
         :loading="loading"
         :submit="{
-          label: 'Submit',
+          label: $t('login.submit'),
         }"
         @submit="onSubmit"
       >
         <template #password-hint>
           <ULink to="#" class="text-primary font-medium" tabindex="-1"
-            >Forgot password?</ULink
+            >{{ $t("login.forgot_password") }}</ULink
           >
         </template>
       </UAuthForm>

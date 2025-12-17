@@ -36,6 +36,18 @@
     "title": "正在退出登录...",
     "description": "请稍候，正在跳转到登录页面。"
   },
+  "login": {
+    "title": "登录",
+    "enter_credentials": "请输入您的凭据",
+    "providers": "提供者",
+    "username": "用户名",
+    "enter_username": "请输入您的用户名",
+    "password": "密码",
+    "enter_password": "请输入您的密码",
+    "forgot_password": "忘记密码？",
+    "remember_me": "记住我",
+    "submit": "提交"
+  },
   "date_range": {
     "last_7_days": "最近 7 天",
     "last_14_days": "最近 14 天",
@@ -43,5 +55,10 @@
     "last_3_months": "最近 3 个月",
     "last_6_months": "最近 6 个月",
     "last_year": "去年"
+  },
+  "period": {
+    "daily": "每日",
+    "weekly": "每周",
+    "monthly": "每月"
   }
 }

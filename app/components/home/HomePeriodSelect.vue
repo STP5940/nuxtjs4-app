@@ -22,6 +22,14 @@ const periods = computed<Period[]>(() => {
   return ["weekly", "monthly"];
 });
 
+// Create items with translated labels
+const items = computed(() =>
+  periods.value.map((period) => ({
+    value: period,
+    label: $t(`period.${period}`),
+  }))
+);
+
 // Ensure the model value is always a valid period
 watch(periods, () => {
   if (!periods.value.includes(model.value)) {
@@ -33,9 +41,9 @@ watch(periods, () => {
 <template>
   <USelect
     v-model="model"
-    :items="periods"
+    :items="items"
     variant="ghost"
-    class="data-[state=open]:bg-elevated"
+    class="w-32 data-[state=open]:bg-elevated"
     :ui="{
       value: 'capitalize',
       itemLabel: 'capitalize',

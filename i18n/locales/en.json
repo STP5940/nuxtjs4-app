@@ -36,6 +36,18 @@
     "title": "Logging out...",
     "description": "Please wait. redirected to login page."
   },
+  "login": {
+    "title": "Login",
+    "enter_credentials": "Enter your credentials",
+    "providers": "Providers",
+    "username": "Username",
+    "enter_username": "Enter your username",
+    "password": "Password",
+    "enter_password": "Enter your password",
+    "forgot_password": "Forgot password?",
+    "remember_me": "Remember me",
+    "submit": "Submit"
+  },
   "date_range": {
     "last_7_days": "Last 7 days",
     "last_14_days": "Last 14 days",
@@ -43,5 +55,10 @@
     "last_3_months": "Last 3 months",
     "last_6_months": "Last 6 months",
     "last_year": "Last year"
+  },
+  "period": {
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
   }
 }
