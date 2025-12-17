@@ -56,7 +56,7 @@ const links = computed(() => [[{
       open.value = false
     }
   }, {
-    label: $t("user_link"),
+    label: $t("users_link"),
     to: '/settings/users',
     onSelect: () => {
       open.value = false

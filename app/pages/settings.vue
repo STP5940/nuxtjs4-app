@@ -11,7 +11,7 @@ const links = computed(() => [[{
   to: '/settings',
   exact: true
 }, {
-  label: $t("user_link"),
+  label: $t("users_link"),
   icon: 'i-lucide-users',
   to: '/settings/users'
 }, {
