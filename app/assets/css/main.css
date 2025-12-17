@@ -10,6 +10,9 @@ button:not([disabled]) {
 :root {
   --font-sans: 'Public Sans', sans-serif;
 
+  /* ปรับแต่ง Border Radius ให้ดูโมเดิร์น (โค้งมนมากขึ้น) */
+  --ui-radius: 0.50rem;
+
   --color-green-50: #EFFDF5;
   --color-green-100: #D9FBE8;
   --color-green-200: #B3F5D1;

@@ -238,7 +238,7 @@ watch(accessToken, (newToken) => {
       v-model:open="open"
       collapsible
       resizable
-      class="bg-elevated/25"
+      class="bg-elevated/25 shadow-md rounded-r-md"
       :ui="{ footer: 'lg:border-t lg:border-default' }"
     >
       <template #header="{ collapsed }">

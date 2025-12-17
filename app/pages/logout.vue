@@ -32,7 +32,7 @@ onMounted(() => {
 
 <template>
   <div class="flex items-center justify-center min-h-screen p-4 pb-20">
-    <UCard class="w-full max-w-md text-center">
+    <UCard class="w-full max-w-md text-center shadow-md">
       <div class="py-8">
         <img
           src="/loading.gif"
