@@ -60,5 +60,20 @@
     "daily": "รายวัน",
     "weekly": "รายสัปดาห์",
     "monthly": "รายเดือน"
+  },
+  "status_messages": {
+    "not_found": "ไม่พบข้อมูล",
+    "unauthorized": "ไม่ได้รับอนุญาต",
+    "forbidden": "ถูกปฏิเสธ",
+    "bad_request": "คำขอไม่ถูกต้อง",
+    "internal_server_error": "ข้อผิดพลาดภายในเซิร์ฟเวอร์"
+  },
+  "error_changepassword": {
+    "password_must_be_different": "รหัสผ่านต้องไม่ซ้ำกัน",
+    "incorrect_current_password": "รหัสผ่านปัจจุบันไม่ถูกต้อง",
+    "user_not_found": "ไม่พบผู้ใช้",
+    "user_deleted_or_disabled": "บัญชีผู้ใช้ถูกลบหรือถูกปิดใช้งาน",
+    "password_change_success": "เปลี่ยนรหัสผ่านสำเร็จ",
+    "unexpected_server_error": "เกิดข้อผิดพลาดที่ไม่คาดคิดบนเซิร์ฟเวอร์"
   }
 }

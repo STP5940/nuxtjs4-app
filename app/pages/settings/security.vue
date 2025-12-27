@@ -36,10 +36,10 @@ const validate = (state: Partial<PasswordSchema>): FormError[] => {
 
 const toast = useToast();
 
-const accessToken = useCookie("access_token");
 const onSubmit = async () => {
   loading.value = true;
   try {
+    const accessToken = useCookie("access_token");
     const { data, status, pending, error, refresh } = await useFetch(
       "/api/v1/auth/change-password",
       {
@@ -51,6 +51,7 @@ const onSubmit = async () => {
           currentPassword: password.current,
           newPassword: password.new,
         },
+        key: `change-password-${Date.now()}`,
       }
     );
 
@@ -58,18 +59,35 @@ const onSubmit = async () => {
       const errData = error.value.data;
       const statusCode = error.value.statusCode;
 
-      let errorMsg = errData?.message || "เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน";
-      errorMsg = errData?.message;
+      let toastTitle = `Error ${statusCode}`;
+      let toastDescription = errData?.message || `An error occurred`;
+
+      if (statusCode === 400) {
+        toastTitle = $t("status_messages.bad_request");
+        toastDescription = $t("error_changepassword.password_must_be_different");
+      } else if (statusCode === 401 && errData?.message === "Password is incorrect") {
+        toastTitle = $t("status_messages.unauthorized");
+        toastDescription = $t("error_changepassword.incorrect_current_password");
+      } else if (statusCode === 403) {
+        toastTitle = $t("status_messages.forbidden");
+        toastDescription = $t("error_changepassword.user_deleted_or_disabled");
+      } else if (statusCode === 404) {
+        toastTitle = $t("status_messages.not_found");
+        toastDescription = $t("error_changepassword.user_not_found");
+      } else if (statusCode === 500) {
+        toastTitle = "Internal Server Error";
+        toastDescription = $t("error_changepassword.unexpected_server_error");
+      }
 
       toast.add({
-        title: "Error",
-        description: errorMsg,
+        title: toastTitle,
+        description: toastDescription,
         color: "error",
       });
     } else {
       toast.add({
         title: "Success",
-        description: "Your password has been updated successfully",
+        description: $t("error_changepassword.password_change_success"),
         color: "success",
       });
       // Reset form

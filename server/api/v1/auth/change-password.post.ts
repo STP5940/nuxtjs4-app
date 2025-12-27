@@ -73,7 +73,7 @@ export default defineEventHandler(async (event) => {
             throw createError({
                 statusCode: 400,
                 statusMessage: "Bad Request",
-                message: "Passwords must be different"
+                message: "Password must be different"
             });
         }
 
@@ -98,7 +98,7 @@ export default defineEventHandler(async (event) => {
             createdAt: findingUser.createdAt,
             updatedAt: updatedAtUser,
             deletedAt: null
-        }, "Reset password successfully")
+        }, "Password changed successfully")
     } catch (error: unknown) {
         handleAndThrow(error);
     }

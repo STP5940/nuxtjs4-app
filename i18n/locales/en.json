@@ -60,5 +60,20 @@
     "daily": "Daily",
     "weekly": "Weekly",
     "monthly": "Monthly"
+  },
+  "status_messages": {
+    "not_found": "Not Found",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "bad_request": "Bad Request",
+    "internal_server_error": "Internal Server Error"
+  },
+  "error_changepassword": {
+    "password_must_be_different": "Password must be different",
+    "incorrect_current_password": "Incorrect current password",
+    "user_not_found": "User not found",
+    "user_deleted_or_disabled": "User account is deleted or disabled",
+    "password_change_success": "Password changed successfully",
+    "unexpected_server_error": "An unexpected error occurred on the server"
   }
 }

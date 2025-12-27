@@ -60,5 +60,20 @@
         "daily": "Ежедневно",
         "weekly": "Еженедельно",
         "monthly": "Ежемесячно"
+    },
+    "status_messages": {
+        "not_found": "Не найдено",
+        "unauthorized": "Неавторизован",
+        "forbidden": "Запрещено",
+        "bad_request": "Неверный запрос",
+        "internal_server_error": "Внутренняя ошибка сервера"
+    },
+    "error_changepassword": {
+        "password_must_be_different": "Пароль должен быть другим",
+        "incorrect_current_password": "Неверный текущий пароль",
+        "user_not_found": "Пользователь не найден",
+        "user_deleted_or_disabled": "Учетная запись пользователя удалена или отключена",
+        "password_change_success": "Пароль успешно изменен",
+        "unexpected_server_error": "На сервере произошла непредвиденная ошибка"
     }
 }
