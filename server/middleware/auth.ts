@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     const authorizationHeader = getHeader(event, 'Authorization');
 
     if (!authorizationHeader) {
-        return responseUnauthorized('Missing Authorization header');
+        return responseUnauthorized('Authorization header is missing', 401);
     }
 
     const [scheme, accessToken] = authorizationHeader.trim().split(' ');
