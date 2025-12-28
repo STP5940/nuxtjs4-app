@@ -6,7 +6,6 @@ export default defineNuxtConfig({
   logLevel: 'silent',
 
   modules: [
-    // '@nuxt/content',
     '@nuxt/eslint',
     '@nuxt/hints',
     '@nuxt/image',
