@@ -55,13 +55,13 @@ const filteredUsers = computed<Users[]>(() => {
 
 <template>
   <!-- กำลังโหลดข้อมูลจาก API โปรดรอสักครู่ -->
-  <div v-if="pending" class="flex flex-col items-center justify-center h-48">
+  <!-- <div v-if="pending" class="flex flex-col items-center justify-center h-48">
     <Icon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
     <p class="mt-2 text-gray-500">Loading data...</p>
-  </div>
+  </div> -->
 
   <!-- เกิดข้อผิดพลาดขณะดึงข้อมูลจาก API โปรดลองอีกครั้ง -->
-  <div v-else-if="error" class="flex flex-col items-center justify-center h-48">
+  <!-- <div v-else-if="error" class="flex flex-col items-center justify-center h-48">
     <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
     <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
     <h1 class="mt-2 text-sm">
@@ -74,10 +74,10 @@ const filteredUsers = computed<Users[]>(() => {
       class="mt-4"
       @click="$router.go(0)"
     />
-  </div>
+  </div> -->
 
   <!-- แสดงรายการผู้ใช้เมื่อดึงข้อมูลสำเร็จ -->
-  <div v-if="users && !pending && !error">
+  <div>
     <UPageCard
       :title="`Total Users ${usersCount} people`"
       description="Invite new users by email address."
@@ -85,7 +85,12 @@ const filteredUsers = computed<Users[]>(() => {
       orientation="horizontal"
       class="mb-4"
     >
-      <UButton label="Invite people" icon="i-lucide-user-plus" color="neutral" class="w-fit lg:ms-auto" />
+      <UButton
+        label="Invite people"
+        icon="i-lucide-user-plus"
+        color="neutral"
+        class="w-fit lg:ms-auto"
+      />
     </UPageCard>
 
     <UPageCard
@@ -105,9 +110,30 @@ const filteredUsers = computed<Users[]>(() => {
         />
       </template>
 
-      <SettingsUsersList v-if="filteredUsers.length > 0" :users="filteredUsers" />
+      <!-- กำลังโหลดข้อมูลจาก API โปรดรอสักครู่ -->
+      <div v-if="pending" class="flex flex-col items-center justify-center h-48">
+        <Icon name="i-lucide-loader-circle" class="w-8 h-8 animate-spin text-primary" />
+        <p class="mt-2 text-gray-500">Loading data...</p>
+      </div>
 
-      <div v-else class="p-4 text-center">
+      <div v-else-if="error" class="flex flex-col items-center justify-center h-48">
+        <Icon name="i-lucide-alert-triangle" class="w-8 h-8 text-red-500" />
+        <p class="mt-2 text-red-500">Failed to load data. Please try again.</p>
+        <h1 class="mt-2 text-sm">
+          <code>{{ error.data?.message || "Unknown error" }}</code>
+        </h1>
+        <UButton
+          icon="i-lucide-refresh-cw"
+          label="Reload"
+          color="error"
+          class="mt-4"
+          @click="$router.go(0)"
+        />
+      </div>
+
+      <SettingsUsersList v-if="users && !pending && !error" :users="filteredUsers" :itemsPerPage="5" />
+
+      <div v-if="filteredUsers.length <= 0 && !pending && !error" class="p-4 text-center">
         <UIcon
           name="i-lucide-users"
           class="w-8 h-8 text-gray-400 dark:text-gray-500 mb-2"
