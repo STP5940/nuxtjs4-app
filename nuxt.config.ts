@@ -5,6 +5,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   logLevel: 'silent',
 
+  runtimeConfig: {
+    // Server-side only
+
+    // Available on both server and client
+    public: {
+      appName: process.env.APP_NAME || 'Nuxt4 Application',
+    },
+  },
+
   modules: [
     '@nuxt/eslint',
     '@nuxt/hints',

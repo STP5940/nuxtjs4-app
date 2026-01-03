@@ -84,6 +84,22 @@ export interface UsersResponse {
   }
 }
 
+export interface TwoFactorSetup {
+  appname: string;
+  userid: string;
+  secretkey: string;
+  qrcodevalue: string;
+}
+
+export interface TwoFactorSetupResponse {
+  error: boolean
+  url: string
+  statusCode: number
+  statusMessage: string
+  message: string
+  data: TwoFactorSetup
+}
+
 export interface ErrorResponse {
   error: boolean;
   url: string;

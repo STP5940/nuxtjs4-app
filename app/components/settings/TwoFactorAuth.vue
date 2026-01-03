@@ -2,9 +2,14 @@
 // 2FA widget reused in security pages
 import { ref } from "vue";
 import { vMaska } from "maska/vue";
-// import { vMaska } from "maska"
+import { useAuthStore } from "@/stores/auth";
+
+import type { TwoFactorSetupResponse } from "~/types";
+
+const authStore = useAuthStore();
 
 const toast = useToast();
+const config = useRuntimeConfig();
 
 const is2FAEnabled = ref(false);
 const showQRCode = ref(false);
@@ -13,21 +18,47 @@ const verificationCode = ref("");
 const isVerifying = ref(false);
 const isQrLoading = ref(true);
 
-const secretKey = ref("JBSWY3DPEHPK3PXP");
-const issuer = "YourApp";
-const account = "user@example.com";
+const secretKey = ref("");
+const qrCodeValueFromAPI = ref("");
 
-// สร้าง OTP Auth URL สำหรับทำ QR Code
-const qrCodeValue = computed(() => {
-  return `otpauth://totp/${issuer}:${account}?secret=${secretKey.value}&issuer=${issuer}`;
-});
+const accessToken = useCookie("access_token");
+const { data, status, pending, error, refresh } = await useFetch(
+  "/api/v1/auth/2fa/setup",
+  {
+    lazy: true,
+    method: "GET",
+    headers: computed(() => ({
+      Authorization: `Bearer ${accessToken.value}`, // reactive
+    })),
+  }
+);
 
 const enable2FA = async () => {
   showQRCode.value = true;
   isQrLoading.value = true;
-  setTimeout(() => {
+
+  try {
+    // เรียก API เพื่อดึงข้อมูล 2FA setup
+    await refresh();
+    const twoFactorSetup = data.value as TwoFactorSetupResponse;
+
+    if (twoFactorSetup?.data) {
+      secretKey.value = twoFactorSetup.data.secretkey;
+      qrCodeValueFromAPI.value = twoFactorSetup.data.qrcodevalue;
+      isQrLoading.value = false;
+    } else {
+      throw new Error("No data received from API");
+    }
+  } catch (error) {
+    console.error("Failed to fetch 2FA setup info:", error);
+    toast.add({
+      title: "Error",
+      description: "Failed to fetch 2FA setup information",
+      color: "error",
+    });
+    showQRCode.value = false;
     isQrLoading.value = false;
-  }, 500);
+  }
 };
 
 const verify2FA = async () => {
@@ -200,9 +231,8 @@ const copySecret = () => {
             >
               <UIcon name="i-lucide-loader-2" class="w-6 h-6 animate-spin text-muted" />
             </div>
-
             <Qrcode
-              :value="qrCodeValue"
+              :value="qrCodeValueFromAPI"
               class="w-48 h-48"
               :style="{ opacity: isQrLoading === true ? 0.1 : 1 }"
             />

@@ -34,7 +34,19 @@ model Users {
   createdAt     DateTime
   updatedAt     DateTime?
   deletedAt     DateTime?
+  Twofactor     Twofactor?
   refreshTokens RefreshToken[]
+}
+
+model Twofactor {
+  id             String   @id @default(uuid())
+  secret         String
+  userid         String   @unique
+  active         Boolean? @default(false) @db.Bit
+  signinaccount  Boolean? @default(false) @db.Bit
+  changepassword Boolean? @default(false) @db.Bit
+
+  Users Users @relation(fields: [userid], references: [id])
 }
 
 model RefreshToken {

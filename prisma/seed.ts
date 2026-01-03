@@ -1,7 +1,13 @@
 import { hashPassword } from '../lib/auth';
 import prisma from "../lib/prisma";
+import { generateSecret } from 'node-2fa'
+
+const APP_NAME = process.env.APP_NAME || 'AppNameEmpty';
 
 async function seed() {
+    // Clear existing data
+    await prisma.twofactor.deleteMany({});
+    console.log("Delete Twofactor Success...");
     await prisma.users.deleteMany({});
     console.log("Delete Users Success...");
 
@@ -102,6 +108,26 @@ async function seed() {
     });
 
     console.log("Insert Users Success...");
+
+    // Get all created users
+    const users = await prisma.users.findMany();
+
+    // Create Twofactor records for each user
+    for (const user of users) {
+        const secretKey = generateSecret({ name: APP_NAME, account: user.email });
+
+        await prisma.twofactor.create({
+            data: {
+                secret: secretKey.secret,
+                userid: user.id,
+                active: false,
+                signinaccount: false,
+                changepassword: false,
+            },
+        });
+    }
+
+    console.log("Insert Twofactor Records Success...");
 }
 
 seed()
