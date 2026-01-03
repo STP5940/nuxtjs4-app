@@ -18,10 +18,26 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@nuxtjs/i18n',
+    'nuxt-qrcode',
 
     // Development only modules
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
   ],
+
+  qrcode: {
+    options: {
+      // variant: 'pixelated',
+      // OR
+      variant: {
+        inner: 'circle',
+        marker: 'rounded',
+        pixel: 'rounded',
+      },
+      radius: 1,
+      blackColor: 'currentColor', // 'var(--ui-text-highlighted)' if you are using `@nuxt/ui` v3
+      whiteColor: 'transparent',  // 'var(--ui-bg)'
+    },
+  },
 
   i18n: {
     // กำหนดภาษาที่รองรับ

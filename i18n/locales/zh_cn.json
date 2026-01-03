@@ -75,5 +75,8 @@
     "user_deleted_or_disabled": "用户账户已被删除或禁用",
     "password_change_success": "密码修改成功",
     "unexpected_server_error": "服务器发生意外错误"
+  },
+  "twofactor": {
+    "title": "两步验证"
   }
 }

@@ -75,5 +75,8 @@
     "user_deleted_or_disabled": "User account is deleted or disabled",
     "password_change_success": "Password changed successfully",
     "unexpected_server_error": "An unexpected error occurred on the server"
+  },
+  "twofactor": {
+    "title": "Two-Factor Authentication"
   }
 }

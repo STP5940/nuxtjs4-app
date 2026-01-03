@@ -75,5 +75,8 @@
     "user_deleted_or_disabled": "บัญชีผู้ใช้ถูกลบหรือถูกปิดใช้งาน",
     "password_change_success": "เปลี่ยนรหัสผ่านสำเร็จ",
     "unexpected_server_error": "เกิดข้อผิดพลาดที่ไม่คาดคิดบนเซิร์ฟเวอร์"
+  },
+  "twofactor": {
+    "title": "การยืนยันตัวตนแบบสองขั้นตอน"
   }
 }

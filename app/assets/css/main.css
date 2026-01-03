@@ -7,6 +7,12 @@ button:not([disabled]) {
   cursor: pointer;
 }
 
+/* แก้ปัญหา disabled ปุ่มทำให้ attribute ซึ่งทำให้เกิด layout shift เล็กน้อยตอนสกอล */
+button, [role="button"] {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+}
+
 :root {
   --font-sans: 'Public Sans', sans-serif;
 
