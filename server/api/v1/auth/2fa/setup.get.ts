@@ -41,6 +41,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const secretKey = findingTwofactor.secret;
+    const active = findingTwofactor.active;
 
     // Create otpauth URL for QR code
     const qrCodeValue = `otpauth://totp/${appName}:${userName}?secret=${secretKey}&issuer=${appName}`;
@@ -49,6 +50,7 @@ export default defineEventHandler(async (event) => {
         appname: appName,
         userid: userId,
         secretkey: secretKey,
-        qrcodevalue: qrCodeValue
+        qrcodevalue: qrCodeValue,
+        active: active,
     }, "2FA setup info retrieved successfully");
 })

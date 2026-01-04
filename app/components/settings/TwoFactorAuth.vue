@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 2FA widget reused in security pages
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { vMaska } from "maska/vue";
 import { useAuthStore } from "@/stores/auth";
 
@@ -14,7 +14,7 @@ const config = useRuntimeConfig();
 const is2FAEnabled = ref(false);
 const showQRCode = ref(false);
 const showDisableConfirm = ref(false);
-const verificationCode = ref("");
+const verificationPinCode = ref([]);
 const isVerifying = ref(false);
 const isQrLoading = ref(true);
 
@@ -32,6 +32,12 @@ const { data, status, pending, error, refresh } = await useFetch<TwoFactorSetupR
     immediate: false,
   }
 );
+
+const isPinComplete = computed(() => {
+  // ตรวจสอบว่า pin code มีความยาว 6 หลักและเป็นตัวเลขทั้งหมด
+  const pin = verificationPinCode.value;
+  return Array.isArray(pin) && pin.join('').length === 6 && /^\d{6}$/.test(pin.join(''));
+});
 
 const enable2FA = async () => {
   showQRCode.value = true;
@@ -62,7 +68,7 @@ const enable2FA = async () => {
 };
 
 const verify2FA = async () => {
-  if (!verificationCode.value || verificationCode.value.length !== 6) {
+  if (!isPinComplete.value) {
     // alert("กรุณากรอกรหัส 6 หลัก");
     toast.add({
       title: "Invalid Code",
@@ -79,7 +85,7 @@ const verify2FA = async () => {
     // ในการใช้งานจริงจะต้องส่งไปยัง backend เพื่อ verify
     is2FAEnabled.value = true;
     showQRCode.value = false;
-    verificationCode.value = "";
+    verificationPinCode.value = [];
     isVerifying.value = false;
     // alert("เปิดใช้งาน 2FA สำเร็จ");
     toast.add({
@@ -95,7 +101,7 @@ const disable2FA = () => {
 };
 
 const confirmDisable2FA = async () => {
-  if (!verificationCode.value || verificationCode.value.length !== 6) {
+  if (!isPinComplete.value) {
     // alert("กรุณากรอกรหัส 6 หลัก");
     toast.add({
       title: "Invalid Code",
@@ -112,7 +118,7 @@ const confirmDisable2FA = async () => {
     // ในการใช้งานจริงจะต้องส่งไปยัง backend เพื่อ verify
     is2FAEnabled.value = false;
     showDisableConfirm.value = false;
-    verificationCode.value = "";
+    verificationPinCode.value = [];
     isVerifying.value = false;
     // alert("ปิดใช้งาน 2FA สำเร็จ");
     toast.add({
@@ -125,12 +131,12 @@ const confirmDisable2FA = async () => {
 
 const cancelSetup = () => {
   showQRCode.value = false;
-  verificationCode.value = "";
+  verificationPinCode.value = [];
 };
 
 const cancelDisable = () => {
   showDisableConfirm.value = false;
-  verificationCode.value = "";
+  verificationPinCode.value = [];
 };
 
 const copySecret = () => {
@@ -265,14 +271,12 @@ const copySecret = () => {
           </p>
 
           <div class="flex gap-3">
-            <UInput
-              v-maska="'######'"
-              v-model="verificationCode"
-              placeholder="000000"
-              maxlength="6"
-              inputmode="numeric"
-              class="flex-1 max-w-[240px]"
-              :ui="{ base: 'text-center text-2xl tracking-widest font-mono' }"
+            <UPinInput
+              v-model="verificationPinCode"
+              type="number"
+              :length="6"
+              placeholder="○"
+              :ui="{ base: 'text-2xl font-mono' }"
             />
           </div>
         </div>
@@ -284,9 +288,9 @@ const copySecret = () => {
             @click="verify2FA"
             color="primary"
             :loading="isVerifying"
-            :disabled="verificationCode.length !== 6"
+            :disabled="!isPinComplete"
           >
-            Verify and Enable
+            Confirm Enable
           </UButton>
           <UButton
             @click="cancelSetup"
@@ -325,14 +329,12 @@ const copySecret = () => {
           <label class="block text-sm font-medium text-highlighted mb-2">
             Verification Code
           </label>
-          <UInput
-            v-maska="'######'"
-            v-model="verificationCode"
-            placeholder="000000"
-            maxlength="6"
-            inputmode="numeric"
-            class="flex-1 max-w-[240px]"
-            :ui="{ base: 'text-center text-2xl tracking-widest font-mono' }"
+          <UPinInput
+            v-model="verificationPinCode"
+            type="number"
+            :length="6"
+            placeholder="○"
+            :ui="{ base: 'text-2xl font-mono' }"
           />
         </div>
 
@@ -343,7 +345,7 @@ const copySecret = () => {
             @click="confirmDisable2FA"
             color="error"
             :loading="isVerifying"
-            :disabled="verificationCode.length !== 6"
+            :disabled="!isPinComplete"
           >
             Confirm Disable
           </UButton>
