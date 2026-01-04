@@ -373,14 +373,9 @@ const copySecret = () => {
           <div class="text-sm text-muted">
             <p class="font-medium text-highlighted mb-1">How does 2FA work?</p>
             <ul class="space-y-1 list-disc list-inside">
-              <li>
-                When you log in, you will need to enter your password and a 6-digit code
-                from your app.
-              </li>
+              <li>Enter your password and 6-digit 2FA code to log in.</li>
               <li>The 6-digit code changes every 30 seconds.</li>
-              <li>
-                Even with your password, 2FA keeps your account inaccessible to others.
-              </li>
+              <li>Protects your account even if your password is stolen.</li>
             </ul>
           </div>
         </div>
