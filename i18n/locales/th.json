@@ -63,7 +63,7 @@
   },
   "status_messages": {
     "not_found": "ไม่พบข้อมูล",
-    "unauthorized": "ไม่ได้รับอนุญาต",
+    "unauthorized": "ยืนยันตัวตนไม่สำเร็จ",
     "forbidden": "ถูกปฏิเสธ",
     "bad_request": "คำขอไม่ถูกต้อง",
     "internal_server_error": "ข้อผิดพลาดภายในเซิร์ฟเวอร์"

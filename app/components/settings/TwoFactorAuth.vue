@@ -22,14 +22,14 @@ const secretKey = ref("");
 const qrCodeValueFromAPI = ref("");
 
 const accessToken = useCookie("access_token");
-const { data, status, pending, error, refresh } = await useFetch(
+const { data, status, pending, error, refresh } = await useFetch<TwoFactorSetupResponse>(
   "/api/v1/auth/2fa/setup",
   {
-    lazy: true,
     method: "GET",
     headers: computed(() => ({
       Authorization: `Bearer ${accessToken.value}`, // reactive
     })),
+    immediate: false,
   }
 );
 
@@ -40,7 +40,7 @@ const enable2FA = async () => {
   try {
     // เรียก API เพื่อดึงข้อมูล 2FA setup
     await refresh();
-    const twoFactorSetup = data.value as TwoFactorSetupResponse;
+    const twoFactorSetup = data.value;
 
     if (twoFactorSetup?.data) {
       secretKey.value = twoFactorSetup.data.secretkey;
@@ -270,6 +270,7 @@ const copySecret = () => {
               v-model="verificationCode"
               placeholder="000000"
               maxlength="6"
+              inputmode="numeric"
               class="flex-1 max-w-[240px]"
               :ui="{ base: 'text-center text-2xl tracking-widest font-mono' }"
             />
@@ -329,6 +330,7 @@ const copySecret = () => {
             v-model="verificationCode"
             placeholder="000000"
             maxlength="6"
+            inputmode="numeric"
             class="flex-1 max-w-[240px]"
             :ui="{ base: 'text-center text-2xl tracking-widest font-mono' }"
           />

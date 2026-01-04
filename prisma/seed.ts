@@ -6,8 +6,8 @@ const APP_NAME = process.env.APP_NAME || 'AppNameEmpty';
 
 async function seed() {
     // Clear existing data
-    await prisma.twofactor.deleteMany({});
-    console.log("Delete Twofactor Success...");
+    await prisma.twofactors.deleteMany({});
+    console.log("Delete Twofactors Success...");
     await prisma.users.deleteMany({});
     console.log("Delete Users Success...");
 
@@ -116,13 +116,14 @@ async function seed() {
     for (const user of users) {
         const secretKey = generateSecret({ name: APP_NAME, account: user.email });
 
-        await prisma.twofactor.create({
+        await prisma.twofactors.create({
             data: {
                 secret: secretKey.secret,
-                userid: user.id,
+                userId: user.id,
                 active: false,
-                signinaccount: false,
-                changepassword: false,
+                signinAccount: false,
+                changePassword: false,
+                createdAt: new Date(),
             },
         });
     }

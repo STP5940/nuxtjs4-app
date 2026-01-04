@@ -34,19 +34,21 @@ model Users {
   createdAt     DateTime
   updatedAt     DateTime?
   deletedAt     DateTime?
-  Twofactor     Twofactor?
+  Twofactors    Twofactors?
   refreshTokens RefreshToken[]
 }
 
-model Twofactor {
+model Twofactors {
   id             String   @id @default(uuid())
-  secret         String
-  userid         String   @unique
+  secret         String   @unique
   active         Boolean? @default(false) @db.Bit
-  signinaccount  Boolean? @default(false) @db.Bit
-  changepassword Boolean? @default(false) @db.Bit
+  signinAccount  Boolean? @default(false) @db.Bit
+  changePassword Boolean? @default(false) @db.Bit
+  createdAt      DateTime @default(now())
+  userId         String   @unique
+  Users          Users    @relation(fields: [userId], references: [id])
 
-  Users Users @relation(fields: [userid], references: [id])
+  @@index([userId])
 }
 
 model RefreshToken {
@@ -60,7 +62,7 @@ model RefreshToken {
   createdAt DateTime @default(now())
   expiresAt DateTime
   userId    String
-  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Users     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }

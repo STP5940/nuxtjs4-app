@@ -26,9 +26,9 @@ export default defineEventHandler(async (event) => {
     }
 
     // ค้นหาผู้ใช้จาก userId ใน token
-    const findingTwofactor = await prisma.twofactor.findUnique({
+    const findingTwofactor = await prisma.twofactors.findUnique({
         where: {
-            userid: String(userId)
+            userId: String(userId)
         }
     })
 

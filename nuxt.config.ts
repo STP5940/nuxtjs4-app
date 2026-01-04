@@ -16,7 +16,6 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxt/eslint',
-    '@nuxt/hints',
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/test-utils',
@@ -31,6 +30,9 @@ export default defineNuxtConfig({
 
     // Development only modules
     ...(process.env.NODE_ENV !== 'production' ? ['@prisma/nuxt'] : []),
+
+    // Open modules on ssr: true Only
+    // '@nuxt/hints',
   ],
 
   qrcode: {
