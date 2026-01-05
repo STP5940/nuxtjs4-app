@@ -276,7 +276,7 @@ const copySecret = () => {
               type="number"
               :length="6"
               placeholder="○"
-              :ui="{ base: 'text-2xl font-mono' }"
+              :ui="{ base: 'text-1xl' }"
             />
           </div>
         </div>
@@ -334,7 +334,7 @@ const copySecret = () => {
             type="number"
             :length="6"
             placeholder="○"
-            :ui="{ base: 'text-2xl font-mono' }"
+            :ui="{ base: 'text-1xl' }"
           />
         </div>
 
