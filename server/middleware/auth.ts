@@ -26,16 +26,16 @@ export default defineEventHandler(async (event) => {
         return;
     }
 
-    // ดึง Access Token จาก Authorization Header
-    const authorizationHeader = getHeader(event, 'Authorization');
+    const INVALID_TOKEN_VALUES = ['null', 'undefined'];
 
-    if (!authorizationHeader) {
+    // Extract and validate Bearer token
+    const authHeader = getHeader(event, 'Authorization');
+    if (!authHeader) {
         return responseUnauthorized('Authorization header is missing', 401);
     }
 
-    const [scheme, accessToken] = authorizationHeader.trim().split(' ');
-
-    if (scheme !== 'Bearer' || !accessToken || ['null', 'undefined'].includes(accessToken)) {
+    const [scheme, accessToken] = authHeader.trim().split(/\s+/);
+    if (scheme !== 'Bearer' || !accessToken || INVALID_TOKEN_VALUES.includes(accessToken)) {
         return responseUnauthorized('Invalid or missing token', 401);
     }
 
