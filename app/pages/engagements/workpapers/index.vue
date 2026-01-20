@@ -192,7 +192,7 @@ const getProgressColor = (progress: number) => {
           <div class="ml-2">
             <p class="text-xs text-gray-500">Enterprise Computer Systems</p>
             <!-- <p class="text-xs text-gray-500">Dashboard</p> -->
-            <h1 class="text-lg font-semibold">Working Paper</h1>
+            <h1 class="text-lg font-semibold">Question</h1>
           </div>
         </template>
 
@@ -212,7 +212,7 @@ const getProgressColor = (progress: number) => {
           </div>
           <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-              Working Paper Management
+              Working Paper
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Manage and track your audit documentation progress
