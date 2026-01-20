@@ -212,7 +212,7 @@ const getProgressColor = (progress: number) => {
           </div>
           <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-              Working Paper
+              Working Paper Question
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Manage and track your audit documentation progress
@@ -510,7 +510,7 @@ const getProgressColor = (progress: number) => {
                         </template>
                         <UButton
                           size="xs"
-                          icon="i-lucide-file-pen-line"
+                          icon="i-lucide-square-chart-gantt"
                           label="Open"
                           color="neutral"
                           variant="subtle"
@@ -519,64 +519,6 @@ const getProgressColor = (progress: number) => {
 
                         <template #body>
                           <div class="space-y-4">
-                            <!-- <div class="grid gap-4 md:grid-cols-3">
-                              <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900/40">
-                                <p
-                                  class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                                >
-                                  Item Name
-                                </p>
-                                <p
-                                  class="text-sm font-semibold text-gray-900 dark:text-white"
-                                >
-                                  {{ selectedRow?.name || "—" }}
-                                </p>
-                              </div>
-
-                              <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900/40">
-                                <p
-                                  class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                                >
-                                  Progress
-                                </p>
-                                <div class="flex items-center gap-2">
-                                  <UBadge
-                                    size="lg"
-                                    :color="getProgressColor(selectedRow?.progress || 0)"
-                                    variant="subtle"
-                                  >
-                                    {{ selectedRow?.progress ?? 0 }}%
-                                  </UBadge>
-                                  <UProgress
-                                    :model-value="selectedRow?.progress || 0"
-                                    :color="getProgressColor(selectedRow?.progress || 0)"
-                                    size="sm"
-                                    class="flex-1"
-                                    :ui="{ indicator: 'striped-bar animate-striped' }"
-                                  />
-                                </div>
-                              </div>
-
-                              <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-900/40">
-                                <p
-                                  class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400"
-                                >
-                                  Due Date
-                                </p>
-                                <p
-                                  class="text-sm font-semibold text-gray-900 dark:text-white"
-                                >
-                                  {{ selectedRow?.dueDate || "—" }}
-                                </p>
-                              </div>
-                            </div> -->
-
-                            <!-- <div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
-                              <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">Notes</p>
-                              <p class="text-sm text-gray-600 dark:text-gray-300">
-                                เพิ่มรายละเอียดเอกสาร แนวทางตรวจสอบ หรือสิ่งที่ต้องติดตามเพิ่มเติมได้ที่นี่
-                              </p>
-                            </div> -->
                             123<br /><br /><br /><br /><br /><br /><br />
                             <br /><br /><br /><br /><br /><br /><br /><br />
                             <br /><br /><br /><br /><br /><br /><br /><br />

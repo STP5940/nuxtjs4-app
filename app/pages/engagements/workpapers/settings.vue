@@ -19,7 +19,6 @@ type WorkingSection = AccordionItem & {
 
 const selectedWorkingPaper = ref("planning");
 const selectedRow = ref<WorkingRow | null>(null);
-const open = ref(false);
 
 const workingPaperOptions = ref([
   { label: "Planning", value: "planning" },
@@ -155,7 +154,7 @@ const accordionItems: WorkingSection[] = [
   },
   {
     label: "1. การทำความเข้าใจเกี่ยวกับกิจการและสภาพแวดล้อมของกิจการ",
-    icon: "i-lucide-shield-alert",
+    icon: "i-lucide-shield-question-mark",
     content: "Identify risk and mitigation strategy.",
     rows: [
       { name: "1.1 ทำความเข้าใจโครงสร้างและลักษณะของกิจการ (Entity 's Nature)" },
@@ -167,7 +166,7 @@ const accordionItems: WorkingSection[] = [
   },
   {
     label: "2. การกำหนดระดับสาระสำคัญ (Materiality Levels)",
-    icon: "i-lucide-check-circle",
+    icon: "i-lucide-shield-question-mark",
     content: "Finalize documentation and approval.",
     rows: [
       { name: "2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน" },
@@ -406,20 +405,53 @@ const workingColumns: TableColumn<WorkingRow>[] = [
             <template #body="{ item }">
               <div class="py-3">
                 <UTable :data="item.rows" :columns="workingColumns" class="w-full">
+                  <!-- Action Cell -->
                   <template #action-cell="{ row }">
                     <div class="flex justify-center">
                       <UButton
                         size="xs"
-                        icon="i-lucide-folder-open"
+                        icon="i-lucide-pencil"
+                        label="Edit"
                         color="neutral"
-                        variant="ghost"
-                        @click="
-                          () => {
-                            selectedRow = row.original;
-                            open = true;
-                          }
-                        "
+                        variant="subtle"
+                        class="mr-2"
                       />
+                      <UModal
+                        :title="selectedRow?.name || 'Working Paper'"
+                        desciption="Detailed view of the selected working paper item."
+                        :dismissible="false"
+                        :ui="{
+                          footer: 'justify-start',
+                          content: 'w-[95vw] max-w-[1800px] h-[90vh] max-h-[900px]',
+                        }"
+                      >
+                        <UButton
+                          size="xs"
+                          icon="i-lucide-square-chart-gantt"
+                          label="Open"
+                          color="neutral"
+                          variant="subtle"
+                          @click="selectedRow = row.original"
+                        />
+
+                        <template #body>
+                          <div class="space-y-4">
+                            123<br /><br /><br /><br /><br /><br /><br />
+                            <br /><br /><br /><br /><br /><br /><br /><br />
+                            <br /><br /><br /><br /><br /><br /><br /><br />
+                            <br /><br />456
+                          </div>
+                        </template>
+
+                        <template #footer="{ close }">
+                          <UButton
+                            label="Cancel"
+                            color="neutral"
+                            variant="outline"
+                            @click="close"
+                          />
+                        </template>
+                      </UModal>
                     </div>
                   </template>
                 </UTable>
