@@ -43,6 +43,13 @@ const links = computed(() => [[{
     open.value = false
   }
 }, {
+  label: "กระดาษทำงาน",
+  icon: 'i-lucide-file-text',
+  to: '/engagements/workpapers',
+  onSelect: () => {
+    open.value = false
+  }
+}, {
   label: $t("settings_link"),
   to: '/settings',
   icon: 'i-lucide-settings',
