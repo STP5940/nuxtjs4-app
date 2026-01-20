@@ -31,6 +31,10 @@ const showAddOptionModal = ref(false);
 const editingOptionIndex = ref<number | null>(null);
 const editingOptionLabel = ref<string>("");
 
+// Drag and Drop State
+const dragSourceIndex = ref<number | null>(null);
+const dropTargetIndex = ref<number | null>(null);
+
 /* ------------------ Methods ------------------ */
 
 const updateWorkingPaperOption = (index: number, label: string) => {
@@ -62,6 +66,69 @@ const deleteWorkingPaperOption = (index: number) => {
   if (selectedWorkingPaper.value === deletedValue) {
     selectedWorkingPaper.value = workingPaperOptions.value[0]?.value || "";
   }
+};
+
+// Drag and Drop Methods - ย้ายตำแหน่งแบบสอดแทรก
+const handleDragStart = (e: DragEvent, index: number) => {
+  dragSourceIndex.value = index;
+  if (e.dataTransfer) {
+    e.dataTransfer.effectAllowed = "move";
+  }
+};
+
+const handleDragOver = (e: DragEvent, index: number) => {
+  e.preventDefault();
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  if (dragSourceIndex.value !== null && dragSourceIndex.value !== index) {
+    dropTargetIndex.value = index;
+  }
+};
+
+const handleDragEnter = (e: DragEvent, index: number) => {
+  e.preventDefault();
+  if (dragSourceIndex.value !== null && dragSourceIndex.value !== index) {
+    dropTargetIndex.value = index;
+  }
+};
+
+const handleDragLeave = (e: DragEvent) => {
+  const target = e.currentTarget as HTMLElement;
+  const relatedTarget = e.relatedTarget as HTMLElement;
+
+  if (!target.contains(relatedTarget)) {
+    dropTargetIndex.value = null;
+  }
+};
+
+const handleDrop = (e: DragEvent, dropIndex: number) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (dragSourceIndex.value === null || dragSourceIndex.value === dropIndex) {
+    dragSourceIndex.value = null;
+    dropTargetIndex.value = null;
+    return;
+  }
+
+  // Remove source then insert at drop target index; items between shift accordingly
+  const items = [...workingPaperOptions.value];
+  const [moved] = items.splice(dragSourceIndex.value, 1);
+  if (moved) {
+    const targetIndex = Math.min(dropIndex, items.length);
+    items.splice(targetIndex, 0, moved);
+    workingPaperOptions.value = items;
+  }
+
+  dragSourceIndex.value = null;
+  dropTargetIndex.value = null;
+};
+
+const handleDragEnd = () => {
+  dragSourceIndex.value = null;
+  dropTargetIndex.value = null;
 };
 
 const dropdownItems = [
@@ -188,24 +255,54 @@ const workingColumns: TableColumn<WorkingRow>[] = [
           <div class="space-y-2">
             <div
               v-for="(option, index) in workingPaperOptions"
-              :key="index"
-              class="flex items-center justify-between gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 border border-gray-200 dark:border-gray-800"
+              :key="`${option.value}-${index}`"
+              draggable="true"
+              @dragstart="handleDragStart($event, index)"
+              @dragover="handleDragOver($event, index)"
+              @dragenter="handleDragEnter($event, index)"
+              @dragleave="handleDragLeave"
+              @drop="handleDrop($event, index)"
+              @dragend="handleDragEnd"
+              :class="[
+                'flex items-center justify-between gap-3 p-3 rounded-lg border',
+                'transition-all duration-200 ease-in-out',
+                'hover:bg-gray-50 dark:hover:bg-gray-800/50',
+                'border-gray-200 dark:border-gray-800',
+                dragSourceIndex === index
+                  ? 'opacity-40 scale-95 cursor-grabbing shadow-lg'
+                  : 'cursor-grab hover:shadow-md',
+                dropTargetIndex === index && dragSourceIndex !== index
+                  ? 'border-primary border-2 bg-primary/10 scale-[1.02] shadow-md'
+                  : '',
+              ]"
             >
-              <div v-if="editingOptionIndex !== index" class="flex-1">
-                <p class="font-medium text-gray-900 dark:text-white">
-                  {{ option.label }}
-                </p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                  {{ option.value }}
-                </p>
-              </div>
-
-              <div v-else class="flex-1 flex gap-2">
-                <UInput
-                  v-model="editingOptionLabel"
-                  placeholder="Category name"
-                  class="flex-1"
+              <div class="flex items-center gap-3 flex-1">
+                <UIcon
+                  name="i-lucide-grip-vertical"
+                  :class="[
+                    'w-5 h-5 flex-shrink-0 transition-colors duration-200',
+                    dragSourceIndex === index
+                      ? 'text-primary'
+                      : 'text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400',
+                  ]"
                 />
+
+                <div v-if="editingOptionIndex !== index" class="flex-1">
+                  <p class="font-medium text-gray-900 dark:text-white">
+                    {{ option.label }}
+                  </p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    {{ option.value }}
+                  </p>
+                </div>
+
+                <div v-else class="flex-1 flex gap-2">
+                  <UInput
+                    v-model="editingOptionLabel"
+                    placeholder="Category name"
+                    class="flex-1"
+                  />
+                </div>
               </div>
 
               <div class="flex gap-2">
