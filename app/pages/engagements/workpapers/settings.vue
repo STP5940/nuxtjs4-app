@@ -9,6 +9,8 @@ definePageMeta({
 
 type WorkingRow = {
   name: string;
+  progress?: number;
+  dueDate?: string;
 };
 
 type WorkingSection = AccordionItem & {
@@ -27,6 +29,7 @@ type ModalRow = {
   evidence?: string;
   userName?: string;
   updatedAt?: string;
+  notificationCount?: number;
 };
 
 /* ------------------ State ------------------ */
@@ -152,7 +155,7 @@ const workingPaperMenuItems = [
   [
     {
       label: "Add Working paper",
-      icon: "i-lucide-plus",
+      icon: "i-lucide-circle-plus",
       onSelect: () => {
         console.log("Add Working paper");
         window.alert("Add Working paper clicked!");
@@ -166,7 +169,7 @@ const modalRowMenuItems = [
   [
     {
       label: "แก้ไขคำถาม",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Question");
         window.alert("Edit Question clicked!");
@@ -174,26 +177,26 @@ const modalRowMenuItems = [
     },
     {
       label: "ลบคำถาม",
-      icon: "i-lucide-trash-2",
+      icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
         console.log("Delete Question");
         window.alert("Delete Question clicked!");
       },
     },
+  ],
+  [
     {
       label: "เพิ่มคำตอบ",
-      icon: "i-lucide-plus",
+      icon: "i-lucide-circle-plus",
       onSelect: () => {
         console.log("Add Answer");
         window.alert("Add Answer clicked!");
       },
     },
-  ],
-  [
     {
       label: "แก้ไขคำตอบ",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Answer");
         window.alert("Edit Answer clicked!");
@@ -201,7 +204,7 @@ const modalRowMenuItems = [
     },
     {
       label: "ลบคำตอบ",
-      icon: "i-lucide-trash-2",
+      icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
         console.log("Delete Answer");
@@ -217,7 +220,7 @@ const modalAccordionMenuItems = [
   [
     {
       label: "แก้ไขหัวข้อคำถาม",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Section");
         window.alert("Edit Section clicked!");
@@ -464,13 +467,13 @@ const workingColumns: TableColumn<WorkingRow>[] = [
           <template #header>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-settings-2" class="w-5 h-5 text-primary" />
+                <UIcon name="i-lucide-chart-bar-stacked" class="w-5 h-5 text-primary" />
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                   Working Paper Categories
                 </h2>
               </div>
               <UButton
-                icon="i-lucide-plus"
+                icon="i-lucide-circle-plus"
                 label="Add Category"
                 color="primary"
                 @click="showAddCategoryModal = true"
@@ -534,7 +537,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
               <div class="flex gap-2">
                 <UButton
                   v-if="editingCategoryIndex !== index"
-                  icon="i-lucide-pencil"
+                  icon="i-lucide-square-pen"
                   label="Edit"
                   color="neutral"
                   variant="subtle"
@@ -572,7 +575,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
 
                 <UButton
                   v-if="editingCategoryIndex !== index"
-                  icon="i-lucide-trash-2"
+                  icon="i-lucide-trash"
                   label="Delete"
                   color="error"
                   variant="subtle"
@@ -596,7 +599,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
           <template #header>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-file-text" class="w-5 h-5 text-primary" />
+                <UIcon name="i-lucide-layers-2" class="w-5 h-5 text-primary" />
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                   Working Paper
                 </h2>
@@ -644,7 +647,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                     <div class="flex justify-center">
                       <UButton
                         size="xs"
-                        icon="i-lucide-pencil"
+                        icon="i-lucide-square-pen"
                         label="Edit"
                         color="neutral"
                         variant="subtle"
@@ -738,7 +741,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                                       <label
                                         v-for="(item, index) in row.original.response"
                                         :key="index"
-                                        class="flex items-start gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-1 rounded"
+                                        class="flex items-start gap-2 hover:bg-gray-50 dark:hover:bg-gray-800 p-1 rounded"
                                       >
                                         <UCheckbox
                                           v-model="item.checked"

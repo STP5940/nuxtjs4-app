@@ -8,22 +8,36 @@ definePageMeta({
 /* ------------------ Types ------------------ */
 
 type WorkingRow = {
-  name: string
-  progress: number
-  dueDate: string
-  // color?: ProgressProps['color']
+  name: string;
+  progress?: number;
+  dueDate?: string;
 }
 
 type StatusOption = {
-  label: string
-  color?: ProgressProps['color']
-  icon?: string
-  bgIcon: string
-  colorIcon: string
+  label: string;
+  color?: ProgressProps['color'];
+  icon?: string;
+  bgIcon: string;
+  colorIcon: string;
 }
 
 type WorkingSection = AccordionItem & {
-  rows: WorkingRow[]
+  rows: WorkingRow[];
+}
+
+type ResponseItem = {
+  text: string;
+  checked: boolean;
+};
+
+type ModalRow = {
+  ref: string;
+  process: string;
+  response: ResponseItem[];
+  evidence?: string;
+  userName?: string;
+  updatedAt?: string;
+  notificationCount?: number;
 }
 
 /* ------------------ State ------------------ */
@@ -46,23 +60,23 @@ const workingPaperCategories = [
 const statusOptions = [
   {
     label: "On Track", color: "success", icon: "i-lucide-check-circle-2",
-    bgIcon: "bg-emerald-500/10", colorIcon: "text-emerald-500"
+    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
   },
   {
     label: "At Risk", color: "warning", icon: "i-lucide-alert-triangle",
-    bgIcon: "bg-amber-500/10", colorIcon: "text-amber-500"
+    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
   },
   {
     label: "Behind Schedule", color: "error", icon: "i-lucide-clock-3",
-    bgIcon: "bg-rose-500/10", colorIcon: "text-rose-500"
+    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
   },
   {
     label: "Completed", color: "success", icon: "i-lucide-badge-check",
-    bgIcon: "bg-emerald-500/10", colorIcon: "text-emerald-500"
+    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
   },
   {
     label: "In Progress", color: "info", icon: "i-lucide-activity",
-    bgIcon: "bg-blue-500/10", colorIcon: "text-blue-500"
+    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
   },
 ] as const satisfies readonly StatusOption[]
 
@@ -81,7 +95,7 @@ const workingPaperMenuItems = [
   [
     {
       label: "Add Working paper",
-      icon: "i-lucide-plus",
+      icon: "i-lucide-circle-plus",
       onSelect: () => {
         console.log("Add Working paper");
         window.alert("Add Working paper clicked!");
@@ -103,7 +117,7 @@ const modalRowMenuItems = [
   [
     {
       label: "แก้ไขคำถาม",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Question");
         window.alert("Edit Question clicked!");
@@ -111,26 +125,26 @@ const modalRowMenuItems = [
     },
     {
       label: "ลบคำถาม",
-      icon: "i-lucide-trash-2",
+      icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
         console.log("Delete Question");
         window.alert("Delete Question clicked!");
       },
     },
+  ],
+  [
     {
       label: "เพิ่มคำตอบ",
-      icon: "i-lucide-plus",
+      icon: "i-lucide-circle-plus",
       onSelect: () => {
         console.log("Add Answer");
         window.alert("Add Answer clicked!");
       },
     },
-  ],
-  [
     {
       label: "แก้ไขคำตอบ",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Answer");
         window.alert("Edit Answer clicked!");
@@ -138,7 +152,7 @@ const modalRowMenuItems = [
     },
     {
       label: "ลบคำตอบ",
-      icon: "i-lucide-trash-2",
+      icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
         console.log("Delete Answer");
@@ -155,7 +169,7 @@ const modalAccordionMenuItems = [
   [
     {
       label: "แก้ไขหัวข้อคำถาม",
-      icon: "i-lucide-pencil",
+      icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Section");
         window.alert("Edit Section clicked!");
@@ -166,31 +180,31 @@ const modalAccordionMenuItems = [
 
 const workingPaperSections: WorkingSection[] = [
   {
-    label: 'เริ่มต้นการทำงาน (Initiation)',
-    icon: 'i-lucide-clipboard-list',
-    content: 'Prepare audit plan, scope and objectives.',
+    label: "เริ่มต้นการทำงาน (Initiation)",
+    icon: "i-lucide-clipboard-list",
+    content: "Prepare audit plan, scope and objectives.",
     rows: [
-      { name: 'การตอบรับงาน/เสนองานลูกค้าใหม่', progress: 76, dueDate: '31 ม.ค. 2567' },
-      { name: 'ความเสี่ยงในการรับงาน', progress: 50, dueDate: '28 ม.ค. 2567' },
-      { name: 'การตัดสินใจรับงาน', progress: 24, dueDate: '25 ม.ค. 2567' },
+      { name: "การตอบรับงาน/เสนองานลูกค้าใหม่", progress: 76, dueDate: "31 ม.ค. 2567" },
+      { name: "ความเสี่ยงในการรับงาน", progress: 50, dueDate: "28 ม.ค. 2567" },
+      { name: "การตัดสินใจรับงาน", progress: 24, dueDate: "25 ม.ค. 2567" },
     ],
   },
   {
-    label: '1. การทำความเข้าใจเกี่ยวกับกิจการและสภาพแวดล้อมของกิจการ',
-    icon: 'i-lucide-shield-alert',
-    content: 'Identify risk and mitigation strategy.',
+    label: "1. การทำความเข้าใจเกี่ยวกับกิจการและสภาพแวดล้อมของกิจการ",
+    icon: "i-lucide-shield-alert",
+    content: "Identify risk and mitigation strategy.",
     rows: [
-      { name: '1.1 ทำความเข้าใจโครงสร้างและลักษณะของกิจการ (Entity \'s Nature)', progress: 64, dueDate: '05 ก.พ. 2567' },
-      { name: '1.2 วิเคราะห์ปัจจัยสภาพแวดล้อมของกิจการ ที่ส่งผลต่อการดำเนินงาน และวิเคราะห์เปรียบเทียบงบการเงินขั้นต้น', progress: 38, dueDate: '10 ก.พ. 2567' },
+      { name: "1.1 ทำความเข้าใจโครงสร้างและลักษณะของกิจการ (Entity \'s Nature)", progress: 64, dueDate: "05 ก.พ. 2567" },
+      { name: "1.2 วิเคราะห์ปัจจัยสภาพแวดล้อมของกิจการ ที่ส่งผลต่อการดำเนินงาน และวิเคราะห์เปรียบเทียบงบการเงินขั้นต้น", progress: 38, dueDate: "10 ก.พ. 2567" },
     ],
   },
   {
-    label: '2. การกำหนดระดับสาระสำคัญ (Materiality Levels)',
-    icon: 'i-lucide-shield-alert',
-    content: 'Finalize documentation and approval.',
+    label: "2. การกำหนดระดับสาระสำคัญ (Materiality Levels)",
+    icon: "i-lucide-shield-alert",
+    content: "Finalize documentation and approval.",
     rows: [
-      { name: '2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน', progress: 82, dueDate: '15 ก.พ. 2567' },
-      { name: '2.2 เลือกฐานที่ใช้ในการคำนวณสาระสำคัญและกำหนดสาระสำคัญ', progress: 55, dueDate: '18 ก.พ. 2567' },
+      { name: "2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน", progress: 82, dueDate: "15 ก.พ. 2567" },
+      { name: "2.2 เลือกฐานที่ใช้ในการคำนวณสาระสำคัญและกำหนดสาระสำคัญ", progress: 55, dueDate: "18 ก.พ. 2567" },
     ],
   }
 ]
@@ -241,6 +255,7 @@ const modalRows: ModalRow[] = [
     evidence: "แนบไฟล์เอกสาร",
     userName: "สมชาย รัตนโชติ",
     updatedAt: "2026-01-10 14:30",
+    notificationCount: 3,
   },
   {
     ref: "REF-002",
@@ -256,6 +271,7 @@ const modalRows: ModalRow[] = [
     evidence: "แนบไฟล์เอกสาร",
     userName: "วราพงษ์ ศรีสุวรรณ",
     updatedAt: "2026-01-12 09:15",
+    notificationCount: 0,
   },
   {
     ref: "REF-003",
@@ -267,6 +283,7 @@ const modalRows: ModalRow[] = [
     evidence: "แนบไฟล์เอกสาร",
     userName: "ณัฐธิดา พงษ์พิทักษ์",
     updatedAt: "2026-01-15 16:45",
+    notificationCount: 5,
   },
 ];
 
@@ -339,43 +356,43 @@ const modalColumns: TableColumn<ModalRow>[] = [
 
 const workingColumns: TableColumn<WorkingRow>[] = [
   {
-    accessorKey: 'name',
-    header: 'Item name',
+    accessorKey: "name",
+    header: "Item name",
     meta: {
       class: {
-        th: 'w-2/5',
-        td: 'w-2/5 whitespace-normal break-words',
+        th: "w-2/5",
+        td: "w-2/5 whitespace-normal break-words",
       },
     },
   },
   {
-    accessorKey: 'progress',
-    header: 'Progress',
+    accessorKey: "progress",
+    header: "Progress",
     meta: {
       class: {
-        th: 'w-1/5 text-center',
-        td: 'w-1/5',
+        th: "w-1/5 text-center",
+        td: "w-1/5",
       },
     },
   },
   {
-    accessorKey: 'dueDate',
-    header: 'Due date',
+    accessorKey: "dueDate",
+    header: "Due date",
     meta: {
       class: {
-        th: 'w-1/5 text-center',
-        td: 'w-1/5 text-center',
+        th: "w-1/5 text-center",
+        td: "w-1/5 text-center",
       },
     },
   },
   {
-    id: 'action',
-    header: 'Menu options',
+    id: "action",
+    header: "Menu options",
     cell: () => null,
     meta: {
       class: {
-        th: 'w-1/5 text-center',
-        td: 'w-1/5 text-center',
+        th: "w-1/5 text-center",
+        td: "w-1/5 text-center",
       },
     },
   },
@@ -442,10 +459,8 @@ const getProgressColor = (progress: number) => {
             :ui="{ container: 'p-4 sm:p-4' }"
           >
             <div class="flex items-center gap-3">
-              <div
-                class="flex items-center justify-center p-3 rounded-xl bg-indigo-500/10"
-              >
-                <UIcon name="i-lucide-building-2" class="w-6 h-6 text-indigo-400" />
+              <div class="flex items-center justify-center p-3 rounded-xl bg-blue-500/10">
+                <UIcon name="i-lucide-building-2" class="w-6 h-6 text-blue-600" />
               </div>
 
               <div>
@@ -463,8 +478,10 @@ const getProgressColor = (progress: number) => {
             :ui="{ container: 'p-4 sm:p-4' }"
           >
             <div class="flex items-center gap-3">
-              <div class="flex items-center justify-center p-3 rounded-xl bg-blue-500/10">
-                <UIcon name="i-lucide-calendar" class="w-6 h-6 text-blue-500" />
+              <div
+                class="flex items-center justify-center p-3 rounded-xl bg-amber-500/10"
+              >
+                <UIcon name="i-lucide-calendar" class="w-6 h-6 text-amber-600" />
               </div>
 
               <div>
@@ -569,7 +586,7 @@ const getProgressColor = (progress: number) => {
           <template #header>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="flex items-center gap-2">
-                <UIcon name="i-lucide-file-text" class="w-5 h-5 text-primary" />
+                <UIcon name="i-lucide-layers-2" class="w-5 h-5 text-primary" />
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
                   Working Paper
                 </h2>
@@ -626,7 +643,7 @@ const getProgressColor = (progress: number) => {
                     <div class="flex items-center gap-2">
                       <UProgress
                         :model-value="row.original.progress"
-                        :color="getProgressColor(row.original.progress)"
+                        :color="getProgressColor(row.original.progress ?? 0)"
                         size="sm"
                         class="flex-1"
                         :ui="{ indicator: 'striped-bar animate-striped' }"
@@ -816,14 +833,22 @@ const getProgressColor = (progress: number) => {
                                     </div>
                                   </template>
                                   <template #evidence-cell="{ row }">
-                                    <div class="flex items-center gap-2">
-                                      <UIcon
-                                        name="i-lucide-paperclip"
-                                        class="w-4 h-4 text-gray-500 flex-shrink-0"
+                                    <div class="relative inline-block">
+                                      <UButton
+                                        :label="row.original.evidence"
+                                        icon="i-lucide-paperclip"
+                                        color="neutral"
+                                        variant="subtle"
+                                        size="xs"
                                       />
-                                      <span class="text-sm">{{
-                                        row.original.evidence
-                                      }}</span>
+                                      <div
+                                        v-if="(row.original.notificationCount ?? 0) > 0"
+                                        class="absolute -top-2 -left-2 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center"
+                                      >
+                                        <span class="text-xs font-bold text-white">{{
+                                          row.original.notificationCount
+                                        }}</span>
+                                      </div>
                                     </div>
                                   </template>
                                   <template #userName-cell="{ row }">
