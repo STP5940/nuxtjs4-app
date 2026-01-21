@@ -43,22 +43,26 @@ const links = computed(() => [[{
     open.value = false
   }
 }, {
-  label: "กระดาษทำงาน",
-  icon: 'i-lucide-file-text',
-  to: '/engagements/workpapers',
-  onSelect: () => {
-    open.value = false
-  }
-}, {
-  label: "ตั้งค่ากระดาษทำงาน",
-  icon: 'i-lucide-file-pen',
-  to: '/engagements/workpapers/settings',
-  onSelect: () => {
-    open.value = false
-  }
+  label: 'ตรงสอบบัญชี',
+  icon: 'i-lucide-book-search',
+  defaultOpen: true,
+  type: 'trigger',
+  children: [{
+    label: 'กระดาษทำงาน',
+    to: '/engagements/workpapers',
+    exact: true,
+    onSelect: () => {
+      open.value = false
+    }
+  }, {
+    label: 'ตั้งค่ากระดาษทำงาน',
+    to: '/engagements/workpapers/settings',
+    onSelect: () => {
+      open.value = false
+    }
+  }]
 }, {
   label: $t("settings_link"),
-  to: '/settings',
   icon: 'i-lucide-settings',
   defaultOpen: true,
   type: 'trigger',

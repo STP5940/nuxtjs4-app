@@ -33,13 +33,11 @@ const progressCompletion = ref(15)
 
 const startDate = ref("01 ธ.ค. 2566")
 const endDate = ref("31 ธ.ค. 2566")
-const companyName = ref("การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย")
+const companyName = ref("เอ็นเตอร์ไพรส์ คอมพิวเตอร์ ซิสเท็มส์ (ประเทศไทย)")
 
-const selectedWorkingPaper = ref("planning")
+const selectedWorkingCategory = ref("planning")
 
-const open = ref(false)
-
-const workingPaperOptions = [
+const workingPaperCategories = [
   { label: "Planning", value: "planning" },
   { label: "Responding to Risk", value: "responding-to-risk" },
   { label: "Complete", value: "complete" },
@@ -74,9 +72,9 @@ const selectedStatus = ref<StatusOption>(
   statusOptions[Math.floor(Math.random() * statusOptions.length)] ?? statusOptions[0]
 )
 
-const selectedRow = ref<WorkingRow | null>(null)
+const selectedWorkingRow = ref<WorkingRow | null>(null)
 
-const dropdownItems = [
+const workingPaperMenuItems = [
   [
     { label: "Settings", slot: "header" }
   ],
@@ -84,17 +82,58 @@ const dropdownItems = [
     {
       label: "Add Working paper",
       icon: "i-lucide-plus",
-      click: () => console.log("Add document"),
+      onSelect: () => {
+        console.log("Add Working paper");
+        window.alert("Add Working paper clicked!");
+      },
     },
     {
       label: "Set Due Date",
       icon: "i-lucide-calendar",
-      click: () => console.log("Set due date"),
+      onSelect: () => {
+        console.log("Set Due Date");
+        window.alert("Set Due Date clicked!");
+      }
     },
   ],
 ]
 
-const accordionItems: WorkingSection[] = [
+const modalRowMenuItems = [
+  [{ label: "ค่าคำถาม และคำตอบ", slot: "header" }],
+  [
+    {
+      label: "แก้ไขคำถาม",
+      icon: "i-lucide-pencil",
+      click: () => console.log("Add Question"),
+    },
+    {
+      label: "ลบคำถาม",
+      icon: "i-lucide-trash-2",
+      color: "error",
+      click: () => console.log("Delete Question"),
+    },
+    {
+      label: "เพิ่มคำตอบ",
+      icon: "i-lucide-plus",
+      click: () => console.log("Add Answer"),
+    },
+  ],
+  [
+    {
+      label: "แก้ไขคำตอบ",
+      icon: "i-lucide-pencil",
+      click: () => console.log("Edit Answer"),
+    },
+    {
+      label: "ลบคำตอบ",
+      icon: "i-lucide-trash-2",
+      color: "error",
+      click: () => console.log("Delete Answer"),
+    },
+  ],
+];
+
+const workingPaperSections: WorkingSection[] = [
   {
     label: 'เริ่มต้นการทำงาน (Initiation)',
     icon: 'i-lucide-clipboard-list',
@@ -116,7 +155,7 @@ const accordionItems: WorkingSection[] = [
   },
   {
     label: '2. การกำหนดระดับสาระสำคัญ (Materiality Levels)',
-    icon: 'i-lucide-check-circle',
+    icon: 'i-lucide-shield-alert',
     content: 'Finalize documentation and approval.',
     rows: [
       { name: '2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน', progress: 82, dueDate: '15 ก.พ. 2567' },
@@ -124,6 +163,148 @@ const accordionItems: WorkingSection[] = [
     ],
   }
 ]
+
+const modalAccordionItems: AccordionItem[] = [
+  {
+    label: "1.1.1 ลักษณะของกิจการ (Nature of the Entity) TSA 315.12(a)",
+    icon: "i-lucide-scroll-text",
+    content: "Summary of the selected working paper.",
+  },
+  {
+    label:
+      "1.1.2 สภาพแวดล้อมด้านกฎระเบียบและกฎหมาย (Regulatory Environment) TSA315.12(b)",
+    icon: "i-lucide-scroll-text",
+    content: "Key details and references.",
+  },
+  {
+    label:
+      "1.1.3 นโยบายและกระบวนการบัญชี (Entity's Accounting Policies and Procedures) TSA315.12(c)",
+    icon: "i-lucide-scroll-text",
+    content: "Additional comments or attachments.",
+  },
+  {
+    label:
+      "1.1.4 กลยุทธ์และเป้าหมายของกิจการ (Entity's Objectives and Strategies) TSA315.12(d)",
+    icon: "i-lucide-scroll-text",
+    content: "Audit objectives and expected outcomes.",
+  },
+  {
+    label:
+      "1.1.5 การวัดผลการดำเนินงาน (Measurement and Review of the Entity's Financial Performance) TSA315.12(e)",
+    icon: "i-lucide-scroll-text",
+    content: "Defined scope, timeframe, and constraints.",
+  },
+];
+
+const modalRows: ModalRow[] = [
+  {
+    ref: "REF-001",
+    process: `ในส่วนของโครงสร้างการจัดการและการกำกับดูแล
+
+1. ได้รับและรวบรวมเอกสารที่เกี่ยวข้องกับโครงสร้างองค์กร เช่นผังองค์กร หน่วยธุรกิจหลัก ผู้ถือหุ้น TSA315.11(a)
+2. สัมภาษณ์ฝ่ายบริหารเพื่อทำความเข้าใจบทบาทและความรับผิดชอบของคณะกรรมการ TSA315.A13`,
+    response: [
+      { text: "ได้ดำเนินการแล้ว โดยบันทึกรายละเอียดในแบบฟอร์ม [TBD]", checked: false },
+      { text: "เพิ่มทีมงานและปรับกำหนดการ", checked: false },
+    ],
+    evidence: "แนบไฟล์เอกสาร",
+    userName: "สมชาย รัตนโชติ",
+    updatedAt: "2026-01-10 14:30",
+  },
+  {
+    ref: "REF-002",
+    process: `ในส่วนการทำความเข้าใจธุรกิจได้สอบทานลักษณะธุรกิจหลักของกิจการโดย
+
+1. วิเคราะห์ข้อมูลเกี่ยวกับ ผลิตภัณฑ์หรือบริการ TSA315.A14
+2. ตรวจสอบสัญญาสำคัญที่เกี่ยวข้องกับการดำเนินงาน TSA315.11(a)
+3. สอบทานงบกำไรขาดทุนเพื่อระบุแหล่งรายได้และค่าใช้จ่ายหลัก TSA 315.A16-A17`,
+    response: [
+      { text: "ได้ดำเนินการแล้วรายละเอียดตามแบบฟอร์ม [TBD]", checked: false },
+      { text: "ทดสอบควบคุมเพิ่มเติม", checked: false },
+    ],
+    evidence: "แนบไฟล์เอกสาร",
+    userName: "วราพงษ์ ศรีสุวรรณ",
+    updatedAt: "2026-01-12 09:15",
+  },
+  {
+    ref: "REF-003",
+    process: "รวบรวมหลักฐาน",
+    response: [
+      { text: "ขอหลักฐานเพิ่มเติมจากฝ่ายบัญชี", checked: false },
+      { text: "ไม่สามารถดำเนินการได้", checked: false },
+    ],
+    evidence: "แนบไฟล์เอกสาร",
+    userName: "ณัฐธิดา พงษ์พิทักษ์",
+    updatedAt: "2026-01-15 16:45",
+  },
+];
+
+const modalColumns: TableColumn<ModalRow>[] = [
+  {
+    accessorKey: "ref",
+    header: "REF #",
+    meta: {
+      class: {
+        th: "w-1/16 text-left",
+        td: "w-1/16 text-left",
+      },
+    },
+  },
+  {
+    accessorKey: "process",
+    header: "Process",
+    meta: {
+      class: {
+        th: "w-6/16 text-left",
+        td: "w-6/16 text-left whitespace-normal break-words",
+      },
+    },
+  },
+  {
+    accessorKey: "response",
+    header: "Response",
+    cell: () => null,
+    meta: {
+      class: {
+        th: "w-3/16 text-left",
+        td: "w-3/16 text-left whitespace-normal break-words",
+      },
+    },
+  },
+  {
+    accessorKey: "evidence",
+    header: "Additional Evidence",
+    cell: () => null,
+    meta: {
+      class: {
+        th: "w-2/16 text-left",
+        td: "w-2/16 text-left",
+      },
+    },
+  },
+  {
+    accessorKey: "userName",
+    header: "User History",
+    cell: () => null,
+    meta: {
+      class: {
+        th: "w-2/16 text-left",
+        td: "w-2/16 text-left",
+      },
+    },
+  },
+  {
+    id: "action",
+    header: "Menu options",
+    cell: () => null,
+    meta: {
+      class: {
+        th: "w-2/16 text-center",
+        td: "w-2/16 text-center",
+      },
+    },
+  },
+];
 
 const workingColumns: TableColumn<WorkingRow>[] = [
   {
@@ -151,8 +332,8 @@ const workingColumns: TableColumn<WorkingRow>[] = [
     header: 'Due date',
     meta: {
       class: {
-            th: 'w-1/5 text-center',
-            td: 'w-1/5 text-center',
+        th: 'w-1/5 text-center',
+        td: 'w-1/5 text-center',
       },
     },
   },
@@ -162,8 +343,8 @@ const workingColumns: TableColumn<WorkingRow>[] = [
     cell: () => null,
     meta: {
       class: {
-            th: 'w-1/5 text-center',
-            td: 'w-1/5 text-center',
+        th: 'w-1/5 text-center',
+        td: 'w-1/5 text-center',
       },
     },
   },
@@ -224,7 +405,11 @@ const getProgressColor = (progress: number) => {
         <!-- ===== Summary Cards ===== -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <!-- Company -->
-          <UPageCard variant="subtle" class="hover:shadow-md transition">
+          <UPageCard
+            variant="subtle"
+            class="hover:shadow-md transition"
+            :ui="{ container: 'p-4 sm:p-4' }"
+          >
             <div class="flex items-center gap-3">
               <div
                 class="flex items-center justify-center p-3 rounded-xl bg-indigo-500/10"
@@ -234,13 +419,18 @@ const getProgressColor = (progress: number) => {
 
               <div>
                 <p class="text-xs text-gray-500">Company</p>
-                <p class="font-semibold">{{ companyName }}</p>
+                <p class="font-medium text-sm">{{ companyName }}</p>
+                <!-- font-semibold -->
               </div>
             </div>
           </UPageCard>
 
           <!-- Period -->
-          <UPageCard variant="subtle" class="hover:shadow-md transition">
+          <UPageCard
+            variant="subtle"
+            class="hover:shadow-md transition"
+            :ui="{ container: 'p-4 sm:p-4' }"
+          >
             <div class="flex items-center gap-3">
               <div class="flex items-center justify-center p-3 rounded-xl bg-blue-500/10">
                 <UIcon name="i-lucide-calendar" class="w-6 h-6 text-blue-500" />
@@ -254,7 +444,11 @@ const getProgressColor = (progress: number) => {
           </UPageCard>
 
           <!-- Status -->
-          <UPageCard variant="subtle" class="hover:shadow-md transition">
+          <UPageCard
+            variant="subtle"
+            class="hover:shadow-md transition"
+            :ui="{ container: 'p-4 sm:p-4' }"
+          >
             <div class="flex items-center gap-3">
               <div
                 class="flex items-center justify-center p-3 rounded-xl"
@@ -287,7 +481,7 @@ const getProgressColor = (progress: number) => {
                   Work Progress
                 </h2>
               </div>
-              <!-- <UBadge color="primary" variant="subtle">Realtime</UBadge> -->
+              <UBadge color="primary" variant="subtle">Realtime</UBadge>
             </div>
           </template>
 
@@ -352,18 +546,21 @@ const getProgressColor = (progress: number) => {
               <div class="flex gap-2">
                 <USelect
                   icon="i-lucide-search"
-                  v-model="selectedWorkingPaper"
-                  :items="workingPaperOptions"
+                  v-model="selectedWorkingCategory"
+                  :items="workingPaperCategories"
                   class="min-w-[220px]"
                   :ui="{ item: 'cursor-pointer' }"
                 />
 
                 <UDropdownMenu
-                  :items="dropdownItems"
+                  :items="workingPaperMenuItems"
                   :content="{
                     align: 'end',
                     side: 'bottom',
                     sideOffset: 8,
+                  }"
+                  :ui="{
+                    content: 'w-48',
                   }"
                 >
                   <UButton icon="i-lucide-settings" variant="soft" color="neutral" />
@@ -376,12 +573,12 @@ const getProgressColor = (progress: number) => {
 
               <div class="flex gap-2 w-full sm:w-auto">
                 <USelect
-                  v-model="selectedWorkingPaper"
-                  :items="workingPaperOptions"
+                  v-model="selectedWorkingCategory"
+                  :items="workingPaperCategories"
                   class="min-w-[220px]"
                 />
 
-                <UDropdownMenu :items="dropdownItems">
+                <UDropdownMenu :items="workingPaperMenuItems">
                   <UButton icon="i-lucide-settings" variant="soft" color="neutral" />
                 </UDropdownMenu>
               </div>
@@ -389,7 +586,7 @@ const getProgressColor = (progress: number) => {
           </template>
 
           <!-- Accordion -->
-          <UAccordion type="multiple" :items="accordionItems" class="divide-y">
+          <UAccordion type="multiple" :items="workingPaperSections" class="divide-y">
             <template #body="{ item }">
               <div class="py-3">
                 <UTable :data="item.rows" :columns="workingColumns" class="w-full">
@@ -414,13 +611,14 @@ const getProgressColor = (progress: number) => {
                     <div class="flex justify-center">
                       <UModal
                         :dismissible="false"
-                        v-model:open="open"
                         :ui="{
                           footer: 'justify-start',
                           content: 'w-[95vw] max-w-[1800px] h-[90vh] max-h-[900px]',
+                          header: 'flex items-start justify-between gap-3',
+                          title: 'flex-1 pr-4 break-words line-clamp-2',
                         }"
                       >
-                        <template #header>
+                        <template #header="{ close }">
                           <div class="space-y-3 w-full relative">
                             <UButton
                               icon="i-lucide-x"
@@ -428,12 +626,12 @@ const getProgressColor = (progress: number) => {
                               variant="ghost"
                               size="xs"
                               class="absolute right-0 top-0"
-                              @click="open = false"
+                              @click="close"
                             />
                             <h3
-                              class="text-lg font-semibold text-gray-900 dark:text-white"
+                              class="text-lg font-semibold text-gray-900 dark:text-white pr-8 break-words line-clamp-2"
                             >
-                              {{ selectedRow?.name || "Working Paper" }}
+                              {{ selectedWorkingRow?.name || "Working Paper" }}
                             </h3>
 
                             <div class="w-full">
@@ -457,7 +655,7 @@ const getProgressColor = (progress: number) => {
                                     <div>
                                       <p class="text-xs text-gray-500">Due Date</p>
                                       <p class="font-semibold text-sm">
-                                        {{ selectedRow?.dueDate || "—" }}
+                                        {{ selectedWorkingRow?.dueDate || "—" }}
                                       </p>
                                     </div>
                                   </div>
@@ -485,15 +683,19 @@ const getProgressColor = (progress: number) => {
                                           size="sm"
                                           variant="subtle"
                                           :color="
-                                            getProgressColor(selectedRow?.progress || 0)
+                                            getProgressColor(
+                                              selectedWorkingRow?.progress || 0
+                                            )
                                           "
                                         >
-                                          {{ selectedRow?.progress ?? 0 }}%
+                                          {{ selectedWorkingRow?.progress ?? 0 }}%
                                         </UBadge>
                                         <UProgress
-                                          :model-value="selectedRow?.progress || 0"
+                                          :model-value="selectedWorkingRow?.progress || 0"
                                           :color="
-                                            getProgressColor(selectedRow?.progress || 0)
+                                            getProgressColor(
+                                              selectedWorkingRow?.progress || 0
+                                            )
                                           "
                                           class="flex-1"
                                           :ui="{
@@ -514,16 +716,88 @@ const getProgressColor = (progress: number) => {
                           label="Open"
                           color="neutral"
                           variant="subtle"
-                          @click="selectedRow = row.original"
+                          @click="selectedWorkingRow = row.original"
                         />
 
                         <template #body>
-                          <div class="space-y-4">
-                            123<br /><br /><br /><br /><br /><br /><br />
-                            <br /><br /><br /><br /><br /><br /><br /><br />
-                            <br /><br /><br /><br /><br /><br /><br /><br />
-                            <br /><br />456
-                          </div>
+                          <UAccordion
+                            type="multiple"
+                            :items="modalAccordionItems"
+                            class="divide-y"
+                          >
+                            <template #body="{ item }">
+                              <div class="py-3">
+                                <UTable
+                                  :data="modalRows"
+                                  :columns="modalColumns"
+                                  class="w-full"
+                                >
+                                  <template #process-cell="{ row }">
+                                    <div class="whitespace-pre-wrap text-sm">
+                                      {{ row.original.process }}
+                                    </div>
+                                  </template>
+                                  <template #response-cell="{ row }">
+                                    <div class="flex flex-col gap-2">
+                                      <label
+                                        v-for="(item, index) in row.original.response"
+                                        :key="index"
+                                        class="flex items-start gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 p-1 rounded"
+                                      >
+                                        <UCheckbox
+                                          v-model="item.checked"
+                                          class="mt-0.5 flex-shrink-0"
+                                        />
+                                        <span class="text-sm break-words">{{
+                                          item.text
+                                        }}</span>
+                                      </label>
+                                    </div>
+                                  </template>
+                                  <template #evidence-cell="{ row }">
+                                    <div class="flex items-center gap-2">
+                                      <UIcon
+                                        name="i-lucide-paperclip"
+                                        class="w-4 h-4 text-gray-500 flex-shrink-0"
+                                      />
+                                      <span class="text-sm">{{
+                                        row.original.evidence
+                                      }}</span>
+                                    </div>
+                                  </template>
+                                  <template #userName-cell="{ row }">
+                                    <UTooltip
+                                      :text="`แก้ไขเมื่อ: ${row.original.updatedAt}`"
+                                      :popper="{ placement: 'top' }"
+                                    >
+                                      <span class="cursor-help">{{
+                                        row.original.userName
+                                      }}</span>
+                                    </UTooltip>
+                                  </template>
+                                  <template #action-cell="{ row }">
+                                    <UDropdownMenu
+                                      :items="modalRowMenuItems"
+                                      :content="{
+                                        align: 'end',
+                                        side: 'bottom',
+                                        sideOffset: 8,
+                                      }"
+                                      :ui="{
+                                        content: 'w-48',
+                                      }"
+                                    >
+                                      <UButton
+                                        icon="i-lucide-ellipsis-vertical"
+                                        variant="ghost"
+                                        color="neutral"
+                                      />
+                                    </UDropdownMenu>
+                                  </template>
+                                </UTable>
+                              </div>
+                            </template>
+                          </UAccordion>
                         </template>
 
                         <template #footer="{ close }">
