@@ -485,8 +485,10 @@ const workingColumns: TableColumn<WorkingRow>[] = [
             <div
               v-for="(option, index) in workingPaperCategories"
               :key="`${option.value}-${index}`"
-              draggable="true"
-              @dragstart="handleDragStart($event, index)"
+              :draggable="editingCategoryIndex === null"
+              @dragstart="
+                editingCategoryIndex === null ? handleDragStart($event, index) : null
+              "
               @dragover="handleDragOver($event, index)"
               @dragenter="handleDragEnter($event, index)"
               @dragleave="handleDragLeave"
@@ -499,7 +501,9 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                 'border-gray-200 dark:border-gray-800',
                 dragSourceCategoryIndex === index
                   ? 'opacity-40 scale-95 cursor-grabbing shadow-lg'
-                  : 'cursor-grab hover:shadow-md',
+                  : editingCategoryIndex === null
+                  ? 'cursor-grab hover:shadow-md'
+                  : 'cursor-default',
                 dropTargetCategoryIndex === index && dragSourceCategoryIndex !== index
                   ? 'border-primary border-2 bg-primary/10 scale-[1.02] shadow-md'
                   : '',
@@ -512,6 +516,8 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                     'w-5 h-5 flex-shrink-0 transition-colors duration-200',
                     dragSourceCategoryIndex === index
                       ? 'text-primary'
+                      : editingCategoryIndex !== null
+                      ? 'text-gray-300 dark:text-gray-700'
                       : 'text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400',
                   ]"
                 />
