@@ -104,34 +104,65 @@ const modalRowMenuItems = [
     {
       label: "แก้ไขคำถาม",
       icon: "i-lucide-pencil",
-      click: () => console.log("Add Question"),
+      onSelect: () => {
+        console.log("Edit Question");
+        window.alert("Edit Question clicked!");
+      },
     },
     {
       label: "ลบคำถาม",
       icon: "i-lucide-trash-2",
       color: "error",
-      click: () => console.log("Delete Question"),
+      onSelect: () => {
+        console.log("Delete Question");
+        window.alert("Delete Question clicked!");
+      },
     },
     {
       label: "เพิ่มคำตอบ",
       icon: "i-lucide-plus",
-      click: () => console.log("Add Answer"),
+      onSelect: () => {
+        console.log("Add Answer");
+        window.alert("Add Answer clicked!");
+      },
     },
   ],
   [
     {
       label: "แก้ไขคำตอบ",
       icon: "i-lucide-pencil",
-      click: () => console.log("Edit Answer"),
+      onSelect: () => {
+        console.log("Edit Answer");
+        window.alert("Edit Answer clicked!");
+      },
     },
     {
       label: "ลบคำตอบ",
       icon: "i-lucide-trash-2",
       color: "error",
-      click: () => console.log("Delete Answer"),
+      onSelect: () => {
+        console.log("Delete Answer");
+        window.alert("Delete Answer clicked!");
+      },
     },
   ],
 ];
+
+// Settings menu for modal accordion (หัวข้อคำถาม)
+const modalAccordionMenuItems = [
+  [
+    { label: "ตั้งค่าหัวข้อคำถาม", slot: "header" }],
+  [
+    {
+      label: "แก้ไขหัวข้อคำถาม",
+      icon: "i-lucide-pencil",
+      onSelect: () => {
+        console.log("Edit Section");
+        window.alert("Edit Section clicked!");
+      },
+    },
+  ],
+]
 
 const workingPaperSections: WorkingSection[] = [
   {
@@ -245,7 +276,7 @@ const modalColumns: TableColumn<ModalRow>[] = [
     header: "REF #",
     meta: {
       class: {
-        th: "w-1/16 text-left",
+        th: "w-1/16 text-center",
         td: "w-1/16 text-left",
       },
     },
@@ -725,6 +756,36 @@ const getProgressColor = (progress: number) => {
                             :items="modalAccordionItems"
                             class="divide-y"
                           >
+                            <template #trailing="{ item, open }">
+                              <div class="flex items-center gap-2 ml-auto">
+                                <div @click.stop>
+                                  <UDropdownMenu
+                                    :items="modalAccordionMenuItems"
+                                    :content="{
+                                      align: 'end',
+                                      side: 'bottom',
+                                      sideOffset: 8,
+                                    }"
+                                    :ui="{
+                                      content: 'w-48',
+                                    }"
+                                  >
+                                    <UButton
+                                      icon="i-lucide-settings"
+                                      variant="ghost"
+                                      color="neutral"
+                                      size="xs"
+                                    />
+                                  </UDropdownMenu>
+                                </div>
+                                <UIcon
+                                  name="i-lucide-chevron-down"
+                                  class="w-5 h-5 transition-transform duration-200"
+                                  :class="[open ? 'rotate-180' : '']"
+                                />
+                              </div>
+                            </template>
+
                             <template #body="{ item }">
                               <div class="py-3">
                                 <UTable
