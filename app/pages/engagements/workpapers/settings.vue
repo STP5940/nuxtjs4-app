@@ -658,8 +658,11 @@ const workingColumns: TableColumn<WorkingRow>[] = [
           </div>
         </UCard>
 
-        <!-- Original Working Paper Card -->
-        <UCard variant="subtle">
+        <!-- ===== Working Paper ===== -->
+        <UCard variant="subtle"
+        :ui="{
+          body: 'py-4 sm:py-4',
+        }">
           <template #header>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="flex items-center gap-2">

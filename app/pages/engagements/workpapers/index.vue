@@ -634,7 +634,12 @@ const getProgressColor = (progress: number) => {
         </UPageCard>
 
         <!-- ===== Working Paper ===== -->
-        <UCard variant="subtle">
+        <UCard
+          variant="subtle"
+          :ui="{
+            body: 'py-4 sm:py-4',
+          }"
+        >
           <template #header>
             <div class="flex items-center justify-between gap-2 w-full">
               <div class="flex items-center gap-2">
