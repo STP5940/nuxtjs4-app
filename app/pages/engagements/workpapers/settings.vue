@@ -33,6 +33,7 @@ type ModalRow = {
 };
 
 /* ------------------ State ------------------ */
+const second = ref(false);
 
 const selectedWorkingCategory = ref("planning");
 const selectedWorkingRow = ref<WorkingRow | null>(null);
@@ -151,24 +152,36 @@ const handleDragEnd = () => {
 };
 
 const workingPaperMenuItems = [
-  [{ label: "Settings", slot: "header" }],
   [
     {
-      label: "Add Working paper",
+      type: "label",
+      label: "Settings",
+      slot: "header",
+    },
+  ],
+  [
+    {
+      label: "New Working Paper",
       icon: "i-lucide-circle-plus",
       onSelect: () => {
-        console.log("Add Working paper");
-        window.alert("Add Working paper clicked!");
+        console.log("New Working Paper");
+        window.alert("New Working Paper clicked!");
       },
     },
   ],
 ];
 
 const modalRowMenuItems = [
-  [{ label: "ค่าคำถาม และคำตอบ", slot: "header" }],
   [
     {
-      label: "แก้ไขคำถาม",
+      type: "label",
+      label: "Questions and Answers",
+      slot: "header",
+    },
+  ],
+  [
+    {
+      label: "Edit Question",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Question");
@@ -176,7 +189,7 @@ const modalRowMenuItems = [
       },
     },
     {
-      label: "ลบคำถาม",
+      label: "Delete Question",
       icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
@@ -187,15 +200,15 @@ const modalRowMenuItems = [
   ],
   [
     {
-      label: "เพิ่มคำตอบ",
+      label: "New Answer",
       icon: "i-lucide-circle-plus",
       onSelect: () => {
-        console.log("Add Answer");
-        window.alert("Add Answer clicked!");
+        console.log("New Answer");
+        window.alert("New Answer clicked!");
       },
     },
     {
-      label: "แก้ไขคำตอบ",
+      label: "Edit Answer",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Answer");
@@ -203,7 +216,7 @@ const modalRowMenuItems = [
       },
     },
     {
-      label: "ลบคำตอบ",
+      label: "Delete Answer",
       icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
@@ -216,10 +229,16 @@ const modalRowMenuItems = [
 
 // Settings menu for modal accordion (หัวข้อคำถาม)
 const modalAccordionMenuItems = [
-  [{ label: "ตั้งค่าหัวข้อคำถาม", slot: "header" }],
   [
     {
-      label: "แก้ไขหัวข้อคำถาม",
+      type: "label",
+      label: "Question Settings",
+      slot: "header",
+    },
+  ],
+  [
+    {
+      label: "Edit Section",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Section");
@@ -578,8 +597,47 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                     }
                   "
                 />
+                <UModal :dismissible="false" title="Confirm Delete Category">
+                  <UButton
+                    v-if="editingCategoryIndex !== index"
+                    icon="i-lucide-trash"
+                    label="Delete"
+                    color="error"
+                    variant="subtle"
+                    size="xs"
+                  />
 
-                <UButton
+                  <template #body>
+                    <p>
+                      Are you sure you want to delete the category<br />
+                      <strong>"{{ option.label }}"</strong>
+                      ? This action cannot be undone.
+                    </p>
+                  </template>
+
+                  <template #footer="{ close }">
+                    <div class="flex justify-end gap-3 w-full">
+                      <UButton
+                        label="Cancel"
+                        color="neutral"
+                        variant="outline"
+                        @click="close"
+                      />
+                      <UButton
+                        label="Delete Category"
+                        color="error"
+                        @click="
+                          () => {
+                            deleteWorkingPaperCategory(index);
+                            close();
+                          }
+                        "
+                      />
+                    </div>
+                  </template>
+                </UModal>
+
+                <!-- <UButton
                   v-if="editingCategoryIndex !== index"
                   icon="i-lucide-trash"
                   label="Delete"
@@ -587,7 +645,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                   variant="subtle"
                   size="xs"
                   @click="deleteWorkingPaperCategory(index)"
-                />
+                /> -->
               </div>
             </div>
 
@@ -611,12 +669,17 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                 </h2>
               </div>
               <div class="flex gap-2">
-                <UIcon
+                <UTooltip
                   v-if="workingPaperCategories.length === 0"
-                  name="i-lucide-alert-triangle"
-                  class="w-5 h-5 text-yellow-500 self-center"
-                  aria-label="Empty"
-                />
+                  text="Working Paper Categories is empty. Please add categories first."
+                  :popper="{ placement: 'top' }"
+                >
+                  <UIcon
+                    name="i-lucide-alert-triangle"
+                    class="w-5 h-5 text-yellow-500 self-center cursor-help"
+                    aria-label="Empty"
+                  />
+                </UTooltip>
 
                 <USelect
                   placeholder="Select Working Paper"
@@ -807,12 +870,14 @@ const workingColumns: TableColumn<WorkingRow>[] = [
                         </template>
 
                         <template #footer="{ close }">
-                          <UButton
-                            label="Cancel"
-                            color="neutral"
-                            variant="outline"
-                            @click="close"
-                          />
+                          <div class="flex justify-end gap-3 w-full">
+                            <UButton
+                              label="Cancel"
+                              color="neutral"
+                              variant="outline"
+                              @click="close"
+                            />
+                          </div>
                         </template>
                       </UModal>
                     </div>

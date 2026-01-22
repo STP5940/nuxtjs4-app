@@ -90,15 +90,19 @@ const selectedWorkingRow = ref<WorkingRow | null>(null)
 
 const workingPaperMenuItems = [
   [
-    { label: "Settings", slot: "header" }
+    {
+      type: "label",
+      label: "Settings",
+      slot: "header"
+    }
   ],
   [
     {
-      label: "Add Working paper",
+      label: "New Working Paper",
       icon: "i-lucide-circle-plus",
       onSelect: () => {
-        console.log("Add Working paper");
-        window.alert("Add Working paper clicked!");
+        console.log("New Working Paper");
+        window.alert("New Working Paper clicked!");
       },
     },
     {
@@ -113,10 +117,16 @@ const workingPaperMenuItems = [
 ]
 
 const modalRowMenuItems = [
-  [{ label: "ค่าคำถาม และคำตอบ", slot: "header" }],
   [
     {
-      label: "แก้ไขคำถาม",
+      type: "label",
+      label: "Questions and Answers",
+      slot: "header"
+    }
+  ],
+  [
+    {
+      label: "Edit Question",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Question");
@@ -124,7 +134,7 @@ const modalRowMenuItems = [
       },
     },
     {
-      label: "ลบคำถาม",
+      label: "Delete Question",
       icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
@@ -135,15 +145,15 @@ const modalRowMenuItems = [
   ],
   [
     {
-      label: "เพิ่มคำตอบ",
+      label: "New Answer",
       icon: "i-lucide-circle-plus",
       onSelect: () => {
-        console.log("Add Answer");
-        window.alert("Add Answer clicked!");
+        console.log("New Answer");
+        window.alert("New Answer clicked!");
       },
     },
     {
-      label: "แก้ไขคำตอบ",
+      label: "Edit Answer",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Answer");
@@ -151,7 +161,7 @@ const modalRowMenuItems = [
       },
     },
     {
-      label: "ลบคำตอบ",
+      label: "Delete Answer",
       icon: "i-lucide-trash",
       color: "error",
       onSelect: () => {
@@ -165,10 +175,15 @@ const modalRowMenuItems = [
 // Settings menu for modal accordion (หัวข้อคำถาม)
 const modalAccordionMenuItems = [
   [
-    { label: "ตั้งค่าหัวข้อคำถาม", slot: "header" }],
+    {
+      type: "label",
+      label: "Question Settings",
+      slot: "header"
+    }
+  ],
   [
     {
-      label: "แก้ไขหัวข้อคำถาม",
+      label: "Edit Section",
       icon: "i-lucide-square-pen",
       onSelect: () => {
         console.log("Edit Section");
@@ -399,6 +414,11 @@ const workingColumns: TableColumn<WorkingRow>[] = [
 ]
 
 /* ------------------ Methods ------------------ */
+
+const handleEvidenceClick = (ref: string) => {
+  const id = ref || 'N/A';
+  window.alert(`Open evidence for REF: ${id}`);
+};
 
 const getProgressColor = (progress: number) => {
   if (progress <= 25) {
@@ -835,11 +855,14 @@ const getProgressColor = (progress: number) => {
                                   <template #evidence-cell="{ row }">
                                     <div class="relative inline-block">
                                       <UButton
-                                        :label="row.original.evidence"
+                                        label="Attachment File"
                                         icon="i-lucide-paperclip"
                                         color="neutral"
                                         variant="subtle"
                                         size="xs"
+                                        @click="
+                                          () => handleEvidenceClick(row.original.ref)
+                                        "
                                       />
                                       <div
                                         v-if="(row.original.notificationCount ?? 0) > 0"
@@ -853,7 +876,7 @@ const getProgressColor = (progress: number) => {
                                   </template>
                                   <template #userName-cell="{ row }">
                                     <UTooltip
-                                      :text="`แก้ไขเมื่อ: ${row.original.updatedAt}`"
+                                      :text="`Edited On: ${row.original.updatedAt}`"
                                       :popper="{ placement: 'top' }"
                                     >
                                       <span class="cursor-help">{{
@@ -887,12 +910,14 @@ const getProgressColor = (progress: number) => {
                         </template>
 
                         <template #footer="{ close }">
-                          <UButton
-                            label="Cancel"
-                            color="neutral"
-                            variant="outline"
-                            @click="close"
-                          />
+                          <div class="flex justify-end gap-3 w-full">
+                            <UButton
+                              label="Cancel"
+                              color="neutral"
+                              variant="outline"
+                              @click="close"
+                            />
+                          </div>
                         </template>
                       </UModal>
                     </div>
