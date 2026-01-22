@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { AccordionItem, TableColumn, ProgressProps } from '@nuxt/ui'
+import type { AccordionItem, TableColumn, ProgressProps } from "@nuxt/ui";
 
 definePageMeta({
   middleware: ["auth"],
-})
+});
 
 /* ------------------ Types ------------------ */
 
@@ -11,19 +11,19 @@ type WorkingRow = {
   name: string;
   progress?: number;
   dueDate?: string;
-}
+};
 
 type StatusOption = {
   label: string;
-  color?: ProgressProps['color'];
+  color?: ProgressProps["color"];
   icon?: string;
   bgIcon: string;
   colorIcon: string;
-}
+};
 
 type WorkingSection = AccordionItem & {
   rows: WorkingRow[];
-}
+};
 
 type ResponseItem = {
   text: string;
@@ -38,63 +38,78 @@ type ModalRow = {
   userName?: string;
   updatedAt?: string;
   notificationCount?: number;
-}
+};
 
 /* ------------------ State ------------------ */
-const progressPlanning = ref(50)
-const progressRiskResponse = ref(85)
-const progressCompletion = ref(15)
+const progressPlanning = ref(50);
+const progressRiskResponse = ref(85);
+const progressCompletion = ref(15);
 
-const startDate = ref("01 ธ.ค. 2566")
-const endDate = ref("31 ธ.ค. 2566")
-const companyName = ref("เอ็นเตอร์ไพรส์ คอมพิวเตอร์ ซิสเท็มส์ (ประเทศไทย)")
+const startDate = ref("01 ธ.ค. 2566");
+const endDate = ref("31 ธ.ค. 2566");
+const companyName = ref("เอ็นเตอร์ไพรส์ คอมพิวเตอร์ ซิสเท็มส์ (ประเทศไทย)");
 
-const selectedWorkingCategory = ref("planning")
+const selectedWorkingCategory = ref("planning");
 
 const workingPaperCategories = [
   { label: "Planning", value: "planning" },
   { label: "Responding to Risk", value: "responding-to-risk" },
   { label: "Complete", value: "complete" },
-]
+];
 
 const statusOptions = [
   {
-    label: "On Track", color: "success", icon: "i-lucide-check-circle-2",
-    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
+    label: "On Track",
+    color: "success",
+    icon: "i-lucide-check-circle-2",
+    bgIcon: "bg-purple-500/10",
+    colorIcon: "text-purple-600",
   },
   {
-    label: "At Risk", color: "warning", icon: "i-lucide-alert-triangle",
-    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
+    label: "At Risk",
+    color: "warning",
+    icon: "i-lucide-alert-triangle",
+    bgIcon: "bg-purple-500/10",
+    colorIcon: "text-purple-600",
   },
   {
-    label: "Behind Schedule", color: "error", icon: "i-lucide-clock-3",
-    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
+    label: "Behind Schedule",
+    color: "error",
+    icon: "i-lucide-clock-3",
+    bgIcon: "bg-purple-500/10",
+    colorIcon: "text-purple-600",
   },
   {
-    label: "Completed", color: "success", icon: "i-lucide-badge-check",
-    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
+    label: "Completed",
+    color: "success",
+    icon: "i-lucide-badge-check",
+    bgIcon: "bg-purple-500/10",
+    colorIcon: "text-purple-600",
   },
   {
-    label: "In Progress", color: "info", icon: "i-lucide-activity",
-    bgIcon: "bg-purple-500/10", colorIcon: "text-purple-600"
+    label: "In Progress",
+    color: "info",
+    icon: "i-lucide-activity",
+    bgIcon: "bg-purple-500/10",
+    colorIcon: "text-purple-600",
   },
-] as const satisfies readonly StatusOption[]
+] as const;
 
 const selectedStatus = ref<StatusOption>(
   // statusOptions[4] ?? statusOptions[0]
   // statusOptions.find(option => option.label === "On Track") ?? statusOptions[0]
   statusOptions[Math.floor(Math.random() * statusOptions.length)] ?? statusOptions[0]
-)
+);
 
-const selectedWorkingRow = ref<WorkingRow | null>(null)
+const selectedWorkingRow = ref<WorkingRow | null>(null);
 
 const workingPaperMenuItems = [
   [
     {
       type: "label",
       label: "Settings",
-      slot: "header"
-    }
+      slot: "header",
+    },
   ],
   [
     {
@@ -111,18 +126,18 @@ const workingPaperMenuItems = [
       onSelect: () => {
         console.log("Set Due Date");
         window.alert("Set Due Date clicked!");
-      }
+      },
     },
   ],
-]
+];
 
 const modalRowMenuItems = [
   [
     {
       type: "label",
       label: "Questions and Answers",
-      slot: "header"
-    }
+      slot: "header",
+    },
   ],
   [
     {
@@ -178,8 +193,8 @@ const modalAccordionMenuItems = [
     {
       type: "label",
       label: "Question Settings",
-      slot: "header"
-    }
+      slot: "header",
+    },
   ],
   [
     {
@@ -191,7 +206,7 @@ const modalAccordionMenuItems = [
       },
     },
   ],
-]
+];
 
 const workingPaperSections: WorkingSection[] = [
   {
@@ -209,8 +224,17 @@ const workingPaperSections: WorkingSection[] = [
     icon: "i-lucide-shield-alert",
     content: "Identify risk and mitigation strategy.",
     rows: [
-      { name: "1.1 ทำความเข้าใจโครงสร้างและลักษณะของกิจการ (Entity \'s Nature)", progress: 64, dueDate: "05 ก.พ. 2567" },
-      { name: "1.2 วิเคราะห์ปัจจัยสภาพแวดล้อมของกิจการ ที่ส่งผลต่อการดำเนินงาน และวิเคราะห์เปรียบเทียบงบการเงินขั้นต้น", progress: 38, dueDate: "10 ก.พ. 2567" },
+      {
+        name: "1.1 ทำความเข้าใจโครงสร้างและลักษณะของกิจการ (Entity 's Nature)",
+        progress: 64,
+        dueDate: "05 ก.พ. 2567",
+      },
+      {
+        name:
+          "1.2 วิเคราะห์ปัจจัยสภาพแวดล้อมของกิจการ ที่ส่งผลต่อการดำเนินงาน และวิเคราะห์เปรียบเทียบงบการเงินขั้นต้น",
+        progress: 38,
+        dueDate: "10 ก.พ. 2567",
+      },
     ],
   },
   {
@@ -218,11 +242,19 @@ const workingPaperSections: WorkingSection[] = [
     icon: "i-lucide-shield-alert",
     content: "Finalize documentation and approval.",
     rows: [
-      { name: "2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน", progress: 82, dueDate: "15 ก.พ. 2567" },
-      { name: "2.2 เลือกฐานที่ใช้ในการคำนวณสาระสำคัญและกำหนดสาระสำคัญ", progress: 55, dueDate: "18 ก.พ. 2567" },
+      {
+        name: "2.1 ทำความเข้าใจธุรกิจและผุ้ใช้งบการเงิน",
+        progress: 82,
+        dueDate: "15 ก.พ. 2567",
+      },
+      {
+        name: "2.2 เลือกฐานที่ใช้ในการคำนวณสาระสำคัญและกำหนดสาระสำคัญ",
+        progress: 55,
+        dueDate: "18 ก.พ. 2567",
+      },
     ],
-  }
-]
+  },
+];
 
 const modalAccordionItems: AccordionItem[] = [
   {
@@ -411,12 +443,12 @@ const workingColumns: TableColumn<WorkingRow>[] = [
       },
     },
   },
-]
+];
 
 /* ------------------ Methods ------------------ */
 
 const handleEvidenceClick = (ref: string) => {
-  const id = ref || 'N/A';
+  const id = ref || "N/A";
   window.alert(`Open evidence for REF: ${id}`);
 };
 
