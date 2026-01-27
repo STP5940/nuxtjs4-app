@@ -493,7 +493,7 @@ const workingColumns: TableColumn<WorkingRow>[] = [
               </div>
               <UButton
                 icon="i-lucide-circle-plus"
-                label="Add Category"
+                label="New Category"
                 color="primary"
                 @click="showAddCategoryModal = true"
               />

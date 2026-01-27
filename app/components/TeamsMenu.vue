@@ -7,10 +7,10 @@ defineProps<{
 
 const teams = ref([
   {
-    label: "Nuxt",
+    label: "เอ็นเตอร์ไพรส์ คอมพิวเตอร์ ซิสเท็มส์ (ประเทศไทย)",
     avatar: {
-      src: "https://github.com/nuxt.png?size=128",
-      alt: "Nuxt",
+      src: "/logo-ecsthai.png",
+      alt: "Enterprise Computer Systems (Thailand) Co., Ltd.",
     },
   },
   {
