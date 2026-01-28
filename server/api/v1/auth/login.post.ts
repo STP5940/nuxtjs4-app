@@ -68,12 +68,12 @@ export default defineEventHandler(async (event) => {
         };
 
         const { refreshToken, refreshTokenId } = generateRefreshToken(
-            transformedUser.id,
+            transformedUser.userId,
             getOriginUrl
         );
 
         const { accessToken } = await generateAccessToken(
-            transformedUser.id,
+            transformedUser.userId,
             transformedUser.role,
             getOriginUrl,
             refreshTokenId
@@ -82,11 +82,11 @@ export default defineEventHandler(async (event) => {
         const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
 
         // เพิ่ม RefreshToken ลงในฐานข้อมูล
-        await prisma.refreshToken.create({
+        await prisma.refreshtoken.create({
             data: {
                 jti: refreshTokenId,
                 token: hashToken(refreshToken),
-                userId: transformedUser.id,
+                userId: transformedUser.userId,
                 ipAddress: ipAddress ? String(ipAddress) : null,
                 userAgent: userAgent ? String(userAgent) : null,
                 expiresIn: Math.floor((Date.now() + REFRESH_TOKEN_MAX_AGE_MS) / 1000),

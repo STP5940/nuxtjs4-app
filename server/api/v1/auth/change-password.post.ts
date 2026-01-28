@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
         const findingUser = await prisma.users.findFirst({
             where: {
-                id: userPayload?.sub,
+                userId: userPayload?.sub,
             },
         })
 
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
         const updatedAtUser = new Date();
         await prisma.users.update({
             where: {
-                id: findingUser.id
+                userId: findingUser.userId
             },
             data: {
                 password: newPasswordHash,
@@ -90,7 +90,7 @@ export default defineEventHandler(async (event) => {
         });
 
         return responseSuccess({
-            id: findingUser.id,
+            userId: findingUser.userId,
             name: findingUser.name,
             username: findingUser.username,
             email: findingUser.email,

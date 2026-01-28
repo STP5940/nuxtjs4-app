@@ -4,6 +4,11 @@
   "home_link": "Home",
   "inbox_link": "Inbox",
   "customers_link": "Customers",
+  "workpapers_link": {
+    "title": "Workpapers",
+    "question": "Answer Questions",
+    "settings": "Question Settings"
+  },
   "conversions_link": "Conversions",
   "revenue_link": "Revenue",
   "orders_link": "Orders",

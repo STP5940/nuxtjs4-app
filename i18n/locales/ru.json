@@ -4,6 +4,11 @@
     "home_link": "Главная",
     "inbox_link": "Входящие",
     "customers_link": "Клиенты",
+    "workpapers_link": {
+        "title": "Рабочие документы",
+        "question": "Ответить на вопросы",
+        "settings": "Настройки вопросов"
+    },
     "conversions_link": "Конверсии",
     "revenue_link": "Доход",
     "orders_link": "Заказы",

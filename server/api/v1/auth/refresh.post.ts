@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
         }
 
         // ค้นหา Token ในฐานข้อมูลและตรวจสอบว่าถูก Revoke หรือไม่
-        const dbRefreshToken = await prisma.refreshToken.findUnique({
+        const dbRefreshToken = await prisma.refreshtoken.findUnique({
             where: {
                 jti: refreshPayload.jti,
                 revoked: false
@@ -88,7 +88,7 @@ export default defineEventHandler(async (event) => {
         // ค้นหาผู้ใช้จาก userId ใน token
         const findingUser = await prisma.users.findUnique({
             where: {
-                id: String(refreshPayload.sub)
+                userId: String(refreshPayload.sub)
             }
         })
 
@@ -119,20 +119,20 @@ export default defineEventHandler(async (event) => {
 
             // สร้าง Refresh Token ใหม่
             const { refreshToken, refreshTokenId } = generateRefreshToken(
-                transformedUser.id,
+                transformedUser.userId,
                 getOriginUrl
             );
 
             // สร้าง Access Token ใหม่
             const { accessToken } = await generateAccessToken(
-                transformedUser.id,
+                transformedUser.userId,
                 transformedUser.role,
                 getOriginUrl,
                 refreshTokenId
             );
 
             // เพิกถอน Token เก่า
-            await prisma.refreshToken.update({
+            await prisma.refreshtoken.update({
                 where: {
                     jti: refreshPayload.jti
                 },
@@ -144,11 +144,11 @@ export default defineEventHandler(async (event) => {
             const REFRESH_TOKEN_MAX_AGE_MS = getRefreshTokenMaxAge();
 
             // บันทึก Refresh Token ใหม่ลงในฐานข้อมูล
-            await prisma.refreshToken.create({
+            await prisma.refreshtoken.create({
                 data: {
                     jti: refreshTokenId,
                     token: hashToken(refreshToken),
-                    userId: transformedUser.id,
+                    userId: transformedUser.userId,
                     ipAddress: ipAddress ? String(ipAddress) : null,
                     userAgent: userAgent ? String(userAgent) : null,
                     expiresIn: Math.floor((Date.now() + REFRESH_TOKEN_MAX_AGE_MS) / 1000),
@@ -169,7 +169,7 @@ export default defineEventHandler(async (event) => {
         if (validatedData.grantType === 'access_token') {
 
             const { accessToken } = await generateAccessToken(
-                transformedUser.id,
+                transformedUser.userId,
                 transformedUser.role,
                 getOriginUrl,
                 refreshPayload.jti

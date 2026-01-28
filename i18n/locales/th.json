@@ -4,6 +4,11 @@
   "home_link": "หน้าหลัก",
   "inbox_link": "กล่องข้อความ",
   "customers_link": "รายชื่อลูกค้า",
+  "workpapers_link": {
+    "title": "กระดาษทำงาน",
+    "question": "ตอบคำถาม",
+    "settings": "ตั้งค่าคำถาม"
+  },
   "conversions_link": "การแปลง",
   "revenue_link": "รายได้",
   "orders_link": "คำสั่งซื้อ",

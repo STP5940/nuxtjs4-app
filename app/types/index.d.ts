@@ -60,7 +60,7 @@ export interface Range {
 type UserRole = typeof randomRoles[number];
 
 export interface Users {
-  id: number
+  userId: number
   name: string
   username: string
   email: string

@@ -25,7 +25,7 @@ generator client {
 }
 
 model Users {
-  id            String         @id @default(uuid())
+  userId        String         @id @default(uuid())
   name          String
   username      String         @unique
   email         String
@@ -34,35 +34,90 @@ model Users {
   createdAt     DateTime
   updatedAt     DateTime?
   deletedAt     DateTime?
+  usersroleId   String
   Twofactors    Twofactors?
-  refreshTokens RefreshToken[]
+  refreshtokens Refreshtoken[]
+  TM_Usersrole  TM_Usersrole   @relation(fields: [usersroleId], references: [usersroleId])
+
+  @@index([usersroleId])
 }
 
 model Twofactors {
-  id             String   @id @default(uuid())
+  twofactorId    String   @id @default(uuid())
   secret         String   @unique
   active         Boolean? @default(false) @db.Bit
   signinAccount  Boolean? @default(false) @db.Bit
   changePassword Boolean? @default(false) @db.Bit
   createdAt      DateTime @default(now())
   userId         String   @unique
-  Users          Users    @relation(fields: [userId], references: [id])
+  Users          Users    @relation(fields: [userId], references: [userId])
 
   @@index([userId])
 }
 
-model RefreshToken {
-  id        String   @id @default(uuid())
-  jti       String   @unique
-  token     String   @unique
-  ipAddress String?
-  userAgent String?
-  expiresIn Int
-  revoked   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  expiresAt DateTime
-  userId    String
-  Users     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Refreshtoken {
+  refreshtokenId String   @id @default(uuid())
+  jti            String   @unique
+  token          String   @unique
+  ipAddress      String?
+  userAgent      String?
+  expiresIn      Int
+  revoked        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  expiresAt      DateTime
+  userId         String
+  Users          Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model TM_Permissions {
+  permissionId            String                    @id @default(uuid())
+  codename                String                    @unique // ใช้รูปแบบ "module.workpapers"
+  name                    String // ชื่อแสดงผล เช่น "อ่านข้อมูลผู้ใช้", "สร้างสินค้า"
+  description             String?
+  canRead                 Boolean                   @default(false) @db.Bit
+  canCreate               Boolean                   @default(false) @db.Bit
+  canUpdate               Boolean                   @default(false) @db.Bit
+  canDelete               Boolean                   @default(false) @db.Bit
+  companyonly             Boolean                   @default(false) @db.Bit
+  active                  Boolean                   @default(true) @db.Bit
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?
+  TM_UsersrolePermissions TM_UsersrolePermissions[]
+
+  @@index([codename])
+}
+
+model TM_Usersrole {
+  usersroleId             String                    @id @default(uuid())
+  codename                String                    @unique // เช่น "admin", "manager", "staff"
+  name                    String // เช่น "ผู้ดูแลระบบ", "ผู้จัดการ", "พนักงาน"
+  description             String?
+  level                   Int // ลำดับความสำคัญ เช่น 1=สูงสุด
+  active                  Boolean                   @default(true) @db.Bit
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime?
+  users                   Users[]
+  TM_UsersrolePermissions TM_UsersrolePermissions[]
+
+  @@index([codename])
+  @@index([level])
+}
+
+model TM_UsersrolePermissions {
+  usersroleId    String
+  permissionId   String
+  allowRead      Boolean        @default(false) @db.Bit
+  allowCreate    Boolean        @default(false) @db.Bit
+  allowUpdate    Boolean        @default(false) @db.Bit
+  allowDelete    Boolean        @default(false) @db.Bit
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime?
+  TM_Usersrole   TM_Usersrole   @relation(fields: [usersroleId], references: [usersroleId], onDelete: Cascade)
+  TM_Permissions TM_Permissions @relation(fields: [permissionId], references: [permissionId], onDelete: Cascade)
+
+  @@unique([usersroleId, permissionId])
+  @@index([usersroleId])
+  @@index([permissionId])
 }

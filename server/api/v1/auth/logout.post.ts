@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const { count } = await prisma.refreshToken.updateMany({
+        const { count } = await prisma.refreshtoken.updateMany({
             where: {
                 jti: String(payload.jti),
                 userId: String(payload.sub),

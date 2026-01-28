@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     if (userId === 'me') {
         const user = await prisma.users.findFirst({
             where: {
-                id: userPayload?.sub
+                userId: userPayload?.sub
             },
             omit: {
                 password: true

@@ -43,19 +43,19 @@ const links = computed(() => [[{
     open.value = false
   }
 }, {
-  label: 'ตรงสอบบัญชี',
+  label: $t("workpapers_link.title"),
   icon: 'i-lucide-book-search',
   defaultOpen: true,
   type: 'trigger',
   children: [{
-    label: 'กระดาษทำงาน',
+    label: $t("workpapers_link.question"),
     to: '/engagements/workpapers',
     exact: true,
     onSelect: () => {
       open.value = false
     }
   }, {
-    label: 'ตั้งค่ากระดาษทำงาน',
+    label: $t("workpapers_link.settings"),
     to: '/engagements/workpapers/settings',
     onSelect: () => {
       open.value = false

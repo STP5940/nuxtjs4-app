@@ -5,7 +5,7 @@ import { ref } from 'vue'
 // 1. กำหนด Type สำหรับข้อมูลผู้ใช้ (User Object Type)
 // *** ควรตรงกับโครงสร้างข้อมูลที่ Backend ส่งกลับมา ***
 interface User {
-  id: number;
+  userId: number;
   name: string;
   username: string;
   email: string;

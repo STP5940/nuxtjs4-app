@@ -30,6 +30,7 @@ export default defineEventHandler(async (event) => {
 
     // Extract and validate Bearer token
     const authHeader = getHeader(event, 'Authorization');
+    const Bypassexpiredtoken = getHeader(event, 'Bypassexpiredtoken');
     if (!authHeader) {
         return responseUnauthorized('Authorization header is missing', 401);
     }
@@ -44,13 +45,13 @@ export default defineEventHandler(async (event) => {
         const accessTokenDecode: AccessTokenPayload = jwtDecode(accessToken);
         const currentTime = Math.floor(Date.now() / 1000);
 
-        if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime) {
+        if (accessTokenDecode.exp && accessTokenDecode.exp < currentTime && (!Boolean(Bypassexpiredtoken) && process.env.NODE_ENV === 'development')) {
             // ตรวจสอบว่า Token ถ้าหมดอายุให้คืนสถานะ Unauthorized
             return responseUnauthorized('Token expired');
         }
 
         // ค้นหา Token ในฐานข้อมูลและตรวจสอบว่าถูก Revoke หรือไม่
-        const dbRefreshToken = await prisma.refreshToken.findUnique({
+        const dbRefreshToken = await prisma.refreshtoken.findUnique({
             where: {
                 jti: String(accessTokenDecode?.rtid),
                 revoked: false

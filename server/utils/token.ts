@@ -62,7 +62,7 @@ export async function generateAccessToken(userId: string, role: UserRole, iss: s
     // ค้นหาผู้ใช้จาก userId
     const findingUser = await prisma.users.findUnique({
         where: {
-            id: String(userId)
+            userId: String(userId)
         }
     });
 
